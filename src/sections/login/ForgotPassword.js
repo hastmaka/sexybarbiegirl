@@ -1,0 +1,74 @@
+import {useNavigate} from 'react-router-dom';
+//material
+import {Box, Typography} from '@mui/material';
+//
+import LoginWrapper from './LoginWrapper';
+import FirebaseAuthService from "../../helper/FirebaseAuthService";
+import {useState} from "react";
+import EzButton from "../../components/ezComponents/EzButton/EzButton";
+import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
+import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
+import EzText from "../../components/ezComponents/EzText/EzText";
+
+//--------------------------------------------------------
+
+
+const ForgotPassword = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    const onForgotHandle = async (e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        let email = data.get('email');
+        setLoading(true)
+        try {
+            await FirebaseAuthService.passwordResetEmail(email);
+            alert('An email was sent to you email addressAndPayment, with instruction to reset your password')
+            navigate('/login');
+            setLoading(false)
+        } catch (err) {
+            alert(err.message);
+            setLoading(false)
+        }
+
+
+    }
+    return (
+        <LoginWrapper>
+            <EzText text='Forgot Password' variant='h4' sx={{textAlign: 'center', margin: '0 20px 20px 20px', fontSize: '1.5rem'}}/>
+            <Box component='form' onSubmit={onForgotHandle}>
+
+                <Typography component={'span'} sx={{wordWrap: 'break-word', textAlign: 'center'}}>
+                    Please enter your email and we send it back to you a recover email.
+                </Typography>
+
+                <EzTextField required name='email' type='email' label='Email address'/>
+
+                <EzLoadingBtn
+                    sx={{marginTop: '25px'}}
+                    fullWidth
+                    size='large'
+                    type='submit'
+                    variant='outlined'
+                    loading={loading}
+                >
+                    Send
+                </EzLoadingBtn>
+
+                <EzButton
+                    sx={{
+                        padding: '8px 22px',
+                        height: '48px'
+                    }}
+                    variant='outlined'
+                    color='error'
+                    onClick={() => navigate('/login')}
+                >Cancel</EzButton>
+
+            </Box>
+        </LoginWrapper>
+    );
+}
+
+export default ForgotPassword;

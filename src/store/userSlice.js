@@ -1,0 +1,195 @@
+import {createSlice} from '@reduxjs/toolkit';
+import {getAll, getById, updateAddressApi, updateCartApi, updateWishListApi} from "../helper/FirestoreApi";
+import {updateCart, updateLocalStore} from "../helper/Helper";
+
+const userSlice = createSlice({
+    name: 'user',
+    initialState: {
+        user: {},
+        userStatus: {loaded: false, loading: false},
+        orderStatus: {loaded: false, loading: false}
+    },
+    reducers: {
+        setUser(state, {payload}) {
+            state.user = {
+                    ...state.user,
+                    ...payload
+            }
+            state.userStatus.loaded = true
+            updateLocalStore('user', state.user, 'setUser');
+        },
+        addToWishList(state, {payload}) {
+            state.user.wish_list = [...state.user.wish_list, {...payload.product}];
+            updateLocalStore('user', [...state.user.wish_list], 'wish_list');
+            updateWishListApi(payload.user.uid, [...state.user.wish_list])
+        },
+        removeFromWishlist(state, {payload}) {
+            const newWishList = state.user.wish_list.filter(item => item.id !== payload.product.id);
+            state.user.wish_list = [...newWishList];
+            updateLocalStore('user', [...state.user.wish_list], 'wish_list');
+            updateWishListApi(payload.user.uid, [...state.user.wish_list])
+        },
+        addToCart(state, {payload}) {
+            let tempCart = {...state.user.cart};
+            const isVariationOnCart = tempCart.item.findIndex(item => item.variation_id === payload.variation.id);
+            if (tempCart.item.length) {
+                if (isVariationOnCart >= 0) {
+                    state.user.cart = {...updateCart(tempCart, payload, isVariationOnCart)}
+                    if(!payload.user.dummy) {
+                        updateCartApi(payload.user.uid, state.user.cart);
+                    }
+                } else {
+                    state.user.cart = {...updateCart(state.user.cart, payload)}
+                    if(!payload.user.dummy) {
+                        updateCartApi(payload.user.uid, state.user.cart);
+                    }
+                }
+            } else {
+                state.user.cart = {...updateCart(state.user.cart, payload)}
+                if(!payload.user.dummy) {
+                    updateCartApi(payload.user.uid, {...state.user.cart});
+                }
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        },
+        increaseQty(state, {payload}) {
+            const indexOfItemToUpdate = state.user.cart.item.findIndex(item => item.variation_id === payload.variation_id);
+            state.user.cart = {...updateCart(state.user.cart, payload, indexOfItemToUpdate, 1)}
+            if(!payload.user.dummy) {
+                updateCartApi(payload.user.uid, state.user.cart);
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        },
+        decreaseQty(state, {payload}) {
+            const cart = {...state.user.cart}
+            if (payload.quantity === 1) {
+                if(cart.item.length === 1){
+                    state.user.cart = {
+                        ...state.user.cart,
+                        item: [],
+                        last_update: Date.now(),
+                        quantity: 0,
+                        sub_total: 0,
+                        total: 0,
+                    }
+                } else {
+                    cart.item = cart.item.filter(item => item.variation_id !== payload.variation_id);
+                    state.user.cart = {...updateCart(cart, null)}
+                }
+                if(!payload.user.dummy) {
+                    updateCartApi(payload.user.uid, {...state.user.cart});
+                }
+            } else {
+                const indexOfItemToUpdate = cart.item.findIndex(item => item.variation_id === payload.variation_id);
+                state.user.cart = {...updateCart(state.user.cart, payload, indexOfItemToUpdate, -1)}
+                if(!payload.user.dummy) {
+                    updateCartApi(payload.user.uid, state.user.cart);
+                }
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart')
+        },
+        removeFromCart(state, {payload}) {
+            const tempCart = {...state.user.cart}
+            tempCart.item = tempCart.item.filter(item => item.variation_id !== payload.variation_id);
+            state.user.cart = {...updateCart(tempCart, null)}
+            if(!payload.user.dummy) {
+                updateCartApi(payload.user.uid, state.user.cart);
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        },
+        setMainAddress(state, {payload}) {
+            const address = [...state.user.address];
+            const updatedAddress = address.map(item => {
+                if(item.id === payload.id) {
+                    item.main = !item.main
+                    return item
+                } else {
+                    if(item.main) {
+                        item.main = !item.main
+                        return item
+                    }
+                    return item
+                }
+            });
+            state.user.address = [...updatedAddress];
+            updateLocalStore('user', [...state.user.address], 'address');
+            updateAddressApi(state.user.uid, [...state.user.address]);
+        },
+        addAddress(state, {payload}) {
+            state.user.address = [...state.user.address, {...payload}];
+            updateLocalStore('user', [...state.user.address], 'address');
+            updateAddressApi(state.user.uid, [...state.user.address]);
+        },
+        editAddress(state, {payload}) {
+            debugger
+            let addressToUpdate = [...state.user.address].findIndex(address => address.id === payload.id);
+            state.user.address[addressToUpdate] = {...payload};
+            updateLocalStore('user', [...state.user.address], 'address');
+            updateAddressApi(state.user.uid, [...state.user.address]);
+        },
+        removeAddress(state, {payload}) {
+            state.user.address = [...state.user.address].filter(item => item.id !== payload.id);
+            updateLocalStore('user', [...state.user.address], 'address');
+            updateAddressApi(state.user.uid, [...state.user.address])
+        },
+    },
+    extraReducers: {
+        [getAll.pending]: (state, {meta}) => {
+            switch (meta.arg.collection) {
+                case 'users':
+                    state.orderStatus.loading = true;
+                    break;
+                default:
+                    return
+            }
+        },
+        [getAll.fulfilled]: (state, {meta, payload}) => {
+            switch (meta.arg.collection) {
+                case 'orders':
+                    state.user.order = [...payload]
+                    state.orderStatus.loading = false;
+                    state.orderStatus.loaded = true;
+                    updateLocalStore('user', payload, 'orders');
+                    // debugger
+                    break;
+                default:
+                    return
+            }
+        },
+        [getAll.rejected]: (state, {payload}) => {
+            debugger
+            state.orderStatus = payload;
+            state.orderStatus.loaded = false;
+        },
+
+        [getById.pending]: (state, {meta}) => {
+            switch (meta.arg.collection) {
+                case 'users':
+                    state.userStatus.loading = true;
+                    break;
+                default:
+                    return
+            }
+        },
+        [getById.fulfilled]: (state, {meta, payload}) => {
+            switch (meta.arg.collection) {
+                case 'users':
+                    state.userStatus.loading = false;
+                    state.userStatus.loaded = true;
+                    state.user = {...state.user, ...payload}
+                    updateLocalStore('user', state.user, 'setUser');
+                    break;
+                default:
+                    return
+            }
+        },
+        [getById.rejected]: (state, {payload}) => {
+            debugger
+            state.message = payload;
+            state.userStatus.loaded = false;
+        },
+    }
+});
+
+export const userSliceActions = userSlice.actions;
+export default userSlice.reducer;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta
+            name="description"
+            content="Sexybarbiegirl"
+    />
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
+
+    <title>SexyBarbieGirl</title>
+</head>
+<body>
+<div id="root"></div>
+<script>
+    window.addEventListener('storage', (e) => {
+        //check if someone alter the localStore manually
+        let t = {uid: 'tempUser', dummy: true, role: 3, cart: {}};
+        if(e.key === 'user') {
+            if(JSON.stringify(t) !== e.newValue) {
+                localStorage.setItem('user', JSON.stringify({uid: 'tempUser', dummy: true, role: 3, cart: {item: []}}))
+            }
+        }
+        if(e.key === 'profile') {
+            localStorage.setItem('profile', e.oldValue)
+        }
+        window.location.reload();
+    });
+
+    if(!localStorage.getItem('user') || localStorage.getItem('user') === 'undefined') {
+        localStorage.setItem('user', JSON.stringify({uid: 'tempUser', dummy: true, role: 3, cart: {item: []}}));
+    }
+</script>
+
+</body>
+</html>

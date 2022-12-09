@@ -1,0 +1,33 @@
+//How to Debug Firebase Functions locally
+
+1 - Start EMU for debugging functions(required Java installed)
+firebase emulators:start --inspect-functions
+
+2 - Connect Webstorm Debugger
+Edit Run/Debug configurations -> Attach to Node/Chrome (select the correct port(just in case))
+
+3 - Run ngrok and server the functions port
+(http://127.0.0.1:5001/sexybarbiegirl-f6068/us-central1/app)
+|         here       |
+./ngrok http 127.0.0.1:5001
+
+4 - Finish output
+|                    ngrok tunnel                         | |     rest of your API endpoints   |
+http://4386-2600-8801-192-4500-4dcd-e70f-e09f-63cb.ngrok.io/sexybarbiegirl-f6068/us-central1/app
+
+
+
+
+//Deploy functions to firebase
+firebase deploy --only functions
+
+//Listeners
+onCreate
+onUpdate
+onDelete
+onWrite used all
+
+
+
+
+
