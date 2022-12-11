@@ -21,8 +21,9 @@ import {generalSliceActions} from "../../store/gs-manager-slice";
 
 //----------------------------------------------------------------
 
-export default function CreateAccount({ modal, setWho}) {
+export default function CreateAccount({ modal}) {
     const navigate = useNavigate();
+    const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     // debugger
@@ -34,9 +35,15 @@ export default function CreateAccount({ modal, setWho}) {
             password = data.get('password'),
             confirmPassword = data.get('confirmPassword');
         if(password !== confirmPassword) {
-            return window.displayNotification({type: 'warning', content: `Password doesn't match, double check Caps Lock`})
+            return window.displayNotification({
+                t: 'warning',
+                c: `Password doesn't match, double check Caps Lock`
+            })
         } else if (password.length < 6) {
-            return window.displayNotification({type: 'warning', content: `Password has to be at least 6 characters`})
+            return window.displayNotification({
+                t: 'warning',
+                c: `Password has to be at least 6 characters`
+            })
         } else {
             setLoading(true)
             try {
@@ -49,6 +56,7 @@ export default function CreateAccount({ modal, setWho}) {
                     userTemp.uid = user.uid;
                     userTemp.role = 2;
                     userTemp.dummy = false;
+                    userTemp.payment_method = [];
                     userTemp.cart = {
                         item: [],
                         create_at: Date.now(),
@@ -74,9 +82,15 @@ export default function CreateAccount({ modal, setWho}) {
                                         const cartUpdated = updateCart(cart);
                                         updateCartApi(user.uid, cartUpdated);
                                         window.dispatch(userSliceActions.setUser({...rest, cart: {...cartUpdated}}));
-                                        navigate('/');
+                                        if(modal) {
+                                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                                        }
+                                        navigate(location.pathname === '/checkout' ? '/checkout' : '/')
                                         setLoading(false);
                                     } else {
+                                        if(modal) {
+                                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                                        }
                                         window.dispatch(userSliceActions.setUser(data.data()))
                                         navigate('/');
                                         setLoading(false)
@@ -163,8 +177,7 @@ export default function CreateAccount({ modal, setWho}) {
                     color='error'
                     onClick={() => {
                         if(modal) {
-                            window.dispatch(generalSliceActions.setModal(true))
-                            setWho('login')
+                            return window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
                         }
                         navigate('/login')
                     }}

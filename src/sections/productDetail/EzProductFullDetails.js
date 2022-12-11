@@ -60,10 +60,11 @@ export default function EzProductFullDetails() {
         }))
     }, [product_id]);
 
+    if(singleProductState.loading) return <div>Loading...product</div>
+
     return (
         <RootStyle>
             <RootStyleFix>
-                {singleProductState.loading && <Stack>Loading Product...</Stack>}
                 {singleProductState.loaded && <EzProductDetails product={singleProduct} totalReview={totalReview}/>}
 
                 {reviewState.loading && <Stack>Loading Reviews...</Stack>}

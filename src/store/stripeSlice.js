@@ -9,6 +9,7 @@ const stripeSlice = createSlice({
         customer: {},
         paymentMethod: '',
         shippingRate: {},
+        clientSecret: '',
         shippingOptionSelected: {},
         customerStatus: {loaded: false, loading: false},
         getCustomerDataStatus: {loaded: false, loading: false},
@@ -20,6 +21,9 @@ const stripeSlice = createSlice({
         },
         setShippingOption(state, {payload}) {
             state.shippingOptionSelected = payload
+        },
+        setSecret(state, {payload}){
+            state.clientSecret = payload
         }
     },
     extraReducers: {

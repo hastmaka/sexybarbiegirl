@@ -3,7 +3,7 @@ import {Box, Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 //
 import Cell from "../cell/Cell";
-import EzFormatPrice from "../../../../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 
 //----------------------------------------------------------------
 
@@ -44,7 +44,7 @@ export default function Tr({iItem}) {
                 <Typography
                     variant='span'
                 >
-                    <EzFormatPrice
+                    <EzPriceFormat
                         price={amount / 100}
                         color='#3a3a3a'
                     />

@@ -1,7 +1,8 @@
 import {useState} from "react";
 // material
-import {FormControl, InputLabel, MenuItem, Select, Stack, Typography} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
+import EzText from "../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -13,10 +14,10 @@ const RootStyle = styled(Stack)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function SortBy() {
-    const [age, setAge] = useState(1);
+    const [value, setValue] = useState(1);
     return (
         <RootStyle>
-            <Typography variant='span'>Sort by</Typography>
+            <EzText text='Sort by'/>
             <FormControl
                 sx={{
                     m: 1,
@@ -27,17 +28,24 @@ export default function SortBy() {
                 focused
             >
                 <Select
-                    sx={{
-                        borderRadius: 0,
+                    sx={({palette}) => ({
+                        borderRadius: '4px',
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.ecommerce.pink,
+                        },
+                        '&.Mui-focused': {
+                            '&:hover': {
+                                backgroundColor: 'rgba(255,153,236,0.16)'
+                            }
+                        },
                         '.MuiSelect-select': {
                             padding: '6px 14px',
-                        },
-
-                    }}
+                        }
+                    })}
                     labelId="test"
                     id="test-id"
-                    value={age}
-                    onChange={e => setAge(e.target.value)}
+                    value={value}
+                    onChange={e => setValue(e.target.value)}
                     autoWidth
                 >
                     <MenuItem value={1}>Recommend</MenuItem>

@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import {CardElement, useElements, useStripe} from '@stripe/react-stripe-js';
+import {PaymentElement, useElements, useStripe} from '@stripe/react-stripe-js';
 import {styled} from "@mui/material/styles";
 import {Box, Stack, Typography} from "@mui/material";
 import EzLoadingBtn from "../../ezComponents/EzLoadingBtn/EzLoadingBtn";
-import axios from "axios";
 import {urlLocal} from "../../../helper/stripe/StripeApi";
 import {useSelector} from "react-redux";
+import {generalSliceActions} from "../../../store/gs-manager-slice";
 
 const CARD_ELEMENT_OPTIONS = {
     style: {
@@ -34,49 +34,47 @@ export default function CardInput() {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
-    const {customer} = useSelector(slice => slice.stripe);
-    const onSubmit = async (e) => {
+    const {customer, clientSecret} = useSelector(slice => slice.stripe);
+    const saveCardOnStripe = async (e) => {
         e.preventDefault();
+        setLoading(true)
         if (!stripe || !elements) {
             return console.log('It was some problem loading Stripe');
         }
 
-        try {
-            const res = await fetch.post(`${urlLocal}create-payment-intent-to-save-a-card`, {
-                customer_id: customer.customer_id,
-            });
+        const {error, setupIntent} = await stripe.confirmSetup({
+            //`Elements` instance that was used to create the Payment Element
+            elements,
+            //prevent redirect
+            redirect: "if_required"
+        });
+        setLoading(false)
+        if (error) {
+            return window.displayNotification({
+                t: 'error',
+                title: `${error.type}`,
+                c: `${error.message}`
+            })
+        } else {
             debugger
-            const clientSecret = res.data['clientSecret'];
-
-            const {error} = await stripe.confirmSetup({
-                //`Elements` instance that was used to create the Payment Element
-                payment_method: {
-                    card: elements.getElement(CardElement)
-                }
-            });
-
-            if (error) {
-                debugger
-                // This point will only be reached if there is an immediate error when
-                // confirming the payment. Show error to your customer (for example, payment
-                // details incomplete)
-            } else {
-                debugger
-                // Your customer will be redirected to your `return_url`. For some payment
-                // methods like iDEAL, your customer will be redirected to an intermediate
-                // site first to authorize the payment, then redirected to the `return_url`.
+            if(setupIntent.status === 'succeeded') {
+                window.dispatch(generalSliceActions.setModal({open: false, who: ''}));
+                return window.displayNotification({
+                    t: 'success',
+                    c: 'Your Payment method was added Successfully'
+                })
             }
-        } catch (e) {
-            debugger
         }
+
     }
     return (
         <RootStyle>
-            <Box component='form' onSubmit={onSubmit}>
+            <Box component='form' onSubmit={saveCardOnStripe}>
                 <Stack flexDirection='row' justifyContent='space-between' sx={{marginBottom: '25px'}}>
                     <Typography variant='span'>Card</Typography>
                 </Stack>
-                <CardElement options={CARD_ELEMENT_OPTIONS}/>
+                {/*<CardElement options={CARD_ELEMENT_OPTIONS}/>*/}
+                <PaymentElement />
                 <EzLoadingBtn
                     sx={{marginTop: '25px'}}
                     color="inherit"

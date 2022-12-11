@@ -29,7 +29,7 @@ const btnStyle = {
         backgroundColor: theme => theme.palette.ecommerce.pink,
     }
 }
-export default function Login({modal, setOpen}) {
+export default function Login({modal}) {
     const navigate = useNavigate();
     const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
@@ -56,10 +56,7 @@ export default function Login({modal, setOpen}) {
                         if(modal) {
                             window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
                         }
-                        if(location.pathname === '/cart') {
-                            navigate('/cart')
-                        }
-                        navigate('/');
+                        navigate(location.pathname === '/checkout' ? '/checkout' : '/')
                         setLoading(false);
                     } else {
                         if(modal) {
@@ -133,9 +130,9 @@ export default function Login({modal, setOpen}) {
                         variant='outlined'
                         onClick={() => {
                             if(modal) {
-                                setOpen({bool: true, who: 'create-account'})
+                                return window.dispatch(generalSliceActions.setModal({open: true, who: 'create-account'}))
                             }
-                            return navigate('/create-account')
+                            navigate('/create-account')
                         }}
                     >
                         Create

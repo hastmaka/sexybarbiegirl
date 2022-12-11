@@ -11,7 +11,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 //
 import EzSwiper from "../../components/ezComponents/EzSwiper/EzSwiper";
 import EzRating from "../../components/ezComponents/EzRating/EzRating";
-import EzFormatPrice from "../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import Share from "./share/Share";
 import {AddToCart, getActiveSize, getColor, getVariation} from "../../helper/Helper";
 import EzWishlistBtn from "../../components/ezComponents/EzWishlistBtn/EzWishlistBtn";
@@ -243,11 +243,11 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
                             <HeaderText variant='span'>({totalReview} reviews)</HeaderText>
                         </RatingContainer>
                         <Stack flexDirection='row' gap='5px'>
-                            {!!price && <EzFormatPrice
+                            {!!price && <EzPriceFormat
                                 price={price}
                                 priceFS={18}
                             />}
-                            {discount > 0 && <EzFormatPrice
+                            {discount > 0 && <EzPriceFormat
                                 price={discount > 0 ? price - ((discount / 100) * price) : price}
                                 priceFS={14}
                                 oldPrice={discount > 0}

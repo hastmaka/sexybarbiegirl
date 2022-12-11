@@ -19,9 +19,15 @@ const registerUser = async (email, password) => {
         }).catch(e => {
             switch (e.code) {
                 case 'auth/email-already-in-use':
-                    return window.displayNotification({type: 'error', content: 'Email already in use, please choose another one'});
+                    return window.displayNotification({
+                        t: 'error',
+                        c: 'Email already in use, please choose another one'
+                    });
                 default:
-                    return window.displayNotification({type: 'error', content: 'Internal Error'})
+                    return window.displayNotification({
+                        t: 'error',
+                        c: 'Internal Error'
+                    });
             }
         })
 };
@@ -34,17 +40,27 @@ const loginUser = async (email, password) => {
         }).catch(e => {
             switch (e.code) {
                 case 'auth/wrong-password':
-                    return window.displayNotification({type: 'error', content: 'Wrong Password, Double check Caps'});
+                    return window.displayNotification({
+                        t: 'error',
+                        c: 'Wrong Password, Double check Caps'
+                    });
                 case 'auth/user-not-found':
-                    return window.displayNotification({type: 'error', content: 'User not Found', important: true});
+                    return window.displayNotification({
+                        t: 'error',
+                        c: 'User not Found',
+                        i: true
+                    });
                 case 'auth/too-many-requests':
                     return window.displayNotification({
-                        type: 'error',
-                        content: 'Too many request was made, try again later',
-                        important: true
+                        t: 'error',
+                        c: 'Too many request was made, try again later',
+                        i: true
                     });
                 default:
-                    return window.displayNotification({type: 'error', content: 'Firebase Unknown Error'})
+                    return window.displayNotification({
+                        t: 'error',
+                        c: 'Firebase Unknown Error'
+                    });
             }
         })
 }

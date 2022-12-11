@@ -22,7 +22,10 @@ export default function EzWishlistBtn({isProductInWishlist, product, user}) {
                     toolTipTitle='Remove from Wishlist'
                     onClick={_ => {
                         window.dispatch(userSliceActions.removeFromWishlist({product, user}));
-                        window.displayNotification({type: 'success', content: `Product '${product.name}' remove to the Wishlist`})
+                        window.displayNotification({
+                            t: 'success',
+                            c: `Product '${product.name}' remove to the Wishlist`
+                        });
                     }
                     }
                 />

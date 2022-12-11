@@ -14,7 +14,6 @@ function App() {
     const dispatch = useDispatch();
     const {confirm} = useConfirmDialog();
     const {displayNotification} = useNotification();
-    const {modal} = useSelector(slice => slice.generalState)
     const {userStatus} = useSelector(slice => slice.user);
     const user = useMemo(() => {
         return JSON.parse(localStorage.getItem('user'))

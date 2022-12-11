@@ -1,5 +1,5 @@
 // material
-import {Stack, Typography} from "@mui/material";
+import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddCardIcon from "@mui/icons-material/AddCard";
@@ -20,9 +20,13 @@ const Child = styled(Stack)(() => ({
 
 export default function MyPaymentMethod({onClick}) {
     const {customer, paymentMethod} = useSelector(slice => slice.stripe);
+    // debugger
     const handleCardSelection = (pm) => {
         window.dispatch(stripeSliceActions.setPaymentMethod(pm))
-        window.displayNotification({type: 'info', content: 'Payment method changed successfully'})
+        window.displayNotification({
+            t: 'info',
+            c: 'Payment method changed successfully'
+        })
     }
     return (
         <>
@@ -38,7 +42,7 @@ export default function MyPaymentMethod({onClick}) {
             {!customer.paymentMethod.data.length ?
                 <EzText text='Need to add some Payment Method' sx={{marginTop: '20px'}}/> :
                 <Child>
-                    {customer.paymentMethod.data.map(item =>
+                    {customer?.paymentMethod?.data?.map(item =>
                         <CreditCardSelection
                             key={item.id}
                             card={item.card}
@@ -49,7 +53,6 @@ export default function MyPaymentMethod({onClick}) {
                     )}
                 </Child>
             }
-
         </>
     );
 }

@@ -34,7 +34,7 @@ const userSlice = createSlice({
             const isVariationOnCart = tempCart.item.findIndex(item => item.variation_id === payload.variation.id);
             if (tempCart.item.length) {
                 if (isVariationOnCart >= 0) {
-                    state.user.cart = {...updateCart(tempCart, payload, isVariationOnCart)}
+                    state.user.cart = {...updateCart(tempCart, payload, isVariationOnCart, 1)}
                     if(!payload.user.dummy) {
                         updateCartApi(payload.user.uid, state.user.cart);
                     }

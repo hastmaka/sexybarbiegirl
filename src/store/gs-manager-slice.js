@@ -7,20 +7,23 @@ const generalStateSlice = createSlice({
         scrollTop: 0,
         modal: {
             open: false,
-            who: '',
+            who: ''
         },
         notification: {
             open: false,
-            type: 'info',
+            t: 'info',
             title: '',
-            content: '',
+            c: '',
             timeout: 0
         },
         confirmDialog: {
             open: false,
             title: '',
             content: '',
-        }
+        },
+
+        //views
+        profileView: {ready: false}
     },
     reducers: {
         setScreen(state, {payload}) {
@@ -30,8 +33,7 @@ const generalStateSlice = createSlice({
             state.scrollTop = payload
         },
         setModal(state, {payload}) {
-            // debugger
-            state.modal = {...payload};
+            state.modal = {...state.modal, ...payload};
         },
         closeModal(state){
 

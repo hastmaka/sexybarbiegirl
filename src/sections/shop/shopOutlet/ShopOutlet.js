@@ -22,8 +22,9 @@ const ToolBarContainer = styled(Stack)(({theme}) => ({
     alignItems: 'center',
     minHeight: '52px',
     width: '100%',
-    backgroundColor: '#fff',
     padding: '0 10px',
+    backgroundColor: theme.palette.grey[0],
+    boxShadow: theme.shadows[5],
     borderRadius: '4px',
     [theme.breakpoints.down(900)]: {
         marginTop: '5px',

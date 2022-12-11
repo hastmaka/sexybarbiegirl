@@ -13,8 +13,6 @@ import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
 import MyOrders from "./myOrders/MyOrders";
 import WishList from "./wishlist/WishList";
 import MyProfile from "./myProfile/MyProfile";
-import {getAll} from "../../helper/FirestoreApi";
-import {getCustomerData} from "../../helper/stripe/StripeApi";
 
 //--------------------------------------------------------------
 
@@ -92,33 +90,20 @@ export default function Profile() {
     const location = useLocation();
     const {screen} = useSelector(slice => slice.generalState);
     const [tabIndex, setTabIndex] = useLocalStorage('profile', 0);
-    const {user, userStatus} = useSelector(slice => slice.user);
-    const {customer, customerStatus, getCustomerDataStatus} = useSelector(slice => slice.stripe);
-
     //update scroll position
     useIsScroll();
 
-    //get customer id from stripe
     useEffect(_ => {
-        window.dispatch(getAll({
-            collection: 'stripe_customers',
-            filters: [{
-                field: 'email',
-                operator: '==',
-                value: user.email
-            }]
-        }))
-    }, []);
-
-    useEffect(_ => {
-        if (customerStatus.loaded && !user.dummy) {
-            window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer}))
-            window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}))
+        //check if the page was reloaded
+        let reload = window.performance.getEntriesByType('navigation')[0].type === 'reload',
+            profile = localStorage.getItem('profile');
+        if (reload) {
+            setTabIndex(Number(profile))
+        } else {
+            if (location.state !== null) {
+                setTabIndex(location.state - 1)
+            }
         }
-    }, [customerStatus.loaded, user.dummy]);
-
-    useEffect(_ => {
-        if (location.state !== null) setTabIndex(location.state - 1)
     }, [location.state])
 
     return (
@@ -165,34 +150,30 @@ export default function Profile() {
                             <Tab key={tab.id} icon={tab.icon} label={tab.label} sx={{marginBottom: '3px'}}/>//fix align label and icon
                         )}
                     </Tabs>
-                    {(
-                            userStatus.loaded &&
-                            getCustomerDataStatus.loaded) &&
                         <TabContainer>
                             <Parent>
-                                {tabIndex === 0 && (
+                                {tabIndex === 0 ? (
                                     <Child>
                                         <MyProfile/>
                                     </Child>
-                                )}
-                                {tabIndex === 1 && (
+                                ) :
+                                tabIndex === 1 ? (
                                     <Child>
                                         <MyOrders/>
                                     </Child>
-                                )}
-                                {tabIndex === 2 && (
+                                ) :
+                                tabIndex === 2 ? (
                                     <Child>
                                         <WishList/>
                                     </Child>
-                                )}
-                                {tabIndex === 3 && (
+                                ) :
+                                tabIndex === 3 ? (
                                     <Child>
                                         Shipping Info - Return Policy - Privacy & Cookie Policy
                                     </Child>
-                                )}
+                                ) : ''}
                             </Parent>
                         </TabContainer>
-                    }
                 </ProfileContainerFix>
             </ProfileContainer>
         </RootStyle>

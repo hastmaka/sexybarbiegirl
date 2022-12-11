@@ -8,7 +8,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 //
 import Cell from "../cell/Cell";
-import EzFormatPrice from "../../../../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzModalWithTransition from "../../../../../components/ezComponents/EzModalWithTransition/EzModalWithTransition";
 import EzProductDetails from "../../../../productDetail/EzProductDetails";
 
@@ -90,7 +90,7 @@ export default function Tr({product}) {
                     </Stack>
                 </Cell>
                 <Cell>
-                    <EzFormatPrice price={price}/>
+                    <EzPriceFormat price={price}/>
                 </Cell>
                 <Cell>
                     <ActionContainer>
@@ -108,7 +108,10 @@ export default function Tr({product}) {
                                         .then(res => {
                                             if(res) {
                                                 window.dispatch(userSliceActions.removeFromWishlist({product, user}));
-                                                window.displayNotification({type: 'info', content: 'Item remove from Wishlist successfully'})
+                                                window.displayNotification({
+                                                    t: 'info',
+                                                    c: 'Item remove from Wishlist successfully'
+                                                })
                                             }
                                         })
                                 }}

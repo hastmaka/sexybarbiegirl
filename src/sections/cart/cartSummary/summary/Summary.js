@@ -1,7 +1,7 @@
 // material
 import {Divider, Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import EzFormatPrice from "../../../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
@@ -38,7 +38,7 @@ const Piece = ({left, right, number, total}) => {
                 <Typography
                     variant='span'
                 >
-                    <EzFormatPrice
+                    <EzPriceFormat
                         price={right}
                         priceFS={total ? 18 : 16}
                         color='#3a3a3a'

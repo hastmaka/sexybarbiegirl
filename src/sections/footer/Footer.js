@@ -18,7 +18,10 @@ const RootStyle = styled(Stack)(({theme}) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     height: '401px',
-    backgroundColor: theme.palette.ecommerce.bg_parent
+    backgroundColor: theme.palette.ecommerce.bg_parent,
+    [theme.breakpoints.down(786)]: {
+        height: '100%',
+    }
 }));
 
 const FooterFixContent = styled(Stack)(({theme}) => ({
@@ -133,7 +136,7 @@ export default function Footer() {
                         <Info icon={<LocalPhoneIcon sx={{color: '#F438DE'}}/>} text='info@partylifestyle.com'/>
                         <Info icon={<EmailIcon sx={{color: '#F438DE'}}/>} text='(305)-748-1194'/>
                         <Info icon={<LocationOnIcon sx={{color: '#F438DE'}}/>} text='16950 North Bay Road, Sunny Isles, 33160'/>
-                        <Info icon={<AccessTimeFilledIcon sx={{color: '#F438DE'}}/>} text='10:00 - 18:00, Mon - Sat'/>
+                        <Info icon={<AccessTimeFilledIcon sx={{color: '#F438DE'}}/>} text='10:00AM - 18:00PM, Mon - Sat'/>
                     </Stack>
                     {screen >= 786 && <Stack flex={1} flexDirection='row'>
                         <Stack flex={1} gap='15px'>

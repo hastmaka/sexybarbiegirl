@@ -185,7 +185,10 @@ export const AddToCart = (selectedColor, selectedSize, item, id, image, name, us
         product: {product_id: id, image, name},
         user
     }));
-    window.displayNotification({type: 'success', content: 'Product add to the Cart'})
+    window.displayNotification({
+        t: 'success',
+        c: 'Product add to the Cart'
+    })
 };
 
 export const AddToWishlist = (product, user) => {
@@ -198,7 +201,10 @@ export const AddToWishlist = (product, user) => {
             })
     } else {
         window.dispatch(userSliceActions.addToWishList({product, user}));
-        window.displayNotification({type: 'success', content: `Product '${product.name}' add to the Wishlist`})
+        window.displayNotification({
+            t: 'success',
+            c: `Product '${product.name}' add to the Wishlist`
+        });
     }
 };
 

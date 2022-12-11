@@ -31,7 +31,7 @@ const StoreFixContent = styled(Stack)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function Shop() {
-    const {productState, filterState, product} = useSelector(slice => slice.shop);
+    const {productState, filterState} = useSelector(slice => slice.shop);
     const {screen} = useSelector(slice => slice.generalState);
 
     //get scroll from top for topbar shadow effect

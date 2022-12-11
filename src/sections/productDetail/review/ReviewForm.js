@@ -50,13 +50,25 @@ export default function ReviewForm({product_id, setTotalReview, modal = false, h
             checkLength = content.split(' ').join(''),
             sanitizedText = content.replace(/^\s+|\s+$|\s+(?=\s)/g, "");
         if (rating === 0 || rating === null) {//rating become null after take all star off
-            return window.displayNotification({type: 'error', content: 'Please, submit a Rating'})
+            return window.displayNotification({
+                t: 'error',
+                c: 'Please, submit a Rating'
+            })
         } else if (content === '') {
-            return window.displayNotification({type: 'error', content: 'Please, write something'})
+            return window.displayNotification({
+                t: 'error',
+                c: 'Please, write something'
+            })
         } else if (checkLength.length < 1) {
-            return window.displayNotification({type: 'warning', content: 'Minimum 25 characters'})
+            return window.displayNotification({
+                t: 'warning',
+                c: 'Minimum 25 characters'
+            })
         } else if (!checked) {
-            return window.displayNotification({type: 'warning', content: 'Accept Community Guidelines first.'})
+            return window.displayNotification({
+                t: 'warning',
+                c: 'Accept Community Guidelines first.'
+            })
         }
         //ready to save the review
         window.dispatch(create({

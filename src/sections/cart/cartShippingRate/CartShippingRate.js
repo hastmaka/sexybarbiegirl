@@ -30,7 +30,10 @@ export default function CartShippingRate({
                     />
                 )
                 :
+                getAllShippingOptionStatus.loading ?
                 <EzSkeleton variant='rectangular' height='180px' width='100%'/>
+                    :
+                    <EzText text='Sign in first to see shipping options'/>
             }
         </Wrapper>
     );

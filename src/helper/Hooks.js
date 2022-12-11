@@ -97,8 +97,8 @@ export const useLocalStorage = (key, initialValue) => {
 };
 
 export const useNotification = () => {
-    const displayNotification = ({type, title, content, important}) => {
-        window.dispatch(generalSliceActions.showNotification({type, title, content, important}))
+    const displayNotification = ({t, title, c, i}) => {
+        window.dispatch(generalSliceActions.showNotification({t, title, c, i}))
     };
     const clearNotification = _ => {
         window.dispatch(generalSliceActions.closeNotification())

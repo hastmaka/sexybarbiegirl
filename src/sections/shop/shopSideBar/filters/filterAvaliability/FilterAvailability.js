@@ -2,10 +2,10 @@
 import {Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
-import EzCheckBox from '../../../../components/ezComponents/EzCheckBox/EzCheckBox';
+import EzCheckBox from '../../../../../components/ezComponents/EzCheckBox/EzCheckBox';
 import {useSelector} from 'react-redux';
-import {generalSliceActions} from '../../../../store/gs-manager-slice';
-import {shopSliceActions} from "../../../../store/shopSlice";
+import {generalSliceActions} from '../../../../../store/gs-manager-slice';
+import {shopSliceActions} from "../../../../../store/shopSlice";
 
 //----------------------------------------------------------------
 

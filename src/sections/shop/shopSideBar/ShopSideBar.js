@@ -1,17 +1,17 @@
 import {useSelector} from 'react-redux';
 import EzAccordion from '../../../components/ezComponents/EzAccordion/EzAccordion';
 // material
-import {Stack, Typography} from '@mui/material';
+import {Stack} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
-import FilterPrice from './filterPrice/FilterPrice';
-import FilterAvailability from './filterAvaliability/FilterAvailability';
-import FilterColor from './filterColor/FilterColor';
-import FilterSize from './filterSize/FilterSize';
-import FilterCategory from './filterCategory/FilterCategory';
-import ClearBtn from "./localComponents/ClearBtn";
-import {shopSliceActions} from "../../../store/shopSlice";
-import WidgetHeader from "./WidgetHeader";
+import FilterPrice from './filters/filterPrice/FilterPrice';
+import FilterAvailability from './filters/filterAvaliability/FilterAvailability';
+import FilterColor from './filters/filterColor/FilterColor';
+import FilterSize from './filters/filterSize/FilterSize';
+import FilterCategory from './filters/filterCategory/FilterCategory';
+import WidgetHeader from "../../../components/ezComponents/EzProductWidget/WidgetHeader";
+import EzProductWidget from '../../../components/ezComponents/EzProductWidget/EzProductWidget';
+import Wrapper from "../../../components/Wrapper/Wrapper";
 
 //----------------------------------------------------------------
 
@@ -19,9 +19,9 @@ const RootStyle = styled(Stack)(({theme}) => ({
     height: '100%',
     minWidth: '250px',
     maxWidth: '250px',
-    padding: '0 10px 0 0',
+    padding: '0 10px 10px 0',
     [theme.breakpoints.down(900)]: {
-        padding: '0 5px 0 0',
+        padding: '5px',
     }
 }));
 
@@ -34,29 +34,12 @@ const StickySideBar = styled(Stack)(({theme}) => ({
     }
 }));
 
-const FilterContainer = styled(Stack)(({theme}) => ({
-    backgroundColor: '#FFF',
-    borderRadius: '4px',
-}));
-
-const NewProductContainer = styled(Stack)(({theme}) => ({
-    height: '300px',
-    backgroundColor: '#FFF',
-    borderRadius: '4px',
-}));
-
-const TrendingContainer = styled(Stack)(({theme}) => ({
-    height: '300px',
-    backgroundColor: '#FFF',
-    borderRadius: '4px',
-    marginBottom: '10px'
-}))
-
 //----------------------------------------------------------------
 
 
 export default function ShopSideBar() {
     const {activeFilter} = useSelector(store => store.shop);
+    const {product} = useSelector(slice => slice.shop);
 
     const ACCORDIONITEMS = [{
         id: 1,
@@ -88,7 +71,7 @@ export default function ShopSideBar() {
     return (
         <RootStyle>
             <StickySideBar>
-                <FilterContainer>
+                <Wrapper>
                     <WidgetHeader text='Filter' clearBtn/>
                     {ACCORDIONITEMS.map(item =>
                         <EzAccordion
@@ -99,14 +82,53 @@ export default function ShopSideBar() {
                             // divider
                         />
                     )}
-                </FilterContainer>
-                <NewProductContainer>
-                    <WidgetHeader text='New Products'/>
-                </NewProductContainer>
-                <TrendingContainer>
-                    <WidgetHeader text='Trending'/>
-                </TrendingContainer>
+                </Wrapper>
+                {/*new products*/}
+                <EzProductWidget productToRender={product} header='New Products'/>
+                {/*trending products*/}
+                <EzProductWidget productToRender={product} header='Trending'/>
             </StickySideBar>
         </RootStyle>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

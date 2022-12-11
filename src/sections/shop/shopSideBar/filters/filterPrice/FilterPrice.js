@@ -4,9 +4,9 @@ import {Stack, Typography} from '@mui/material';
 import Slider from '@mui/material/Slider';
 import {styled} from '@mui/material/styles';
 import {useSelector} from 'react-redux';
-import {generalSliceActions} from '../../../../store/gs-manager-slice';
-import ClearBtn from "../localComponents/ClearBtn";
-import {shopSliceActions} from "../../../../store/shopSlice";
+import {generalSliceActions} from '../../../../../store/gs-manager-slice';
+import ClearBtn from "../../localComponents/ClearBtn";
+import {shopSliceActions} from "../../../../../store/shopSlice";
 
 //----------------------------------------------------------------
 

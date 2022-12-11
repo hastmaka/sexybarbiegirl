@@ -2,7 +2,7 @@
 import {Box, Stack} from '@mui/material';
 //---------------------------------------------------------------
 
-const EzFormatPrice = ({price, currencyTop, priceFS, decimalTop, oldPrice, color, justifyContent}) => {
+const EzPriceFormat = ({price, currencyTop, priceFS, decimalTop, oldPrice, color, justifyContent}) => {
     // debugger
     let nPrice = typeof price === 'string' ? parseInt(price) : price;
     return (
@@ -51,4 +51,4 @@ const EzFormatPrice = ({price, currencyTop, priceFS, decimalTop, oldPrice, color
     );
 }
 
-export default EzFormatPrice;
+export default EzPriceFormat;

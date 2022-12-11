@@ -14,6 +14,7 @@ import Profile from "../sections/profile/Profile";
 import Thanks from "../sections/cart/thanks/Thanks";
 import EzProductFullDetails from "../sections/productDetail/EzProductFullDetails";
 import Test from "../sections/testMode/Test";
+import CartCustomCheckout from "../sections/cart/CartCustomCheckout";
 
 //----------------------------------------------------------------
 
@@ -45,6 +46,9 @@ export default function Router() {
         }, {
             path: '/cart',
             element: <Cart/>,
+        }, {
+            path: '/checkout',
+            element: <CartCustomCheckout/>,
         }, {
             path: '/thanks',
             element: <Thanks/>,

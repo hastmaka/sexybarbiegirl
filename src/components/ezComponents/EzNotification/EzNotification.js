@@ -30,7 +30,7 @@ export default function EzNotification() {
             <Alert
                 onClose={_ => clearNotification()}
                 variant='filled'
-                severity={notification.type}
+                severity={notification.t}
                 sx={{
                     fontSize: '13px !important',
                     color: '#f7f8fa',
@@ -43,7 +43,7 @@ export default function EzNotification() {
                         fontSize: '11px'
                     }}
                     variant='span'
-                >{notification.content}
+                >{notification.c}
                 </Typography>
 
             </Alert>

@@ -3,10 +3,10 @@ import {Stack} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
 import {useSelector} from 'react-redux';
-import EzColorPicker from '../../../../components/ezComponents/EzColorPicker/EzColorPicker';
-import {generalSliceActions} from '../../../../store/gs-manager-slice';
-import ClearBtn from "../localComponents/ClearBtn";
-import {shopSliceActions} from "../../../../store/shopSlice";
+import EzColorPicker from '../../../../../components/ezComponents/EzColorPicker/EzColorPicker';
+import {generalSliceActions} from '../../../../../store/gs-manager-slice';
+import ClearBtn from "../../localComponents/ClearBtn";
+import {shopSliceActions} from "../../../../../store/shopSlice";
 
 //----------------------------------------------------------------
 

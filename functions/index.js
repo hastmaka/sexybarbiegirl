@@ -20,7 +20,7 @@ const {listAllShippingOptions, retrieveCustomer, retrievePaymentMethod} = requir
 let orderItem = [];
 
 //Express
-app.all('/*', appCheckVerification);
+// app.all('/*', appCheckVerification);
 app.get('/test', (req, res) => {
     debugger
     res.send('Hello world');
@@ -48,9 +48,19 @@ app.post('/webhook', (req, res) => {
         case 'payment_intent.succeeded':
             debugger
             const {amount, created, customer, id, receipt_email } = event.data.object;
-            const order = { amount, create_at: created, customer_id: customer, id, receipt_email, order_status: 'processing', item: orderItem}
+            const order = {
+                id,
+                receipt_email,
+                amount,
+                create_at: created,
+                customer_id: customer,
+                order_status: 'processing',
+                item: orderItem
+            }
+            //create the order in db
             db.collection('orders').add({...order}).then();
             //send email to the customer
+            //update the product satistics
             break;
         default:
             // Unexpected event type
@@ -61,12 +71,12 @@ app.post('/webhook', (req, res) => {
 });
 
 //stripe
-app.get('/retrieve-customer', retrieveCustomer);
-app.get('/retrieve-payment-method', retrievePaymentMethod);
-app.get('/list-all-shipping-option', listAllShippingOptions);
+app.get('/retrieve-customer', appCheckVerification, retrieveCustomer);
+app.get('/retrieve-payment-method', appCheckVerification, retrievePaymentMethod);
+app.get('/list-all-shipping-option', appCheckVerification, listAllShippingOptions);
 
 //charge a customer with payment method (pm_) and customer_id
-app.post('/create-payment-intent', async (req, res) => {
+app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
     const {customer_id, item, shipping, email} = req.body;
     let amount = 0;
     item.map(i => amount += i.price * i.quantity);
@@ -102,7 +112,8 @@ app.post('/create-payment-intent', async (req, res) => {
     }
 });
 
-app.post('/create-payment-intent-to-save-a-card', async (req, res) => {
+//save card to stripe without charging it
+app.post('/create-payment-intent-to-save-a-card', appCheckVerification, async (req, res) => {
     try {
         const setupIntent = await stripe.setupIntents.create({
             customer: req.body.customer_id,

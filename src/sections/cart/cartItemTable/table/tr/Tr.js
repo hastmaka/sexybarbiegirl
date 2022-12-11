@@ -9,7 +9,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 //
 import Cell from "../cell/Cell";
 import EzColorPicker from "../../../../../components/ezComponents/EzColorPicker/EzColorPicker";
-import EzFormatPrice from "../../../../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzCustomIconButton from "../../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 
 //----------------------------------------------------------------
@@ -119,7 +119,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                             }}
                         >
                             <Typography variant='span'>Price:</Typography>
-                            <EzFormatPrice
+                            <EzPriceFormat
                                 price={price}
                             />
                         </Typography>
@@ -169,7 +169,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                 </Stack>
             </Cell>
             <Cell>
-                <EzFormatPrice price={price * quantity}/>
+                <EzPriceFormat price={price * quantity}/>
             </Cell>
             <Cell>
                 <ActionContainer>
@@ -186,8 +186,8 @@ export default function Tr({name, color, size, image, price, quantity, variation
                                             variation_id, user
                                         }));
                                         window.displayNotification({
-                                            type: 'success',
-                                            content: 'Product Deleted Successfully'
+                                            t: 'success',
+                                            c: 'Product Deleted Successfully'
                                         })
                                     }
                                 })

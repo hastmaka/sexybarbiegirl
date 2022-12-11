@@ -27,7 +27,7 @@ export default function CartItemTable({user, screen}) {
             sx={{
                 width: '100%',
                 height: 'fit-content',
-                flex: 2,
+                flex: 3,
                 padding: '20px',
             }}
         >

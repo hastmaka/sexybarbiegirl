@@ -2,7 +2,7 @@
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import EzRating from "../../../components/ezComponents/EzRating/EzRating";
-import EzFormatPrice from "../../../components/ezComponents/EzFormatPrice/EzFormatPrice";
+import EzPriceFormat from "../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 
 //----------------------------------------------------------------
 
@@ -48,7 +48,7 @@ export default function HotPromotionCard({name, rating, description, price, bgIm
                 </Stack>
                 <Typography variant='span'>{description}</Typography>
                 <Typography variant='span'>
-                    <EzFormatPrice
+                    <EzPriceFormat
                         color='#434343'
                         price={price}
                         justifyContent='flex-start'

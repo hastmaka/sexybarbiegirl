@@ -25,6 +25,13 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
 export default function EzModalWithTransition() {
     const {modal} = useSelector(slice => slice.generalState);
+    const {clientSecret} = useSelector(slice => slice.stripe);
+    const options = {
+        // passing the client secret obtained in step 3
+        clientSecret: clientSecret,
+        // Fully customizable with appearance API.
+        // appearance: {/*...*/},
+    };
     // debugger
     let lChildren;
     switch (modal.who) {
@@ -38,7 +45,7 @@ export default function EzModalWithTransition() {
             lChildren = <AddressForm type='create'/>
             break;
         case 'card':
-            lChildren = <Elements stripe={stripePromise}>
+            lChildren = <Elements stripe={stripePromise} options={options}>
                 <CardInput/>
             </Elements>
             break

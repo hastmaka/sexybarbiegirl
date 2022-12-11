@@ -1,8 +1,9 @@
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import ClearBtn from "./localComponents/ClearBtn";
+import ClearBtn from "../../../sections/shop/shopSideBar/localComponents/ClearBtn";
 import {shopSliceActions} from "../../../store/shopSlice";
+import EzText from "../EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -17,7 +18,8 @@ const RootStyle = styled(Stack)(({theme}) => ({
 export default function WidgetHeader({text, clearBtn}) {
     return (
         <RootStyle>
-            <Typography
+            <EzText
+                text={text}
                 variant='span'
                 sx={{
                     fontWeight: 700,
@@ -36,7 +38,7 @@ export default function WidgetHeader({text, clearBtn}) {
                         width: '50px',
                     }
                 }}
-            >{text}</Typography>
+            />
             {clearBtn && <ClearBtn
                 onClick={_ => window.dispatch(shopSliceActions.removeAllFilter())}
                 tooltip='Clear Filters'

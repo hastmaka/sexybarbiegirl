@@ -2,8 +2,8 @@
 import {Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
-import EzCheckBox from '../../../../components/ezComponents/EzCheckBox/EzCheckBox';
-import CheckBoxContainer from '../localComponents/checkBoxContainer/CheckBoxContainer';
+import EzCheckBox from '../../../../../components/ezComponents/EzCheckBox/EzCheckBox';
+import CheckBoxContainer from '../../localComponents/checkBoxContainer/CheckBoxContainer';
 
 //----------------------------------------------------------------
 

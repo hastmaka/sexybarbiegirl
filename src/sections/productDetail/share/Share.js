@@ -29,10 +29,16 @@ export default function Share({link, data, sx}) {
     const copyToClipBoard = async copyMe => {
         try {
             await navigator.clipboard.writeText(copyMe);
-            window.displayNotification({type: 'info', content: 'Link copied to clipboard. Share It!!'})
+            window.displayNotification({
+                t: 'info',
+                c: 'Link copied to clipboard. Share It!!'
+            });
         }
         catch (err) {
-            window.displayNotification({type: 'warning', content: `It seems you don't have permission to use clipboard`})
+            window.displayNotification({
+                t: 'warning',
+                c: `It seems you don't have permission to use clipboard`
+            });
             console.log('some error coping to clipboard', err);
         }
     };

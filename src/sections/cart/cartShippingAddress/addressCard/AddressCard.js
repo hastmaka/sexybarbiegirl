@@ -52,7 +52,10 @@ export default function AddressCard({data, onClick, action = true}) {
                 .then(res => {
                     if(res) {
                         window.dispatch(userSliceActions.removeAddress({id: data.id}))
-                        window.displayNotification({type: 'success', content: 'Address Deleted Successfully'})
+                        window.displayNotification({
+                            t: 'success',
+                            c: 'Address Deleted Successfully'
+                        })
                     }
                 })
 

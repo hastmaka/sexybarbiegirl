@@ -7,20 +7,9 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 //
 import EzButton from "../EzButton/EzButton";
 import EzRating from "../EzRating/EzRating";
-import img_1 from '../../../resources/Barbie Bikinis/web_optimized/nob.jpg';
-import img_2 from '../../../resources/Barbie Bikinis/web_optimized/nob_1.jpg';
-import EzFormatPrice from "../EzFormatPrice/EzFormatPrice";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import Login from "../../../sections/login/Login";
-import EzModalWithTransition from "../EzModalWithTransition/EzModalWithTransition";
-import {userSliceActions} from "../../../store/userSlice";
-import EzCustomIconButton from "../EzCustomIconButton/EzCustomIconButton";
+import EzPriceFormat from "../EzPriceFormat/EzPriceFormat";
 import EzProductDetails from "../../../sections/productDetail/EzProductDetails";
-import {AddToWishlist} from "../../../helper/Helper";
 import EzWishlistBtn from "../EzWishlistBtn/EzWishlistBtn";
-import {useLocation} from "react-router-dom";
-import {generalSliceActions} from "../../../store/gs-manager-slice";
 import EzModal from "../EzModal/EzModal";
 
 //------------------------------------------------------------------------
@@ -209,11 +198,11 @@ export default function EzProductCard({product}) {
                         />
                     </Stack>
                     <Stack flexDirection='row' gap='10px'>
-                        <EzFormatPrice
+                        <EzPriceFormat
                             price={price}
                             justifyContent='flex-star'
                         />
-                        {discount > 0 && <EzFormatPrice
+                        {discount > 0 && <EzPriceFormat
                             price={discount > 0 ? price - ((discount / 100) * price) : price}
                             priceFS={14}
                             justifyContent={'left'}

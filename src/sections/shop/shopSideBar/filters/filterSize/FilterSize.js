@@ -3,11 +3,11 @@ import {useSelector} from 'react-redux';
 import {Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
-import EzCheckBox from '../../../../components/ezComponents/EzCheckBox/EzCheckBox';
-import CheckBoxContainer from '../localComponents/checkBoxContainer/CheckBoxContainer';
-import {generalSliceActions} from '../../../../store/gs-manager-slice';
-import ClearBtn from "../localComponents/ClearBtn";
-import {shopSliceActions} from "../../../../store/shopSlice";
+import EzCheckBox from '../../../../../components/ezComponents/EzCheckBox/EzCheckBox';
+import CheckBoxContainer from '../../localComponents/checkBoxContainer/CheckBoxContainer';
+import {generalSliceActions} from '../../../../../store/gs-manager-slice';
+import ClearBtn from "../../localComponents/ClearBtn";
+import {shopSliceActions} from "../../../../../store/shopSlice";
 
 //----------------------------------------------------------------
 
