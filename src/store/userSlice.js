@@ -18,10 +18,11 @@ const userSlice = createSlice({
             state.userStatus.loaded = true
             updateLocalStore('user', state.user, 'setUser');
         },
+
         addToWishList(state, {payload}) {
             state.user.wish_list = [...state.user.wish_list, {...payload.product}];
             updateLocalStore('user', [...state.user.wish_list], 'wish_list');
-            updateWishListApi(payload.user.uid, [...state.user.wish_list])
+            updateWishListApi(payload.user.uid, [...state.user.wish_list]);
         },
         removeFromWishlist(state, {payload}) {
             const newWishList = state.user.wish_list.filter(item => item.id !== payload.product.id);
@@ -29,12 +30,13 @@ const userSlice = createSlice({
             updateLocalStore('user', [...state.user.wish_list], 'wish_list');
             updateWishListApi(payload.user.uid, [...state.user.wish_list])
         },
+
         addToCart(state, {payload}) {
-            let tempCart = {...state.user.cart};
-            const isVariationOnCart = tempCart.item.findIndex(item => item.variation_id === payload.variation.id);
-            if (tempCart.item.length) {
+            let cart = {...state.user.cart};
+            const isVariationOnCart = cart.item.findIndex(item => item.variation_id === payload.variation.id);
+            if (cart.item.length) {
                 if (isVariationOnCart >= 0) {
-                    state.user.cart = {...updateCart(tempCart, payload, isVariationOnCart, 1)}
+                    state.user.cart = {...updateCart(cart, payload, isVariationOnCart, 1)}
                     if(!payload.user.dummy) {
                         updateCartApi(payload.user.uid, state.user.cart);
                     }
@@ -89,14 +91,15 @@ const userSlice = createSlice({
             updateLocalStore('user', {...state.user.cart}, 'cart')
         },
         removeFromCart(state, {payload}) {
-            const tempCart = {...state.user.cart}
-            tempCart.item = tempCart.item.filter(item => item.variation_id !== payload.variation_id);
-            state.user.cart = {...updateCart(tempCart, null)}
+            const cart = {...state.user.cart}
+            cart.item = cart.item.filter(item => item.variation_id !== payload.variation_id);
+            state.user.cart = {...updateCart(cart, null)}
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
             updateLocalStore('user', {...state.user.cart}, 'cart');
         },
+
         setMainAddress(state, {payload}) {
             const address = [...state.user.address];
             const updatedAddress = address.map(item => {
@@ -115,6 +118,7 @@ const userSlice = createSlice({
             updateLocalStore('user', [...state.user.address], 'address');
             updateAddressApi(state.user.uid, [...state.user.address]);
         },
+
         addAddress(state, {payload}) {
             state.user.address = [...state.user.address, {...payload}];
             updateLocalStore('user', [...state.user.address], 'address');
@@ -131,6 +135,40 @@ const userSlice = createSlice({
             state.user.address = [...state.user.address].filter(item => item.id !== payload.id);
             updateLocalStore('user', [...state.user.address], 'address');
             updateAddressApi(state.user.uid, [...state.user.address])
+        },
+
+        toggleCheck(state, {payload}){
+            const cart = {...state.user.cart}
+            const indexToUpdate = cart.item.findIndex(item => item.variation_id === payload.variation_id);
+            state.user.cart.item[indexToUpdate] = {
+                ...state.user.cart.item[indexToUpdate],
+                checked: !state.user.cart.item[indexToUpdate].checked
+            }
+            state.user.cart = {...updateCart(cart, null)}
+            if(!payload.user.dummy) {
+                updateCartApi(payload.user.uid, state.user.cart);
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        },
+        toggleAllCheck(state, {payload}){
+            state.user.cart.item = [...state.user.cart.item].map(item => {
+                return {...item, checked: true}
+            })
+            state.user.cart = {...updateCart(state.user.cart, null)}
+            if(!payload.user.dummy) {
+                updateCartApi(payload.user.uid, state.user.cart);
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        },
+        toggleAllUncheck(state, {payload}){
+            state.user.cart.item = [...state.user.cart.item].map(item => {
+                return {...item, checked: false}
+            })
+            state.user.cart = {...updateCart(state.user.cart, null)}
+            if(!payload.user.dummy) {
+                updateCartApi(payload.user.uid, state.user.cart);
+            }
+            updateLocalStore('user', {...state.user.cart}, 'cart');
         },
     },
     extraReducers: {

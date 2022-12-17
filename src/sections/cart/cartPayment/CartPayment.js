@@ -17,10 +17,8 @@ export default function CartPayment({
                                         customer,
                                         customerStatus,
                                         selectedPaymentMethod,
-                                        getCustomerDataStatus,
-                                        paymentMethod
+                                        getCustomerDataStatus
 }) {
-    // debugger
     return (
         <Wrapper sx={{gap: '20px',padding: '20px'}}>
             <Stack flexDirection='row' justifyContent='space-between'>
@@ -31,7 +29,7 @@ export default function CartPayment({
                     toolTipTitle='Add Address'
                     onClick={_ => {
                         if(user.dummy) {
-                            window.confirm({type: 'info', content: `Sign in to manage your 'Payment Method'`})
+                            window.confirm({t: 'info', c: `Sign in to manage your 'Payment Method'`})
                                 .then(res => {
                                     if (res) {
                                         window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))

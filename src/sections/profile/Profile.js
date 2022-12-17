@@ -95,14 +95,8 @@ export default function Profile() {
 
     useEffect(_ => {
         //check if the page was reloaded
-        let reload = window.performance.getEntriesByType('navigation')[0].type === 'reload',
-            profile = localStorage.getItem('profile');
-        if (reload) {
-            setTabIndex(Number(profile))
-        } else {
-            if (location.state !== null) {
-                setTabIndex(location.state - 1)
-            }
+        if (location.state !== null) {
+            setTabIndex(location.state - 1)
         }
     }, [location.state])
 

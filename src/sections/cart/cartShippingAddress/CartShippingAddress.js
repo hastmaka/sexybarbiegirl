@@ -23,7 +23,7 @@ export default function CartShippingAddress({user}) {
                     toolTipTitle='Add Address'
                     onClick={_ => {
                         if(user.dummy) {
-                            window.confirm({type: 'info', content: `Sign in to manage your 'Address'`})
+                            window.confirm({t: 'info', c: `Sign in to manage your 'Address'`})
                                 .then(res => {
                                     if (res) {
                                         window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))

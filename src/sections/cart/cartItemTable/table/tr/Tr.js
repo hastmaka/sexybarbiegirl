@@ -11,8 +11,18 @@ import Cell from "../cell/Cell";
 import EzColorPicker from "../../../../../components/ezComponents/EzColorPicker/EzColorPicker";
 import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzCustomIconButton from "../../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
+import EzCheckBox from "../../../../../components/ezComponents/EzCheckBox/EzCheckBox";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
+const TrContainer = styled(Stack)(({theme}) => ({
+    display: 'grid',
+    gridTemplateColumns: 'minmax(100px, 2fr) .5fr 1fr .3fr',
+    borderBottom: '1px solid #e9e9e9',
+    [theme.breakpoints.down(550)]: {
+        gridTemplateColumns: 'minmax(100px, 1.5fr) .2fr .2fr .1fr',
+    }
+}));
 
 const ActionContainer = styled(Stack)(({theme}) => ({
     flexDirection: 'row',
@@ -40,6 +50,7 @@ const ActionContainer = styled(Stack)(({theme}) => ({
 
 const ImageContainer = styled(Stack)(({theme}) => ({
     width: '100px',
+    minWidth: '80px',
     padding: '10px 5px',
     '&:hover': {
         cursor: 'pointer'
@@ -47,11 +58,21 @@ const ImageContainer = styled(Stack)(({theme}) => ({
     [theme.breakpoints.down('sm')]: {
         width: '90px'
     }
-}))
+}));
+
+const QuantityContainer = styled(Stack)(({theme}) => ({
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: '5px',
+    [theme.breakpoints.down(550)]: {
+        flexDirection: 'column-reverse',
+        alignItems: 'center'
+    }
+}));
 
 //----------------------------------------------------------------
 
-export default function Tr({name, color, size, image, price, quantity, variation_id, product_id}) {
+export default function Tr({name, color, size, image, price, quantity, variation_id, product_id, checked}) {
     const navigate = useNavigate();
     const {user} = useSelector(slice => slice.user);
     const {product} = useSelector(slice => slice.shop);
@@ -60,20 +81,16 @@ export default function Tr({name, color, size, image, price, quantity, variation
     useEffect(_ => {setQuantityS(quantity)}, [quantity]);
 
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                    xs: 'minmax(100px, 1.5fr) 1fr .3fr .4fr',
-                    md: 'minmax(100px, 1.5fr) 1fr 1fr .5fr'
-                },
-                '*': {
-                    fontWeight: 700,
-                }
-            }}
-        >
+        <TrContainer>
             <Cell>
                 <Stack flexDirection='row' gap='5px'>
+                    <Stack justifyContent='center' sx={{'& > span': {padding: 0}}}>
+                        <EzCheckBox
+                            checked={checked}
+                            size='small'
+                            onChange={_ => window.dispatch(userSliceActions.toggleCheck({variation_id, user}))}
+                        />
+                    </Stack>
                     <ImageContainer onClick={_ => navigate(`/full-detail/${product_id}`, {state: productToFullView[0]})}>
                         <img src={image} alt="product image"/>
                     </ImageContainer>
@@ -83,15 +100,12 @@ export default function Tr({name, color, size, image, price, quantity, variation
                             justifyContent: 'center',
                             flex: 1,
                             gap: {xs: 0, md: '5px'},
-                            p: '10px 0',
-                            '& > span': {
-                                fontSize: '11px'
-                            }
+                            p: '10px 0'
                         }}
                     >
-                        <Typography variant='span' sx={{fontSize: {md: '14px !important'}}}>Name: Bikini</Typography>
+                        <EzText text={`Name: ${name}`}/>
                         <Stack flexDirection='row' alignItems='center'>
-                            Color:
+                            <EzText text='Color :'/>
                             <EzColorPicker
                                 key={color}
                                 backgroundColor={color}
@@ -99,15 +113,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                                 width={'12px'}
                             />
                         </Stack>
-                        <Typography variant='span' sx={{textAlign: 'left'}}>
-                            Size: '{
-                                size === 1 ? 'XS' :
-                                size === 2 ? 'S' :
-                                size === 3 ? 'M' :
-                                size === 4 ? 'L' :
-                                size === 5 ? 'XL' : ''
-                            }'
-                        </Typography>
+                        <EzText text={`Size: ${size}`}/>
                         <Typography
                             variant='span'
                             sx={{
@@ -118,7 +124,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                                 alignItems: 'center'
                             }}
                         >
-                            <Typography variant='span'>Price:</Typography>
+                            <EzText text='Price :'/>
                             <EzPriceFormat
                                 price={price}
                             />
@@ -127,7 +133,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                 </Stack>
             </Cell>
             <Cell>
-                <Stack flexDirection='row' justifyContent='center' gap='5px'>
+                <QuantityContainer>
                     <Button
                         onClick={_ =>
                             window.dispatch(userSliceActions.decreaseQty({
@@ -166,7 +172,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                             minWidth: '10px'
                         }}
                     >+</Button>
-                </Stack>
+                </QuantityContainer>
             </Cell>
             <Cell>
                 <EzPriceFormat price={price * quantity}/>
@@ -179,7 +185,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                         icon={<DeleteOutlinedIcon/>}
                         sx={{p: 0}}
                         onClick={_ => {
-                            window.confirm({type: 'info', title: 'Confirm', content: `Your are about to delete '${name}'`})
+                            window.confirm({t: 'info', title: 'Confirm', c: `Your are about to delete '${name}'`})
                                 .then(res => {
                                     if(res) {
                                         window.dispatch(userSliceActions.removeFromCart({
@@ -195,6 +201,6 @@ export default function Tr({name, color, size, image, price, quantity, variation
                     />
                 </ActionContainer>
             </Cell>
-        </Box>
+        </TrContainer>
     )
 }

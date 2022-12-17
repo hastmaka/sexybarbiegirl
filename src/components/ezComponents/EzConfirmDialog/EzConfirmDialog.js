@@ -26,8 +26,8 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 //----------------------------------------------------------------
-const getColor = (type) => {
-    switch (type) {
+const getColor = (t) => {
+    switch (t) {
         case 'info':
             return '#89007D';
         case 'warning':
@@ -44,8 +44,8 @@ export default function EzConfirmDialog() {
     const {onConfirm, onCancel} = useConfirmDialog();
     // let fontColor = confirmDialog.type === 'info' ? '#B78103' : '';
 
-    let name = confirmDialog.content !== '' ? confirmDialog.content.split("'")[1] : '',
-        phrase = confirmDialog.content !== '' ? confirmDialog.content.split("'")[0] : '';
+    let name = confirmDialog.c !== '' ? confirmDialog.c.split("'")[1] : '',
+        phrase = confirmDialog.c !== '' ? confirmDialog.c.split("'")[0] : '';
 
     return (
         <Dialog
@@ -66,10 +66,10 @@ export default function EzConfirmDialog() {
                 }
             }}
         >
-            <DialogTitle sx={{color: getColor(confirmDialog.type)}}>{confirmDialog.title}</DialogTitle>
+            <DialogTitle sx={{color: getColor(confirmDialog.t)}}>{confirmDialog.title}</DialogTitle>
             <DialogContent
                 sx={{
-                    color: getColor(confirmDialog.type),
+                    color: getColor(confirmDialog.t),
                     display: 'flex',
                     flexDirection: 'row'
                 }}

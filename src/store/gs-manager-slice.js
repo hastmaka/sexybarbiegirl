@@ -18,8 +18,9 @@ const generalStateSlice = createSlice({
         },
         confirmDialog: {
             open: false,
+            t: '',
             title: '',
-            content: '',
+            c: '',
         },
 
         //views

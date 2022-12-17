@@ -116,11 +116,40 @@ export const useConfirmDialog = () => {
         window.dispatch(generalSliceActions.closeConfirmDialog());
         resolveCallback(false);
     };
-    const confirm = ({type, title, content}) => {
-        window.dispatch(generalSliceActions.showConfirmDialog({type, title, content}));
+    const confirm = ({t, title, c}) => {
+        window.dispatch(generalSliceActions.showConfirmDialog({t, title, c}));
         return new Promise((res, rej) => {
             resolveCallback = res;
         });
     };
     return { onConfirm, onCancel, confirm }
+}
+
+const initBeforeUnLoad = (showExitPrompt) => {
+    window.onbeforeunload = (event) => {
+        if (showExitPrompt) {
+            const e = event || window.event;
+            e.preventDefault();
+            if (e) {
+                e.returnValue = '';
+            }
+            return '';
+        }
+    };
+};
+
+// Hook
+export default function useExitPrompt(bool) {
+    debugger
+    const [showExitPrompt, setShowExitPrompt] = useState(bool);
+
+    window.onload = function() {
+        initBeforeUnLoad(showExitPrompt);
+    };
+
+    useEffect(() => {
+        initBeforeUnLoad(showExitPrompt);
+    }, [showExitPrompt]);
+
+    return [showExitPrompt, setShowExitPrompt];
 }

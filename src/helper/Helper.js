@@ -1,6 +1,14 @@
 import {generalSliceActions} from "../store/gs-manager-slice";
 import {userSliceActions} from "../store/userSlice";
+import {fetchAPI} from "./FetchApi";
+import {getCustomerData, urlLocal} from "./stripe/StripeApi";
+import {getAll} from "./FirestoreApi";
+import {stripeSliceActions} from "../store/stripeSlice";
 
+export const sortPaymentMethod = (stripePm, firebasePm) => {
+    let defaultPm = firebasePm.find(item => item.main);
+    return [...stripePm].sort((x,y) => x['id'] === defaultPm.pm ? -1 : y['id'] === defaultPm.pm);
+}
 export const getColor = (v) => {
     let tempV = [];
     Object.entries(v).map(item => tempV.push(item[0]));
@@ -77,12 +85,17 @@ export const updateLocalStore = (key, data, to) => {
     }
 };
 
+/**
+ *
+ * @param cart
+ * @returns {{total: number, cQuantity: number, sub_total: number}}
+ */
 export const cartQuantity = (cart) => {
     let cQuantity = 0,
         sub_total = 0,
         total = 0; //sub_total plus tax and fees
     cart.map(item => {
-        cQuantity += item.quantity;
+        cQuantity += item.checked ? item.quantity : 0;
         sub_total += item.quantity * item.price;
         total += item.quantity * item.price;
     });
@@ -93,8 +106,17 @@ export const cartQuantity = (cart) => {
     };
 };
 
+/**
+ *
+ * @param cart - whole cart
+ * @param payload - data to update the cart
+ * @param indexToUpdate - in case just only update
+ * @param q - quantity increase and decrease case
+ * @returns cart updated
+ */
 export const updateCart = (cart, payload = null, indexToUpdate = null, q = null) => {
     if (payload !== null) {
+        //cart item is empty
         if (!cart.item.length) {
             return {
                 ...cart,
@@ -106,6 +128,7 @@ export const updateCart = (cart, payload = null, indexToUpdate = null, q = null)
                     color: payload.variation.color,
                     size: payload.variation.size,
                     name: payload.product.name,
+                    checked: payload.variation.checked,
                     quantity: 1,
                 }],
                 last_update: Date.now(),
@@ -114,6 +137,7 @@ export const updateCart = (cart, payload = null, indexToUpdate = null, q = null)
                 total: payload.variation.price,//plus tax
             }
         } else {
+            //target product exist
             if (indexToUpdate !== null) {
                 cart.item[indexToUpdate] = {
                     ...cart.item[indexToUpdate],
@@ -138,6 +162,7 @@ export const updateCart = (cart, payload = null, indexToUpdate = null, q = null)
                         color: payload.variation.color,
                         size: payload.variation.size,
                         name: payload.product.name,
+                        checked: payload.variation.checked,
                         quantity: 1,
                     }]
                 }
@@ -193,7 +218,7 @@ export const AddToCart = (selectedColor, selectedSize, item, id, image, name, us
 
 export const AddToWishlist = (product, user) => {
     if(user.dummy) {
-        window.confirm({type: 'warning', content: `Sign In first to manage your 'Wishlist'`})
+        window.confirm({t: 'warning', c: `Sign In first to manage your 'Wishlist'`})
             .then(res=> {
                 if(res) {
                     window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
@@ -211,3 +236,36 @@ export const AddToWishlist = (product, user) => {
 export const clearModalWithTransition = (delay) => setTimeout(_ => {
     window.dispatch(generalSliceActions.setModal(''))
 }, delay);
+
+export const deletePaymentMethod = (pm, user, customer) => {
+    window.confirm({t: 'info', c: 'Sure want to delete this Payment Method?'})
+        .then(res => {
+            if(res) {
+                (async function () {
+                    try {
+                        const {deleted} = await fetchAPI(
+                            urlLocal,
+                            'detach-payment-method',
+                            'POST',
+                            {pm, customer: user.uid}
+                        );
+                        window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}));
+                        window.dispatch(stripeSliceActions.updatePaymentMethod(deleted.id));
+                        window.displayNotification({
+                            t: 'success',
+                            c: `Your ${deleted.card.brand} ended in ${deleted.card.last4} was deleted`
+                        })
+                    } catch (e) {
+                        debugger
+                    }
+                }())
+            }
+        })
+}
+
+export const calculateTotalFromCheckItems = (cart) => {
+    const tempItem = cart.filter(item => item.checked)
+    return tempItem.reduce((acc, curr) => {
+        return acc + curr.price * curr.quantity;
+    }, 0)
+}

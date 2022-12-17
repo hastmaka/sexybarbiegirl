@@ -3,9 +3,11 @@ import {PaymentElement, useElements, useStripe} from '@stripe/react-stripe-js';
 import {styled} from "@mui/material/styles";
 import {Box, Stack, Typography} from "@mui/material";
 import EzLoadingBtn from "../../ezComponents/EzLoadingBtn/EzLoadingBtn";
-import {urlLocal} from "../../../helper/stripe/StripeApi";
+import {getCustomerData, urlLocal} from "../../../helper/stripe/StripeApi";
 import {useSelector} from "react-redux";
 import {generalSliceActions} from "../../../store/gs-manager-slice";
+import {fetchAPI} from "../../../helper/FetchApi";
+import {update} from "../../../helper/FirestoreApi";
 
 const CARD_ELEMENT_OPTIONS = {
     style: {
@@ -34,7 +36,8 @@ export default function CardInput() {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
-    const {customer, clientSecret} = useSelector(slice => slice.stripe);
+    const {customer} = useSelector(slice => slice.stripe);
+    const {user} = useSelector(slice => slice.user);
     const saveCardOnStripe = async (e) => {
         e.preventDefault();
         setLoading(true)
@@ -50,14 +53,26 @@ export default function CardInput() {
         });
         setLoading(false)
         if (error) {
+            debugger
             return window.displayNotification({
                 t: 'error',
                 title: `${error.type}`,
-                c: `${error.message}`
+                c: `${error.message} creating payment method`
             })
         } else {
-            debugger
+            // debugger
             if(setupIntent.status === 'succeeded') {
+                window.dispatch(update({
+                    id: user.uid,
+                    collection: 'stripe_customers',
+                    data: [
+                        ...customer.payment_method, {
+                            main: !customer.payment_method.length,
+                            pm: setupIntent.payment_method
+                        }
+                    ]
+                }))
+                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}));
                 window.dispatch(generalSliceActions.setModal({open: false, who: ''}));
                 return window.displayNotification({
                     t: 'success',
@@ -89,3 +104,4 @@ export default function CardInput() {
         </RootStyle>
     );
 }
+

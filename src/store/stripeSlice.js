@@ -1,23 +1,27 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {updateLocalStore} from "../helper/Helper";
-import {getAll} from "../helper/FirestoreApi";
+import {getAll, update} from "../helper/FirestoreApi";
 import {getAllShippingOption, getCustomerData} from "../helper/stripe/StripeApi";
 
 const stripeSlice = createSlice({
     name: 'stripe',
     initialState: {
         customer: {},
-        paymentMethod: '',
+        defaultPaymentMethod: '',
         shippingRate: {},
         clientSecret: '',
         shippingOptionSelected: {},
         customerStatus: {loaded: false, loading: false},
         getCustomerDataStatus: {loaded: false, loading: false},
-        getAllShippingOptionStatus: {loaded: false, loading: false}
+        getAllShippingOptionStatus: {loaded: false, loading: false},
+        updatePaymentMethodStatus: {loaded: false, loading: false},
     },
     reducers: {
         setPaymentMethod(state, {payload}){
-            state.paymentMethod = payload
+            state.defaultPaymentMethod = payload
+        },
+        updatePaymentMethod(state, {payload}) {
+            state.customer.payment_method = [...state.customer.payment_method].filter(item => item.pm !== payload)
         },
         setShippingOption(state, {payload}) {
             state.shippingOptionSelected = payload
@@ -62,7 +66,6 @@ const stripeSlice = createSlice({
                     break;
                 case 'retrieve-payment-method':
                     state.customer.paymentMethod = {...payload.paymentMethods}
-                    state.paymentMethod = payload.paymentMethods.data.length ? payload.paymentMethods.data[0].id : ''
                     state.getCustomerDataStatus.loading = false;
                     state.getCustomerDataStatus.loaded = true;
                     updateLocalStore('stripe', {...state.customer}, 'stripe')
@@ -89,6 +92,20 @@ const stripeSlice = createSlice({
         [getAllShippingOption.rejected]: (state, {payload}) => {
             debugger
             state.getAllShippingOptionStatus.loaded = false;
+        },
+
+        [update.pending]: (state) => {
+            state.updatePaymentMethodStatus.loading = true;
+            state.updatePaymentMethodStatus.loaded = false;
+        },
+        [update.fulfilled]: (state, {meta, payload}) => {
+            state.customer.payment_method = [...meta.arg.data]
+            state.updatePaymentMethodStatus.loading = false;
+            state.updatePaymentMethodStatus.loaded = true;
+        },
+        [update.rejected]: (state, {payload}) => {
+            debugger
+            state.updatePaymentMethodStatus.loaded = false;
         },
     }
 });

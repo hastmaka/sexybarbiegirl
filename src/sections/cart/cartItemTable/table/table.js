@@ -39,6 +39,7 @@ export default function Table({td, tr}) {
                     quantity={item.quantity}
                     variation_id={item.variation_id}
                     product_id={item.product_id}
+                    checked={item.checked}
                 />
             )}
         </>

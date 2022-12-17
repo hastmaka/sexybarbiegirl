@@ -16,8 +16,9 @@ app.use(cors);
 app.use(express.json());
 const {appCheckVerification} = require('./checkToken');
 const {listAllShippingOptions, retrieveCustomer, retrievePaymentMethod} = require("./stripe/Stripe");
+const {UpdateProduct, UpdateDB} = require("./helper/Helper");
 
-let orderItem = [];
+let orderData = {};
 
 //Express
 // app.all('/*', appCheckVerification);
@@ -47,7 +48,7 @@ app.post('/webhook', (req, res) => {
     switch (event.type) {
         case 'payment_intent.succeeded':
             debugger
-            const {amount, created, customer, id, receipt_email } = event.data.object;
+            const {amount, created, customer, id, receipt_email, charges } = event.data.object;
             const order = {
                 id,
                 receipt_email,
@@ -55,12 +56,23 @@ app.post('/webhook', (req, res) => {
                 create_at: created,
                 customer_id: customer,
                 order_status: 'processing',
-                item: orderItem
+                shipping: charges.data[0].shipping,
+                item: orderData.item
             }
-            //create the order in db
-            db.collection('orders').add({...order}).then();
-            //send email to the customer
-            //update the product satistics
+            try {
+                //create the order in db
+                db.collection('orders').add({...order}).then(res => {
+                    //update user order
+                    UpdateDB({orderId: res._path.segments[1]}, orderData.userId, 'users').then()
+                });
+
+                //update product and variation statistics
+                UpdateProduct(orderData.item).then()
+
+                //send email to the customer
+            } catch (e) {
+                return res.status(400).send(`Error Update fb database ${e.message}`);
+            }
             break;
         default:
             // Unexpected event type
@@ -75,9 +87,10 @@ app.get('/retrieve-customer', appCheckVerification, retrieveCustomer);
 app.get('/retrieve-payment-method', appCheckVerification, retrievePaymentMethod);
 app.get('/list-all-shipping-option', appCheckVerification, listAllShippingOptions);
 
-//charge a customer with payment method (pm_) and customer_id
+//charge a customer with 'payment method (pm_ client side)' and customer_id
 app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
-    const {customer_id, item, shipping, email} = req.body;
+    const {customer_id, item, shipping, email, tempAddress, userId} = req.body;
+    const {address, city, zip, first_name, last_name, phone, country, state} = tempAddress[0]
     let amount = 0;
     item.map(i => amount += i.price * i.quantity);
     let fixAmount = +(amount.toFixed(2)),
@@ -92,12 +105,27 @@ app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
             customer: customer_id,
             //send and email after the payment go successfully, only Live Mode
             receipt_email: email,
+            shipping: {
+                address: {
+                    city,
+                    country,
+                    line1: address,
+                    line2: '',
+                    postal_code: zip,
+                    state
+                },
+                name: `${first_name} ${last_name}`,
+                carrier: 'Ground-FedEx',
+                phone,
+                tracking_number: 0
+            }
         });
-        orderItem = [...item]
+        orderData = {userId, item: [...item]}
         res.status(200).send({
             clientSecret: paymentIntent.client_secret
         });
     } catch (e) {
+        debugger
         switch (e.type) {
             case 'StripeCardError':
                 res.status(e.statusCode).json({error: e.message})
@@ -137,18 +165,16 @@ app.post('/create-payment-intent-to-save-a-card', appCheckVerification, async (r
 });
 
 //update a card
-app.post('update-card', async (req, res) => {
+app.post('/update-payment-method', async (req, res) => {
     debugger
 })
 
 //delete a card
-app.post('delete-card', async (req, res) => {
-    const {customer, source} = req.body;
+app.post('/detach-payment-method', async (req, res) => {
+    const {pm, customer} = req.body;
     try {
-        const deleted = await stripe.customers.deleteSource(
-            customer,
-            source
-        );
+        const deleted = await stripe.paymentMethods.detach(pm);
+        UpdateDB({pm}, customer, 'stripe_customers').then()
         return res.status(200).json({deleted})
     } catch (err) {
         return res.status(500).json({error: err.message})
@@ -214,7 +240,8 @@ exports.createStripeCustomer = functions.firestore
         try {
             return await db.collection('stripe_customers').doc(context.params.userId).set({
                 customer_id: customer.id,
-                email: user.email
+                email: user.email,
+                payment_method: []
             });
         } catch (e) {
             return e
@@ -224,6 +251,7 @@ exports.createStripeCustomer = functions.firestore
 exports.updateProductReview = functions.firestore
     .document('reviews/{reviewId}')
     .onCreate(async (snapshot, context) => {
+        debugger
         const product_id = snapshot.data().product_id;
         const productDocRef = await db.collection("products").doc(product_id).get();
         try {
@@ -231,5 +259,5 @@ exports.updateProductReview = functions.firestore
         } catch (e) {
             return console.log(e)
         }
-})
+});
 

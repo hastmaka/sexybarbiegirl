@@ -202,7 +202,7 @@ export default function TopBar() {
         navigateTo: '',
         functionality: {
             onClick: (e) => user.dummy ?
-                window.confirm({type: 'info', content: `Sign in first to manage your 'Wishlist'`})
+                window.confirm({t: 'info', c: `Sign in first to manage your 'Wishlist'`})
                     .then(res => {
                         if (res) {
                             window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))

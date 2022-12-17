@@ -1,14 +1,15 @@
+import {useSelector} from "react-redux";
+import {useEffect} from "react";
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
+//
 import MyAddress from "./myAddress/MyAddress";
 import MyPaymentMethod from "./myPaymentMethod/MyPaymentMethod";
-import {useSelector} from "react-redux";
-import {fetchAPI} from "../../../helper/FetchApi";
 import {getCustomerData, urlFirebase, urlLocal} from "../../../helper/stripe/StripeApi";
-import {stripeSliceActions} from "../../../store/stripeSlice";
-import {useEffect} from "react";
 import {getAll} from "../../../helper/FirestoreApi";
+import {fetchAPI} from "../../../helper/FetchApi";
+import {stripeSliceActions} from "../../../store/stripeSlice";
 
 //----------------------------------------------------------------
 
@@ -39,9 +40,8 @@ const Parent = styled(Stack)(({theme}) => ({
 
 //----------------------------------------------------------------
 export default function MyProfile() {
-    const {clientSecret, customer, customerStatus, getCustomerDataStatus} = useSelector(slice => slice.stripe);
+    const {customer, clientSecret, customerStatus, getCustomerDataStatus} = useSelector(slice => slice.stripe);
     const {user} = useSelector(slice => slice.user);
-    // debugger
     //get client secret from stripe
     useEffect(_ => {
         // debugger
@@ -51,7 +51,7 @@ export default function MyProfile() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlFirebase,
+                    urlLocal,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}
@@ -60,7 +60,7 @@ export default function MyProfile() {
             } catch (e) {
                 window.displayNotification({
                     t: 'error',
-                    c: `Some Error. ${e}`
+                    c: `Error getting client secret. ${e}`
                 });
             }
         }
@@ -72,6 +72,7 @@ export default function MyProfile() {
 
     //get customer id from stripe store in firestore db
     useEffect(_ => {
+        if(!customerStatus.loaded)
         window.dispatch(getAll({
             collection: 'stripe_customers',
             filters: [{
@@ -80,14 +81,14 @@ export default function MyProfile() {
                 value: user.email
             }]
         }))
-    }, []);
+    }, [customerStatus.loaded]);
 
     useEffect(_ => {
-        if (customerStatus.loaded) {
+        if (customerStatus.loaded && !getCustomerDataStatus.loaded) {
             window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer}))
             window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}))
         }
-    }, [customerStatus.loaded]);
+    }, [customerStatus.loaded, getCustomerDataStatus.loaded]);
 
     return (
         <RootStyle>

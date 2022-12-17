@@ -1,5 +1,5 @@
 // material
-import {Divider, Stack, Typography} from "@mui/material";
+import {Divider, Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import EzPriceFormat from "../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
@@ -20,42 +20,39 @@ const PieceContainer = styled(Stack)(({theme}) => ({
 const Piece = ({left, right, number, total}) => {
     return (
         <PieceContainer>
-            <Typography
-                variant='span'>
-                {left}:
-            </Typography>
+            <EzText text={`${left}:`} sx={{fontWeight: 500}}/>
             {number ?
-                <Typography
-                    variant='span'
+                <EzText
+                    text={right}
                     sx={{
                         color: '#3a3a3a',
                         fontWeight: 600,
                         fontSize: {xs: '12px', md: '16px'}
                     }}
-                >
-                    {right}
-                </Typography> :
-                <Typography
-                    variant='span'
-                >
-                    <EzPriceFormat
-                        price={right}
-                        priceFS={total ? 18 : 16}
-                        color='#3a3a3a'
-                    />
-                </Typography>
+                />
+                :
+                <EzText
+                    text={
+                        <EzPriceFormat
+                            price={right}
+                            priceFS={total ? 18 : 16}
+                            color='#3a3a3a'
+                        />
+                    }
+                />
             }
         </PieceContainer>
     )
 }
 
 export default function Summary({quantity, subTotal, taxes, total}) {
+    // debugger
     return (
         <RootStyle>
             <EzText text='Summary'/>
             <Stack gap='5px'>
                 <Piece left='Quantity' right={quantity} number/>
-                <Piece left='Sub Total' right={subTotal}/>
+                <Piece left='Sub Total' right={subTotal > 0 ? subTotal : '0'}/>
                 <Piece left='Taxes' right={taxes}/>
                 {/*<Piece left='Fees' right={0} number/>*/}
                 <Divider/>

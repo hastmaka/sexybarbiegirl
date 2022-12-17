@@ -30,7 +30,8 @@ const ActionContainer = styled(Stack)(({main, theme}) => ({
 
 const DefaultAddress = styled(Typography)(({theme}) => ({
     border: `1px solid ${theme.palette.ecommerce.pink}`,
-    padding: '2px 4px'
+    padding: '2px 4px',
+    borderRadius: '4px'
 }));
 
 //----------------------------------------------------------------
@@ -48,7 +49,7 @@ export default function AddressCard({data, onClick, action = true}) {
             handleOpen()
         }
         if(e.currentTarget.ariaLabel === 'delete_address') {
-            window.confirm({type: 'warning', content: `Want to Delete this 'Address?'`})
+            window.confirm({t: 'warning', c: `Want to Delete this 'Address?'`})
                 .then(res => {
                     if(res) {
                         window.dispatch(userSliceActions.removeAddress({id: data.id}))

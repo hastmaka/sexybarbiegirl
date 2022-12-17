@@ -28,3 +28,7 @@ export async function fetchAPI(tempUrl, endpoint, method, data) {
         debugger
     }
 }
+
+/**
+ * stripe_customer doc.id = user doc.id for convenience use
+ */

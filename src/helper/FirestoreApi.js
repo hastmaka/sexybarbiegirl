@@ -7,7 +7,6 @@ import {
     getDoc,
     getDocs,
     query,
-    updateDoc,
     where
 } from "firebase/firestore";
 import {db} from "./FirebaseConfig";
@@ -28,18 +27,9 @@ export const create = createAsyncThunk(
 export const update = createAsyncThunk(
     'firestore/update',
     async ({id, collection, data}, {rejectWithValue})  => {
-        // let {variation, images, ...rest} = data;
-        // images = JSON.stringify(images);
-        // variation = JSON.stringify(variation);
-        // let tempData = {...rest, images, variation}
-        debugger
+        let tempData  = collection === 'stripe_customers' ? {payment_method: data} : data
         try {
-            await updateDoc(doc(firestoreCollection(db, collection), id), data)
-                .then(res => {
-                    debugger
-                }).catch(err => {
-                    console.log(err);
-                })
+            await setDoc(doc(firestoreCollection(db, collection), id), tempData, {merge: true})
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);
@@ -89,6 +79,26 @@ export const getAll = createAsyncThunk(
     }
 );
 
+/**
+ *
+ * @param uid - user id
+ * @param data - field to update
+ * @param collection - collection to update
+ *
+ * updateApi is used when you want to update something in db, but there is no need to pass the data
+ * through any slice.
+ */
+
+export const updateApi = (uid, collection, data) => {
+    debugger
+    try {
+        setDoc(doc(db, collection, uid), {data: {...data}}, {merge: true})
+            .then()
+    } catch (err) {
+        debugger
+        console.log(err);
+    }
+};
 
 export const updateCartApi = (uid, cart) => {
     try {
@@ -111,7 +121,6 @@ export const updateWishListApi = (uid, wish_list) => {
 };
 
 export const updateAddressApi = (uid, address) => {
-    debugger
     try {
         setDoc(doc(db, 'users', uid), {address: [...address]}, {merge: true})
             .then()

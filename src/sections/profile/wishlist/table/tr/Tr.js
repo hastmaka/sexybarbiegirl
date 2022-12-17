@@ -104,7 +104,7 @@ export default function Tr({product}) {
                         <Tooltip title='Delete' arrow placement='bottom'>
                             <IconButton
                                 onClick={_ => {
-                                    window.confirm({type: 'info', content: `Sure you want to remove this 'Product from your WishList?'`})
+                                    window.confirm({t: 'info', c: `Sure you want to remove this 'Product from your WishList?'`})
                                         .then(res => {
                                             if(res) {
                                                 window.dispatch(userSliceActions.removeFromWishlist({product, user}));

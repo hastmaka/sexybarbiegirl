@@ -1,13 +1,16 @@
+import {useSelector} from "react-redux";
 // material
 import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddCardIcon from "@mui/icons-material/AddCard";
+//
+import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import CreditCardSelection from "../../../cart/cartPayment/creditCardSelection/CreditCardSelection";
-import {useSelector} from "react-redux";
-import {stripeSliceActions} from "../../../../store/stripeSlice";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
 import {generalSliceActions} from "../../../../store/gs-manager-slice";
+import {update} from "../../../../helper/FirestoreApi";
+import EzCircularLoader from "../../../../components/ezComponents/EzCircularLoader/EzCircularLoader";
+import {sortPaymentMethod} from "../../../../helper/Helper";
 
 //----------------------------------------------------------------
 
@@ -19,10 +22,20 @@ const Child = styled(Stack)(() => ({
 //----------------------------------------------------------------
 
 export default function MyPaymentMethod({onClick}) {
-    const {customer, paymentMethod} = useSelector(slice => slice.stripe);
-    // debugger
+    const {customer, updatePaymentMethodStatus} = useSelector(slice => slice.stripe);
+    const {user} = useSelector(slice => slice.user);
+    const paymentMethodSorted = sortPaymentMethod(customer.paymentMethod.data, customer.payment_method);
+
     const handleCardSelection = (pm) => {
-        window.dispatch(stripeSliceActions.setPaymentMethod(pm))
+        let payment_methodUpdated = customer.payment_method.map(item => {
+            return item.main ? {...item, main: !item.main} :
+                item.pm === pm ? {...item, main: !item.main} : item
+        })
+        window.dispatch(update({
+            id: user.uid,
+            collection: 'stripe_customers',
+            data: payment_methodUpdated
+        }))
         window.displayNotification({
             t: 'info',
             c: 'Payment method changed successfully'
@@ -39,15 +52,16 @@ export default function MyPaymentMethod({onClick}) {
                     onClick={_ => window.dispatch(generalSliceActions.setModal({open: true, who: 'card'}))}
                 />
             </Stack>
-            {!customer.paymentMethod.data.length ?
+            {updatePaymentMethodStatus.loading ? <EzCircularLoader/> :
+            !customer.paymentMethod.data.length ?
                 <EzText text='Need to add some Payment Method' sx={{marginTop: '20px'}}/> :
                 <Child>
-                    {customer?.paymentMethod?.data?.map(item =>
+                    {paymentMethodSorted.map(item =>
                         <CreditCardSelection
                             key={item.id}
                             card={item.card}
                             pm={item.id}
-                            checked={paymentMethod === item.id}
+                            checked={(customer.payment_method.findIndex(i => i.pm === item.id && i.main)) >= 0}
                             handleCardSelection={customer.paymentMethod.data.length > 1 ? handleCardSelection : false}
                         />
                     )}

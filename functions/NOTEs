@@ -15,7 +15,10 @@ Edit Run/Debug configurations -> Attach to Node/Chrome (select the correct port(
 |                    ngrok tunnel                         | |     rest of your API endpoints   |
 http://4386-2600-8801-192-4500-4dcd-e70f-e09f-63cb.ngrok.io/sexybarbiegirl-f6068/us-central1/app
 
-
+//export and import data
+firebase emulators:export /path
+firebase emulators:start --inspect-functions --import dummy (import with debugger attach)
+firebase emulators:start --import ./dir --export-on-exit (save data on exit)
 
 
 //Deploy functions to firebase

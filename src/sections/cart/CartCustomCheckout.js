@@ -1,26 +1,29 @@
+import {useNavigate} from "react-router-dom";
+import {useEffect, useMemo, useState} from "react";
+import {useSelector} from "react-redux";
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
+import LockIcon from "@mui/icons-material/Lock";
+//
 import CartItemTable from "./cartItemTable/CartItemTable";
 import CartSummary from "./cartSummary/CartSummary";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
-import LockIcon from "@mui/icons-material/Lock";
-import {getAll} from "../../helper/FirestoreApi";
+import {getAll, updateCartApi} from "../../helper/FirestoreApi";
 import {getAllShippingOption, getCustomerData, urlFirebase, urlLocal} from "../../helper/stripe/StripeApi";
 import {fetchAPI} from "../../helper/FetchApi";
 import {stripeSliceActions} from "../../store/stripeSlice";
-import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
 import {generalSliceActions} from "../../store/gs-manager-slice";
-import axios from "axios";
 import {HandeError} from "../../helper/stripe/HandeError";
-import {useElements, useStripe} from "@stripe/react-stripe-js";
-import {useNavigate} from "react-router-dom";
 import CartShippingAddress from "./cartShippingAddress/CartShippingAddress";
 import CartPayment from "./cartPayment/CartPayment";
 import CartShippingRate from "./cartShippingRate/CartShippingRate";
 import {useIsScroll} from "../../helper/Hooks";
+//stripe
+import {useStripe} from "@stripe/react-stripe-js";
+import {calculateTotalFromCheckItems, updateLocalStore} from "../../helper/Helper";
+
 
 //----------------------------------------------------------------
 
@@ -69,7 +72,6 @@ const ChildContainer = styled(Stack)(() => ({
 
 export default function CartCustomCheckout() {
     const stripe = useStripe();
-    // const elements = useElements();
     const navigate = useNavigate();
     const {user} = useSelector(slice => slice.user);
     const [loading, setLoading] = useState(false);
@@ -77,18 +79,22 @@ export default function CartCustomCheckout() {
     const {
         customer,
         clientSecret,
-        paymentMethod,
         shippingRate,
         shippingOptionSelected,
         customerStatus,
         getCustomerDataStatus,
         getAllShippingOptionStatus
     } = useSelector(slice => slice.stripe);
-    const selectedPaymentMethod = customer?.paymentMethod?.data.filter(item => item.id === paymentMethod);
-    const total = user.cart.item.length ? (user.cart.total + user.cart.total * 0.07) + (shippingOptionSelected?.amount / 100 || 0) : 0;
-
+    const selectedPaymentMethod = customer?.paymentMethod?.data.filter(item => item.id === customer.payment_method.find(item => item.main).pm);
+    const totalFromCheckedItems = useMemo(() => {
+        return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
+    }, [user.cart.item]);
+    const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) + (shippingOptionSelected?.amount / 100 || 0);
+    // debugger
     //get scroll from top for topbar shadow effect
     useIsScroll();
+
+    //check if product in cart is checked to buy
 
     //redirect to cart if cart is empty, prevent uer type on bar navigation
     useEffect(_ => {
@@ -110,7 +116,7 @@ export default function CartCustomCheckout() {
             }))
     }, [user.dummy]);
 
-    //customer data
+    //get customer data
     useEffect(_ => {
         if (customerStatus.loaded) {
             Promise.all([
@@ -129,7 +135,7 @@ export default function CartCustomCheckout() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlFirebase,
+                    urlLocal,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}
@@ -154,8 +160,9 @@ export default function CartCustomCheckout() {
     };
 
     const handlePay = async ({customer_id, item}) => {
+        debugger
         if(user.dummy) {
-            return window.confirm({type: 'info', content: `You need to 'Sign in to make a Purchase'`})
+            return window.confirm({t: 'info', c: `You need to 'Sign in to make a Purchase'`})
                 .then(res => {
                     if (res) {
                         window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
@@ -186,16 +193,17 @@ export default function CartCustomCheckout() {
 
         setLoading(true);
         try {
-            const res = await fetchAPI(urlFirebase, 'create-payment-intent', 'POST', {
+            const res = await fetchAPI(urlLocal, 'create-payment-intent', 'POST', {
                 customer_id: customer_id,
-                item: item,
+                item: item.filter(item => item.checked),
                 shipping: shippingOptionSelected.amount / 100 || 0,
                 // send and email after the payment go successfully, only Live Mode
-                email: user.email
+                email: user.email,
+                tempAddress: user.address.filter(item => item.main),
+                userId: user.uid
             })
-
             const result = await stripe.confirmCardPayment(res.clientSecret, {
-                payment_method: selectedPaymentMethod
+                payment_method: selectedPaymentMethod[0].id
             });
 
             if (result.error) {
@@ -206,13 +214,16 @@ export default function CartCustomCheckout() {
                 // debugger
                 // The payment has been processed!
                 if (result.paymentIntent.status === 'succeeded') {
+                    //update the cart items deleting the ones which was bought
+                    debugger
+                    updateCartApi(user.uid, item.filter(item => !item.checked));
+                    // updateLocalStore('user', {...state.user.cart}, 'cart');
                     navigate('/thanks');
                     setLoading(false);
-                    //update the cart items deleting the ones which the was bought
-
                 }
             }
         } catch (e) {
+            debugger
             switch (e.response.status) {
                 case 402:
                 case 400:
@@ -230,7 +241,6 @@ export default function CartCustomCheckout() {
         setLoading(false)
     };
 
-
     return (
         <RootStyle>
             <Typography variant='span' sx={{fontWeight: 600, padding: '20px', fontSize: '20px'}}>CheckOut</Typography>
@@ -238,13 +248,12 @@ export default function CartCustomCheckout() {
                 <CartItemTable user={user} screen={screen}/>
                 <ParentContainer>
                     <StickyFix>
-                        <CartSummary user={user} total={total}/>
+                        <CartSummary user={user} totalFromCheckedItems={totalFromCheckedItems} total={total}/>
                         <CartShippingAddress user={user} />
                         <CartPayment
                             user={user}
                             customer={customer}
                             customerStatus={customerStatus}
-                            paymentMethod={paymentMethod}
                             getCustomerDataStatus={getCustomerDataStatus}
                             selectedPaymentMethod={selectedPaymentMethod}
                         />
@@ -262,7 +271,10 @@ export default function CartCustomCheckout() {
                                         backgroundColor: 'transparent'
                                     }
                                 }}
-                                onClick={_ => handlePay({customer_id: customer.customer_id, item: user.cart.item})}
+                                onClick={_ => handlePay({
+                                    customer_id: customer.customer_id,
+                                    item: user.cart.item
+                                })}
                                 size='large'
                                 type='submit'
                                 variant='outlined'

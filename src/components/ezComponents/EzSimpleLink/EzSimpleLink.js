@@ -1,5 +1,5 @@
 // material
-import {Stack, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import {NavLink} from "react-router-dom";
 

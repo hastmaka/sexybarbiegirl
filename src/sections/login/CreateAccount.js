@@ -56,7 +56,7 @@ export default function CreateAccount({ modal}) {
                     userTemp.uid = user.uid;
                     userTemp.role = 2;
                     userTemp.dummy = false;
-                    userTemp.payment_method = [];
+                    userTemp.order = [];
                     userTemp.cart = {
                         item: [],
                         create_at: Date.now(),
@@ -64,12 +64,11 @@ export default function CreateAccount({ modal}) {
                         quantity: 0,
                         sub_total: 0,
                         total: 0,
-                        order_status: ''
                     }
                     userTemp.wish_list = []
                     await setDoc(doc(db, 'users', user.uid), userTemp);
                     setLoading(false)
-                    window.confirm({type: 'info', content: `Account Created Successfully want to 'Sign In Directly?'`})
+                    window.confirm({t: 'info', c: `Account Created Successfully want to 'Sign In Directly?'`})
                         .then(async (res) => {
                             if(res) {
                                 const user = await FirebaseAuthService.loginUser(email, password);
