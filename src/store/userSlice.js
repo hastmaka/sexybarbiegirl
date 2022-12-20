@@ -170,6 +170,11 @@ const userSlice = createSlice({
             }
             updateLocalStore('user', {...state.user.cart}, 'cart');
         },
+        updateCartAfterPurchase(state, {payload}){
+            state.user.cart = {...updateCart(payload.cart, null)}
+            updateCartApi(state.user.uid, state.user.cart);
+            updateLocalStore('user', {...state.user.cart}, 'cart');
+        }
     },
     extraReducers: {
         [getAll.pending]: (state, {meta}) => {

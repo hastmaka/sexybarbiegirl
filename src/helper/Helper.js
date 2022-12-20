@@ -2,7 +2,6 @@ import {generalSliceActions} from "../store/gs-manager-slice";
 import {userSliceActions} from "../store/userSlice";
 import {fetchAPI} from "./FetchApi";
 import {getCustomerData, urlLocal} from "./stripe/StripeApi";
-import {getAll} from "./FirestoreApi";
 import {stripeSliceActions} from "../store/stripeSlice";
 
 export const sortPaymentMethod = (stripePm, firebasePm) => {
@@ -102,7 +101,7 @@ export const cartQuantity = (cart) => {
     return {
         cQuantity,
         sub_total: Number(sub_total.toFixed(2)),
-        total: Number(total.toFixed(2))
+        total: Number((total + (total * 0.07)).toFixed(2))
     };
 };
 
@@ -134,7 +133,7 @@ export const updateCart = (cart, payload = null, indexToUpdate = null, q = null)
                 last_update: Date.now(),
                 quantity: 1,
                 sub_total: payload.variation.price,
-                total: payload.variation.price,//plus tax
+                total: payload.variation.price + (payload.variation.price * 0.07),//plus tax
             }
         } else {
             //target product exist
@@ -268,4 +267,16 @@ export const calculateTotalFromCheckItems = (cart) => {
     return tempItem.reduce((acc, curr) => {
         return acc + curr.price * curr.quantity;
     }, 0)
+}
+
+export const prepareCheckedItemToServer = (item) => {
+    return item.reduce((acc, curr) => {
+    let {product_id, variation_id, quantity} = curr;
+        if(curr.checked) {
+            acc.push({
+                product_id, variation_id, quantity
+            })
+        }
+        return acc
+    }, [])
 }

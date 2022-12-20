@@ -19,8 +19,19 @@ const UpdateProduct = async (orderItem) => {
             res.forEach(r => {
                 let tProd = r.data()
                 prodParams.map(param => {
-                    if(r.id === param.product_id) {
-                        tProd.statistic = {...tProd.statistic, sales: tProd.statistic.sales + param.quantity}
+                    if (r.id === param.product_id) {
+                        // let tempSales = tProd.statistic.sales.reduce((acc, curr) => {}, {})
+                        debugger
+                        tProd.statistic = {
+                            ...tProd.statistic,
+                            sales: {
+                                ...tProd.statistic.sales,
+                                [param.variation_id]: param.quantity
+                            }
+                                // !!tProd.statistic.sales[param.variation_id] ?
+                                // tProd.statistic.sales[param.variation_id] = tProd.statistic.sales[param.variation_id] + param.quantity :
+                                // [param.variation_id] = param.quantity
+                        }
                         let varToUpdate = tProd.variation.findIndex(v => v.id === param.variation_id);
                         tProd.variation[varToUpdate] = {
                             ...tProd.variation[varToUpdate],
@@ -33,7 +44,7 @@ const UpdateProduct = async (orderItem) => {
         }).catch(e => {
             return e
         })
-}
+};
 
 const UpdateDB = async (data, idRef, who) => {
     const tempData = await db.collection(who).doc(idRef).get();
@@ -58,6 +69,42 @@ const UpdateDB = async (data, idRef, who) => {
 
     }
     tempData._ref.set(dataUpdated, {merge: true})
+};
+
+const GetProductAndReturnTotalAmount = async (item) => {
+    //check how many product we have to query
+    let productToQuery = item.reduce((acc, curr) => {
+        if(!acc[curr.product_id]) {
+            acc[curr.product_id] = curr.product_id
+        }
+        return acc
+    }, {})
+    let promise = Object.keys(productToQuery).map(async value => {
+        return await db.collection('products').doc(value).get()
+    })
+
+    let tempPrice = [];
+
+    await Promise.all(promise)
+        .then(res => {
+            res.forEach(r => {
+                let sProduct = {...r.data(), id: r.id};
+                //get each variation and add every price * quantity
+                item.forEach(cItem => {
+                    if(cItem.product_id === sProduct.id) {
+                        sProduct.variation.forEach(variation => {
+                            if(cItem.variation_id === variation.id ) {
+                                tempPrice.push(variation.price * cItem.quantity)
+                            }
+                        })
+                    }
+                })
+            })
+        }).catch(err => {
+            return err
+        })
+    //calc and return total price
+    return  tempPrice.reduce((acc, curr) => {return acc + curr}, 0)
 }
 
-module.exports = {UpdateProduct, UpdateDB}
+module.exports = {UpdateProduct, UpdateDB, GetProductAndReturnTotalAmount}

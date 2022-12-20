@@ -22,7 +22,13 @@ import CartShippingRate from "./cartShippingRate/CartShippingRate";
 import {useIsScroll} from "../../helper/Hooks";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
-import {calculateTotalFromCheckItems, updateLocalStore} from "../../helper/Helper";
+import {
+    calculateTotalFromCheckItems,
+    prepareCheckedItemToServer,
+    updateCart,
+    updateLocalStore
+} from "../../helper/Helper";
+import {userSliceActions} from "../../store/userSlice";
 
 
 //----------------------------------------------------------------
@@ -85,7 +91,8 @@ export default function CartCustomCheckout() {
         getCustomerDataStatus,
         getAllShippingOptionStatus
     } = useSelector(slice => slice.stripe);
-    const selectedPaymentMethod = customer?.paymentMethod?.data.filter(item => item.id === customer.payment_method.find(item => item.main).pm);
+    const [mainPaymentMethod, setMainPaymentMethod] = useState(null)
+    // debugger
     const totalFromCheckedItems = useMemo(() => {
         return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
     }, [user.cart.item]);
@@ -94,7 +101,22 @@ export default function CartCustomCheckout() {
     //get scroll from top for topbar shadow effect
     useIsScroll();
 
-    //check if product in cart is checked to buy
+    //main payment method
+    useEffect(_ => {
+        if(customer?.paymentMethod?.data?.length) {
+            let main = customer.paymentMethod.data.filter(item => {
+                if(customer.payment_method.length) {
+                    let main = customer.payment_method.find(item => item.main).pm;
+                    return main === item.id
+                } else {
+                    return item
+                }
+
+            });
+            setMainPaymentMethod(main)
+        }
+    }, [customer])
+
 
     //redirect to cart if cart is empty, prevent uer type on bar navigation
     useEffect(_ => {
@@ -159,8 +181,9 @@ export default function CartCustomCheckout() {
         window.dispatch(stripeSliceActions.setShippingOption({shr, amount}))
     };
 
-    const handlePay = async ({customer_id, item}) => {
-        debugger
+    const handlePay = async ({customer_id, cart}) => {
+        let itemChecked = prepareCheckedItemToServer(cart.item),
+            itemUnChecked = cart.item.filter(item => !item.checked);
         if(user.dummy) {
             return window.confirm({t: 'info', c: `You need to 'Sign in to make a Purchase'`})
                 .then(res => {
@@ -181,10 +204,6 @@ export default function CartCustomCheckout() {
                 c: 'Please add some Payment Method'
             });
         }
-        // setTimeout(_ => {
-        //     setLoading(false);
-        //     navigate('/thanks')
-        // }, 1000);
         if (!stripe) {
             // Stripe.js has not yet loaded.
             // Make sure to disable form submission until Stripe.js has loaded.
@@ -195,7 +214,7 @@ export default function CartCustomCheckout() {
         try {
             const res = await fetchAPI(urlLocal, 'create-payment-intent', 'POST', {
                 customer_id: customer_id,
-                item: item.filter(item => item.checked),
+                item: itemChecked,
                 shipping: shippingOptionSelected.amount / 100 || 0,
                 // send and email after the payment go successfully, only Live Mode
                 email: user.email,
@@ -203,7 +222,7 @@ export default function CartCustomCheckout() {
                 userId: user.uid
             })
             const result = await stripe.confirmCardPayment(res.clientSecret, {
-                payment_method: selectedPaymentMethod[0].id
+                payment_method: mainPaymentMethod[0].id
             });
 
             if (result.error) {
@@ -214,10 +233,9 @@ export default function CartCustomCheckout() {
                 // debugger
                 // The payment has been processed!
                 if (result.paymentIntent.status === 'succeeded') {
-                    //update the cart items deleting the ones which was bought
-                    debugger
-                    updateCartApi(user.uid, item.filter(item => !item.checked));
-                    // updateLocalStore('user', {...state.user.cart}, 'cart');
+                    //update the cart items deleting the ones which was purchased
+                    const {item, ...rest} = cart;
+                    window.dispatch(userSliceActions.updateCartAfterPurchase({cart: {item: [...itemUnChecked], ...rest}}));
                     navigate('/thanks');
                     setLoading(false);
                 }
@@ -255,7 +273,7 @@ export default function CartCustomCheckout() {
                             customer={customer}
                             customerStatus={customerStatus}
                             getCustomerDataStatus={getCustomerDataStatus}
-                            selectedPaymentMethod={selectedPaymentMethod}
+                            mainPaymentMethod={mainPaymentMethod}
                         />
                         <CartShippingRate
                             getAllShippingOptionStatus={getAllShippingOptionStatus}
@@ -271,20 +289,26 @@ export default function CartCustomCheckout() {
                                         backgroundColor: 'transparent'
                                     }
                                 }}
-                                onClick={_ => handlePay({
-                                    customer_id: customer.customer_id,
-                                    item: user.cart.item
-                                })}
+                                onClick={_ => {
+                                    if(!user.cart.quantity) {
+                                        window.displayNotification({
+                                            t: 'info',
+                                            c: 'Please select at least one item to Checkout'
+                                        })
+                                    } else {
+                                        handlePay({
+                                            customer_id: customer.customer_id,
+                                            cart: user.cart
+                                        }).then()
+                                    }
+                                }}
                                 size='large'
                                 type='submit'
                                 variant='outlined'
                                 loading={loading}
                                 disabled={!user.cart.item.length}
                             >
-                                { user.cart.item.length ?
-                                    `Pay  ( $${total.toFixed(2)} )` :
-                                    'Cart Empty'
-                                }
+                                {`Pay  ( $${total.toFixed(2)} )`}
                             </EzLoadingBtn>
                             <EzHelpText
                                 alignment='center'

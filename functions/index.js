@@ -16,7 +16,7 @@ app.use(cors);
 app.use(express.json());
 const {appCheckVerification} = require('./checkToken');
 const {listAllShippingOptions, retrieveCustomer, retrievePaymentMethod} = require("./stripe/Stripe");
-const {UpdateProduct, UpdateDB} = require("./helper/Helper");
+const {UpdateProduct, UpdateDB, GetProductAndReturnTotalAmount} = require("./helper/Helper");
 
 let orderData = {};
 
@@ -90,9 +90,9 @@ app.get('/list-all-shipping-option', appCheckVerification, listAllShippingOption
 //charge a customer with 'payment method (pm_ client side)' and customer_id
 app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
     const {customer_id, item, shipping, email, tempAddress, userId} = req.body;
-    const {address, city, zip, first_name, last_name, phone, country, state} = tempAddress[0]
-    let amount = 0;
-    item.map(i => amount += i.price * i.quantity);
+    const {address, city, zip, first_name, last_name, phone, country, state} = tempAddress[0];
+    //get product from db and return calculated total amount
+    const amount = await GetProductAndReturnTotalAmount(item);
     let fixAmount = +(amount.toFixed(2)),
         taxes = +((amount * 0.07).toFixed(2));
     try {

@@ -18,7 +18,6 @@ import Burger from './burger/Burger';
 import Logo from '../../resources/Asset 56@2x.png';
 import EzSetOfIcons from '../ezComponents/EzSetOfIcons/EzSetOfIcons';
 import EzMenu from "../ezComponents/EzMenu/EzMenu";
-import {cartQuantity} from "../../helper/Helper";
 import {generalSliceActions} from "../../store/gs-manager-slice";
 
 //----------------------------------------------------------------
@@ -214,7 +213,7 @@ export default function TopBar() {
         id: 4,
         tooltip: 'Cart',
         visibleOnMobile: 1,
-        badgeValue: cartQuantity(user.cart.item).cQuantity || '',
+        badgeValue: user.cart.item.reduce((acc, curr) => { return acc + curr.quantity}, 0) || '',
         icon: <LocalMallOutlinedIcon/>,
         functionality: {
             onClick: () => {navigate('/cart')}

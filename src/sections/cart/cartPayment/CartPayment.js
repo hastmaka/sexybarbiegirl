@@ -16,7 +16,7 @@ export default function CartPayment({
                                         user,
                                         customer,
                                         customerStatus,
-                                        selectedPaymentMethod,
+                                        mainPaymentMethod,
                                         getCustomerDataStatus
 }) {
     return (
@@ -45,11 +45,11 @@ export default function CartPayment({
                 <EzText text='Sign in first to see your Payment Method'/>
                 :
                 customerStatus.loaded && getCustomerDataStatus.loaded ?
-                customer?.paymentMethod?.data.length ?
+                !!mainPaymentMethod ?
                         <>
                             <CreditCardSelection
-                                card={selectedPaymentMethod[0].card}
-                                pm={selectedPaymentMethod[0].id}
+                                card={mainPaymentMethod[0].card}
+                                pm={mainPaymentMethod[0].id}
                                 // checked={paymentMethod === selectedPaymentMethod[0].id}
                                 handleCardSelection={false}
                             />
