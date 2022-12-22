@@ -10,7 +10,7 @@ import CartItemTable from "./cartItemTable/CartItemTable";
 import CartSummary from "./cartSummary/CartSummary";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
-import {getAll, updateCartApi} from "../../helper/FirestoreApi";
+import {getById} from "../../helper/FirestoreApi";
 import {getAllShippingOption, getCustomerData, urlFirebase, urlLocal} from "../../helper/stripe/StripeApi";
 import {fetchAPI} from "../../helper/FetchApi";
 import {stripeSliceActions} from "../../store/stripeSlice";
@@ -20,15 +20,11 @@ import CartShippingAddress from "./cartShippingAddress/CartShippingAddress";
 import CartPayment from "./cartPayment/CartPayment";
 import CartShippingRate from "./cartShippingRate/CartShippingRate";
 import {useIsScroll} from "../../helper/Hooks";
+import {calculateTotalFromCheckItems} from "../../helper/Helper";
+import {userSliceActions} from "../../store/userSlice";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
-import {
-    calculateTotalFromCheckItems,
-    prepareCheckedItemToServer,
-    updateCart,
-    updateLocalStore
-} from "../../helper/Helper";
-import {userSliceActions} from "../../store/userSlice";
+import * as FirestoreApi from "../../helper/FirestoreApi";
 
 
 //----------------------------------------------------------------
@@ -67,10 +63,11 @@ const StickyFix = styled(Stack)(({theme}) => ({
     }
 }));
 
-const ChildContainer = styled(Stack)(() => ({
+const ChildContainer = styled(Stack)(({theme}) => ({
     gap: '20px',
     padding: '20px',
-    backgroundColor: '#ffffff',
+    boxShadow: theme.shadows[5],
+    backgroundColor: theme.palette.grey[800],
     borderRadius: '4px',
 }));
 
@@ -128,13 +125,9 @@ export default function CartCustomCheckout() {
     //get customer id from stripe
     useEffect(_ => {
         if (!user.dummy)
-            window.dispatch(getAll({
-                collection: 'stripe_customers',
-                filters: [{
-                    field: 'email',
-                    operator: '==',
-                    value: user.email
-                }]
+            window.dispatch(getById({
+                id: user.uid,
+                collection: 'stripe_customers'
             }))
     }, [user.dummy]);
 
@@ -157,7 +150,7 @@ export default function CartCustomCheckout() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlLocal,
+                    urlFirebase,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}
@@ -182,7 +175,7 @@ export default function CartCustomCheckout() {
     };
 
     const handlePay = async ({customer_id, cart}) => {
-        let itemChecked = prepareCheckedItemToServer(cart.item),
+        let itemChecked = cart.item.filter(item => item.checked),
             itemUnChecked = cart.item.filter(item => !item.checked);
         if(user.dummy) {
             return window.confirm({t: 'info', c: `You need to 'Sign in to make a Purchase'`})
@@ -212,7 +205,7 @@ export default function CartCustomCheckout() {
 
         setLoading(true);
         try {
-            const res = await fetchAPI(urlLocal, 'create-payment-intent', 'POST', {
+            const res = await fetchAPI(urlFirebase, 'create-payment-intent', 'POST', {
                 customer_id: customer_id,
                 item: itemChecked,
                 shipping: shippingOptionSelected.amount / 100 || 0,
@@ -230,12 +223,31 @@ export default function CartCustomCheckout() {
                 // Show error to your customer (e.g., insufficient funds)
                 console.log(result.error.message);
             } else {
-                // debugger
                 // The payment has been processed!
                 if (result.paymentIntent.status === 'succeeded') {
                     //update the cart items deleting the ones which was purchased
+                    //create a temp order to give an instant feedback to the user then sync with db
+                    // debugger
                     const {item, ...rest} = cart;
-                    window.dispatch(userSliceActions.updateCartAfterPurchase({cart: {item: [...itemUnChecked], ...rest}}));
+                    // FirestoreApi.createOrder({
+                    //     data: {
+                    //         userId: user.uid,
+                    //         receipt_email: user.email,
+                    //         amount: result.paymentIntent.amount,
+                    //         create_at: Date.now(),
+                    //         customer_id: customer.customer_id,
+                    //         order_status: 'processing',
+                    //         shipping: {...user.address.filter(item => item.main)[0]},
+                    //         item: [...itemChecked]
+                    //     },
+                    //     id: res.idToCreateTheOrder
+                    // })
+                    window.dispatch(userSliceActions.updateCartAfterPurchase({
+                        cart: {
+                            item: [...itemUnChecked],
+                            ...rest
+                        }
+                    }));
                     navigate('/thanks');
                     setLoading(false);
                 }

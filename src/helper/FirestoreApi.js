@@ -7,9 +7,11 @@ import {
     getDoc,
     getDocs,
     query,
-    where
+    where,
+    onSnapshot
 } from "firebase/firestore";
 import {db} from "./FirebaseConfig";
+import {userSliceActions} from "../store/userSlice";
 
 export const create = createAsyncThunk(
     'firestore/create',
@@ -40,13 +42,26 @@ export const update = createAsyncThunk(
 export const getById = createAsyncThunk(
     'firestore/getById',
     async ({id, collection}, {rejectWithValue})  => {
+        let promise = [];
+        switch (collection) {
+            case 'products':
+            case 'users':
+            case 'stripe_customers':
+                promise.push(getDoc(doc(db, collection, id)))
+                break;
+            case 'orders':
+                id.map(item => promise.push(getDoc(doc(db, collection, item))))
+                break;
+            default:
+                return
+        }
         try {
-            const data = await getDoc(doc(db, collection, id));
-            if (!data.data()) {debugger}//if the user doesn't exist
-            if(collection === 'products') {
-                return {...data.data(), id: id}
-            }
-            return data.data();
+            let data = [];
+            const tempData = await Promise.all(promise);
+            tempData.forEach(doc => {
+                data.push({...doc.data(), id: doc.id})
+            })
+            return data;
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);
@@ -65,12 +80,10 @@ export const getAll = createAsyncThunk(
         }
         let q = query(firestoreCollection(db, collection), ...queries);
         try {
-            let data = collection === 'stripe_customers' ? {} : [];
+            let data = [];
             let res = await getDocs(q);
             res.docs.map(doc =>
-                collection === 'stripe_customers' ?
-                    data = {...doc.data(),id: doc.id} :
-                    data.push({...doc.data(),id: doc.id})
+                data.push({...doc.data(),id: doc.id})
             )
             return data
         } catch (error) {
@@ -131,4 +144,30 @@ export const updateAddressApi = (uid, address) => {
 };
 
 
+/**
+ * onSnapshot - to listen to event local and on server
+ * @param id
+ * @param collection
+ * @returns {Promise<void>}
+ */
+export const getRTDataFromUserOrder = async ({userId, collection}) => {
+    const q = query(firestoreCollection(db, collection), where('userId', "==", userId));
+    await onSnapshot(q, {includeMetadataChanges: true}, (querySnapshot) => {
+        debugger
+        const order = [];
+        querySnapshot.forEach(doc => {
+            order.push({...doc.data(), id: doc.id});
+        });
+        window.dispatch(userSliceActions.setOrder(order))
+    });
+}
 
+export const createOrder = ({data, id}) => {
+    try {
+        setDoc(doc(db, 'orders', id), {...data}, {merge:true})
+            .then()
+    } catch (err) {
+        debugger
+        console.log(err)
+    }
+}

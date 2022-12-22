@@ -11,6 +11,7 @@ import Cell from "../cell/Cell";
 import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import EzModalWithTransition from "../../../../../components/ezComponents/EzModalWithTransition/EzModalWithTransition";
 import EzProductDetails from "../../../../productDetail/EzProductDetails";
+import EzModal from "../../../../../components/ezComponents/EzModal/EzModal";
 
 //----------------------------------------------------------------
 
@@ -45,11 +46,15 @@ export default function Tr({product}) {
     const {user} = useSelector(slice => slice.user);
     //modal
     const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
 
     return (
         <>
+            <EzModal open={open} handleClose={_ => handleClose()}>
+                <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>
+            </EzModal>
             <Box
                 sx={{
                     display: 'grid',
@@ -63,10 +68,10 @@ export default function Tr({product}) {
                 <Cell>
                     <Stack flexDirection='row' gap='5px'>
                         <Stack
+                            onClick={_ => handleOpen()}
                             sx={{
-                                width: {
-                                    xs: '90px',
-                                    sm: '110px'},
+                                cursor: 'pointer',
+                                width: {xs: '90px', sm: '110px'},
                                 padding: '10px 5px',
                             }}
                         >
@@ -96,7 +101,7 @@ export default function Tr({product}) {
                     <ActionContainer>
                         <Tooltip title='Add to Cart' arrow placement='bottom'>
                             <IconButton
-                                onClick={_ => setOpen(true)}
+                                onClick={_ => handleOpen()}
                                 aria-label="add_to_cart" sx={{p: 0}}>
                                 <AddShoppingCartIcon/>
                             </IconButton>

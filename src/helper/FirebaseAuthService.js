@@ -80,15 +80,14 @@ const loginWithGoogle = () => {
 
 const subscribeToAuthChanges = ( user) => {
     onAuthStateChanged(auth, async (firebaseUser) => {
-        let token;
         if (firebaseUser) {
-            token = await getIdToken(firebaseUser);
-        }
-        try {
-            window.dispatch(getById({id: user.uid, collection: 'users'}))
-            window.dispatch(userSliceActions.setUser({token}))
-        } catch (err) {
-            console.log(err);
+            let token = await getIdToken(firebaseUser);
+            try {
+                window.dispatch(getById({id: user.uid, collection: 'users'}))
+                window.dispatch(userSliceActions.setUser({...user, token}))
+            } catch (err) {
+                console.log(err);
+            }
         }
     })
 }

@@ -8,7 +8,7 @@ export const getCustomerData = createAsyncThunk(
     'stripe/getCustomerData',
     async ({endpoint, customer}, {rejectWithValue})  => {
         try {
-            return await fetchAPI(urlLocal, endpoint, 'GET', customer);
+            return await fetchAPI(urlFirebase, endpoint, 'GET', customer);
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);
@@ -20,7 +20,7 @@ export const getAllShippingOption = createAsyncThunk(
     'stripe/getAllShippingOption',
     async ({endpoint}, {rejectWithValue})  => {
         try {
-            return await fetchAPI(urlLocal, endpoint, 'GET');
+            return await fetchAPI(urlFirebase, endpoint, 'GET');
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);

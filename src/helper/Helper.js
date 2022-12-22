@@ -38,7 +38,13 @@ export const calcDiscount = (price, discount) => {
 }
 
 export const createId = _ => {
-    return Date.now() * Math.random()
+    let result           = '';
+    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for ( let i = 0; i < 20; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 };
 
 export const handleDecimalsOnValue = (value) => {
@@ -51,30 +57,14 @@ export const formatSizeArray = (s, i) => {
     return (i ? ', ' : '') + `${s === 1 ? 'XS' : s === 2 ? 'S' : s === 3 ? 'M' : s === 4 ? 'L' : s === 5 ? 'XL' : ''}`
 };
 
-export const updateLocalStore = (key, data, to) => {
+export const updateLocalStore = (key, data) => {
     if(JSON.parse(localStorage.getItem(key)) === null) {
         localStorage.setItem(key, JSON.stringify({}))
     }
-    let temp = JSON.parse(localStorage.getItem(key));
 
-    switch (to) {
-        case 'setUser':
+    switch (key) {
+        case 'user':
             localStorage.setItem(key, JSON.stringify(data))
-            break;
-        case 'token':
-            debugger
-            temp[to] = data;
-            localStorage.setItem(key, JSON.stringify(temp))
-            break;
-        case 'wish_list':
-        case 'address':
-        case 'orders':
-            temp[to] = [...data]
-            localStorage.setItem(key, JSON.stringify(temp))
-            break;
-        case 'cart':
-            temp[to] = {...data}
-            localStorage.setItem(key, JSON.stringify(temp))
             break;
         case 'stripe':
             localStorage.setItem(key, JSON.stringify({...data}))

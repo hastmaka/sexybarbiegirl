@@ -5,7 +5,7 @@ import {styled} from '@mui/material/styles';
 //----------------------------------------------------------------
 
 const RootStyle = styled(Stack)(({theme}) => ({
-    backgroundColor: theme.palette.grey[0],
+    backgroundColor: theme.palette.grey[800],
     boxShadow: theme.shadows[5],
     borderRadius: '4px',
     padding: '10px'

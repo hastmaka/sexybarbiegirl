@@ -8,7 +8,7 @@ export default function Cell({children, sx}) {
         <Stack
             justifyContent='center'
             sx={{
-                backgroundColor: '#fff',
+                backgroundColor: theme => theme.palette.grey[800],
                 minHeight: '40px',
                 textAlign: 'center',
                 // borderRight: '1px solid lightgrey',
@@ -16,6 +16,7 @@ export default function Cell({children, sx}) {
                 //     borderLeft: '1px solid lightgrey',
                 // },
                 ...sx
+
             }}
         >{children}</Stack>
     )

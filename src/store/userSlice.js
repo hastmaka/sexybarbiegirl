@@ -6,28 +6,29 @@ const userSlice = createSlice({
     name: 'user',
     initialState: {
         user: {},
+        order: [],
         userStatus: {loaded: false, loading: false},
         orderStatus: {loaded: false, loading: false}
     },
     reducers: {
         setUser(state, {payload}) {
-            state.user = {
-                    ...state.user,
-                    ...payload
-            }
+            state.user = {...state.user, ...payload}
             state.userStatus.loaded = true
-            updateLocalStore('user', state.user, 'setUser');
+            updateLocalStore('user', {...state.user});
+        },
+        setOrder(state, {payload}) {
+            state.order = [...payload]
         },
 
         addToWishList(state, {payload}) {
             state.user.wish_list = [...state.user.wish_list, {...payload.product}];
-            updateLocalStore('user', [...state.user.wish_list], 'wish_list');
+            updateLocalStore('user', {...state.user});
             updateWishListApi(payload.user.uid, [...state.user.wish_list]);
         },
         removeFromWishlist(state, {payload}) {
             const newWishList = state.user.wish_list.filter(item => item.id !== payload.product.id);
             state.user.wish_list = [...newWishList];
-            updateLocalStore('user', [...state.user.wish_list], 'wish_list');
+            updateLocalStore('user', {...state.user});
             updateWishListApi(payload.user.uid, [...state.user.wish_list])
         },
 
@@ -52,7 +53,7 @@ const userSlice = createSlice({
                     updateCartApi(payload.user.uid, {...state.user.cart});
                 }
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
         increaseQty(state, {payload}) {
             const indexOfItemToUpdate = state.user.cart.item.findIndex(item => item.variation_id === payload.variation_id);
@@ -60,7 +61,7 @@ const userSlice = createSlice({
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
         decreaseQty(state, {payload}) {
             const cart = {...state.user.cart}
@@ -88,7 +89,7 @@ const userSlice = createSlice({
                     updateCartApi(payload.user.uid, state.user.cart);
                 }
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart')
+            updateLocalStore('user', {...state.user});
         },
         removeFromCart(state, {payload}) {
             const cart = {...state.user.cart}
@@ -97,7 +98,7 @@ const userSlice = createSlice({
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
 
         setMainAddress(state, {payload}) {
@@ -115,25 +116,25 @@ const userSlice = createSlice({
                 }
             });
             state.user.address = [...updatedAddress];
-            updateLocalStore('user', [...state.user.address], 'address');
+            updateLocalStore('user', {...state.user});
             updateAddressApi(state.user.uid, [...state.user.address]);
         },
 
         addAddress(state, {payload}) {
             state.user.address = [...state.user.address, {...payload}];
-            updateLocalStore('user', [...state.user.address], 'address');
+            updateLocalStore('user', {...state.user});
             updateAddressApi(state.user.uid, [...state.user.address]);
         },
         editAddress(state, {payload}) {
             debugger
             let addressToUpdate = [...state.user.address].findIndex(address => address.id === payload.id);
             state.user.address[addressToUpdate] = {...payload};
-            updateLocalStore('user', [...state.user.address], 'address');
+            updateLocalStore('user', {...state.user});
             updateAddressApi(state.user.uid, [...state.user.address]);
         },
         removeAddress(state, {payload}) {
             state.user.address = [...state.user.address].filter(item => item.id !== payload.id);
-            updateLocalStore('user', [...state.user.address], 'address');
+            updateLocalStore('user', {...state.user});
             updateAddressApi(state.user.uid, [...state.user.address])
         },
 
@@ -148,7 +149,7 @@ const userSlice = createSlice({
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
         toggleAllCheck(state, {payload}){
             state.user.cart.item = [...state.user.cart.item].map(item => {
@@ -158,7 +159,7 @@ const userSlice = createSlice({
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
         toggleAllUncheck(state, {payload}){
             state.user.cart.item = [...state.user.cart.item].map(item => {
@@ -168,16 +169,16 @@ const userSlice = createSlice({
             if(!payload.user.dummy) {
                 updateCartApi(payload.user.uid, state.user.cart);
             }
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         },
         updateCartAfterPurchase(state, {payload}){
             state.user.cart = {...updateCart(payload.cart, null)}
             updateCartApi(state.user.uid, state.user.cart);
-            updateLocalStore('user', {...state.user.cart}, 'cart');
+            updateLocalStore('user', {...state.user});
         }
     },
-    extraReducers: {
-        [getAll.pending]: (state, {meta}) => {
+    extraReducers: (builder) => {
+        builder.addCase(getAll.pending, (state, {meta}) => {
             switch (meta.arg.collection) {
                 case 'users':
                     state.orderStatus.loading = true;
@@ -185,8 +186,8 @@ const userSlice = createSlice({
                 default:
                     return
             }
-        },
-        [getAll.fulfilled]: (state, {meta, payload}) => {
+        });
+        builder.addCase(getAll.fulfilled, (state, {meta, payload}) => {
             switch (meta.arg.collection) {
                 case 'orders':
                     state.user.order = [...payload]
@@ -198,39 +199,47 @@ const userSlice = createSlice({
                 default:
                     return
             }
-        },
-        [getAll.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getAll.rejected, (state, {payload}) => {
             debugger
             state.orderStatus = payload;
             state.orderStatus.loaded = false;
-        },
+        });
 
-        [getById.pending]: (state, {meta}) => {
+        builder.addCase(getById.pending, (state, {meta}) => {
             switch (meta.arg.collection) {
                 case 'users':
                     state.userStatus.loading = true;
                     break;
-                default:
-                    return
-            }
-        },
-        [getById.fulfilled]: (state, {meta, payload}) => {
-            switch (meta.arg.collection) {
-                case 'users':
-                    state.userStatus.loading = false;
-                    state.userStatus.loaded = true;
-                    state.user = {...state.user, ...payload}
-                    updateLocalStore('user', state.user, 'setUser');
+                case 'orders':
+                    state.orderStatus.loading = true;
                     break;
                 default:
                     return
             }
-        },
-        [getById.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getById.fulfilled, (state, {meta, payload}) => {
+            switch (meta.arg.collection) {
+                case 'users':
+                    state.userStatus.loading = false;
+                    state.userStatus.loaded = true;
+                    state.user = {...state.user, ...payload[0]}
+                    updateLocalStore('user', state.user, 'setUser');
+                    break;
+                case 'orders':
+                    state.orderStatus.loaded = true;
+                    state.orderStatus.loading = false;
+                    state.order = [...payload];
+                    break;
+                default:
+                    return
+            }
+        });
+        builder.addCase(getById.rejected, (state, {payload}) => {
             debugger
             state.message = payload;
             state.userStatus.loaded = false;
-        },
+        });
     }
 });
 

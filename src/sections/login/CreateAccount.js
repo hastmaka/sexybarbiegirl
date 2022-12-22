@@ -56,7 +56,6 @@ export default function CreateAccount({ modal}) {
                     userTemp.uid = user.uid;
                     userTemp.role = 2;
                     userTemp.dummy = false;
-                    userTemp.order = [];
                     userTemp.cart = {
                         item: [],
                         create_at: Date.now(),

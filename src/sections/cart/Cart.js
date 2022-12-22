@@ -19,7 +19,8 @@ import {calculateTotalFromCheckItems} from "../../helper/Helper";
 const RootStyle = styled(Stack)(({theme}) => ({
     alignItems: 'center',
     padding: '0 10px 10px 10px',
-    backgroundColor: theme.palette.grey[300]
+    // backgroundColor: theme.palette.grey[300]
+    backgroundColor: theme.palette.grey[900]
 }));
 
 const CartContainer = styled(Stack)(({theme}) => ({
@@ -50,10 +51,12 @@ const StickyFix = styled(Stack)(({screen, theme}) => ({
     }
 }));
 
-const ChildContainer = styled(Stack)(() => ({
+const ChildContainer = styled(Stack)(({theme}) => ({
     gap: '20px',
     padding: '20px',
-    backgroundColor: '#ffffff',
+    boxShadow: theme.shadows[5],
+    // backgroundColor: theme.palette.grey[800],
+    backgroundColor: theme.palette.grey[800],
     borderRadius: '4px',
 }));
 

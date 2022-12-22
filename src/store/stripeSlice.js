@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {updateLocalStore} from "../helper/Helper";
-import {getAll, update} from "../helper/FirestoreApi";
+import {getById, update} from "../helper/FirestoreApi";
 import {getAllShippingOption, getCustomerData} from "../helper/stripe/StripeApi";
 
 const stripeSlice = createSlice({
@@ -30,33 +30,33 @@ const stripeSlice = createSlice({
             state.clientSecret = payload
         }
     },
-    extraReducers: {
-        [getAll.pending]: (state) => {
+    extraReducers: (builder) => {
+        builder.addCase(getById.pending, (state) => {
             state.customerStatus.loading = true;
-        },
-        [getAll.fulfilled]: (state, {meta, payload}) => {
+        });
+        builder.addCase(getById.fulfilled, (state, {meta, payload}) => {
             switch (meta.arg.collection) {
                 case 'stripe_customers':
                     state.customerStatus.loading = false;
                     state.customerStatus.loaded = true;
-                    state.customer = {...payload}
+                    state.customer = {...payload[0]}
                     // debugger
                     break;
                 default:
                     return
             }
-        },
-        [getAll.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getById.rejected, (state, {meta}) => {
             debugger
-            state.message = payload;
+            state.message = meta;
             state.userStatus.loaded = false;
-        },
+        });
 
-        [getCustomerData.pending]: (state) => {
+        builder.addCase(getCustomerData.pending, (state) => {
             state.getCustomerDataStatus.loading = true;
             state.getCustomerDataStatus.loaded = false;
-        },
-        [getCustomerData.fulfilled]: (state, {meta, payload}) => {
+        });
+        builder.addCase(getCustomerData.fulfilled, (state, {meta, payload}) => {
             switch (meta.arg.endpoint) {
                 case 'retrieve-customer':
                     state.customer = {
@@ -74,39 +74,39 @@ const stripeSlice = createSlice({
                     return
 
             }
-        },
-        [getCustomerData.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getCustomerData.rejected, (state, {payload}) => {
             debugger
             state.getCustomerDataStatus.loaded = false;
-        },
+        });
 
-        [getAllShippingOption.pending]: (state) => {
+        builder.addCase(getAllShippingOption.pending, (state) => {
             state.getAllShippingOptionStatus.loading = true;
             state.getAllShippingOptionStatus.loaded = false;
-        },
-        [getAllShippingOption.fulfilled]: (state, {payload}) => {
+        });
+        builder.addCase(getAllShippingOption.fulfilled, (state, {payload}) => {
             state.shippingRate = {...payload.shippingRates};
             state.getAllShippingOptionStatus.loading = false;
             state.getAllShippingOptionStatus.loaded = true;
-        },
-        [getAllShippingOption.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getAllShippingOption.rejected, (state, {payload}) => {
             debugger
             state.getAllShippingOptionStatus.loaded = false;
-        },
+        });
 
-        [update.pending]: (state) => {
+        builder.addCase(update.pending, (state) => {
             state.updatePaymentMethodStatus.loading = true;
             state.updatePaymentMethodStatus.loaded = false;
-        },
-        [update.fulfilled]: (state, {meta, payload}) => {
+        });
+        builder.addCase(update.fulfilled, (state, {meta, payload}) => {
             state.customer.payment_method = [...meta.arg.data]
             state.updatePaymentMethodStatus.loading = false;
             state.updatePaymentMethodStatus.loaded = true;
-        },
-        [update.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(update.rejected, (state, {payload}) => {
             debugger
             state.updatePaymentMethodStatus.loaded = false;
-        },
+        });
     }
 });
 

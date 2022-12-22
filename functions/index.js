@@ -17,11 +17,11 @@ app.use(express.json());
 const {appCheckVerification} = require('./checkToken');
 const {listAllShippingOptions, retrieveCustomer, retrievePaymentMethod} = require("./stripe/Stripe");
 const {UpdateProduct, UpdateDB, GetProductAndReturnTotalAmount} = require("./helper/Helper");
+const {createId} = require("./helper/Common");
 
 let orderData = {};
 
 //Express
-// app.all('/*', appCheckVerification);
 app.get('/test', (req, res) => {
     debugger
     res.send('Hello world');
@@ -47,10 +47,9 @@ app.post('/webhook', (req, res) => {
     // Handle the event
     switch (event.type) {
         case 'payment_intent.succeeded':
-            debugger
-            const {amount, created, customer, id, receipt_email, charges } = event.data.object;
+            const {amount, created, customer, receipt_email, charges, metadata } = event.data.object;
             const order = {
-                id,
+                userId: orderData.userId,
                 receipt_email,
                 amount,
                 create_at: created,
@@ -61,10 +60,7 @@ app.post('/webhook', (req, res) => {
             }
             try {
                 //create the order in db
-                db.collection('orders').add({...order}).then(res => {
-                    //update user order
-                    UpdateDB({orderId: res._path.segments[1]}, orderData.userId, 'users').then()
-                });
+                db.collection('orders').doc(metadata.idToCreateTheOrder).set({...order}, {merge: true}).then();
 
                 //update product and variation statistics
                 UpdateProduct(orderData.item).then()
@@ -101,7 +97,10 @@ app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
             amount: +(((fixAmount + taxes + shipping) * 100).toFixed(2)),
             currency: 'usd',
             // Verify your integration in this guide by including this parameter
-            metadata: {integration_check: 'accept_a_payment'},
+            metadata: {
+                integration_check: 'accept_a_payment',
+                idToCreateTheOrder: createId()
+            },
             customer: customer_id,
             //send and email after the payment go successfully, only Live Mode
             receipt_email: email,
@@ -122,10 +121,11 @@ app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
         });
         orderData = {userId, item: [...item]}
         res.status(200).send({
+            idToCreateTheOrder: paymentIntent.metadata.idToCreateTheOrder,
             clientSecret: paymentIntent.client_secret
         });
     } catch (e) {
-        debugger
+        // debugger
         switch (e.type) {
             case 'StripeCardError':
                 res.status(e.statusCode).json({error: e.message})
@@ -180,7 +180,6 @@ app.post('/detach-payment-method', async (req, res) => {
         return res.status(500).json({error: err.message})
     }
 })
-
 
 
 //Done pm_

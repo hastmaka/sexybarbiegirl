@@ -93,8 +93,8 @@ const shopSlice = createSlice({
             state.singleProductState.loaded = true
         }
     },
-    extraReducers: {
-        [getAll.pending]: (state, {meta}) => {
+    extraReducers: (builder) => {
+        builder.addCase(getAll.pending, (state, {meta}) => {
             switch (meta.arg.collection) {
                 case 'products':
                     state.productState.loading = true;
@@ -108,8 +108,8 @@ const shopSlice = createSlice({
                 default:
                     return
             }
-        },
-        [getAll.fulfilled]: (state, { payload, meta }) => {
+        });
+        builder.addCase(getAll.fulfilled, (state, { payload, meta }) => {
             // debugger
             switch (meta.arg.collection) {
                 case 'products':
@@ -139,14 +139,14 @@ const shopSlice = createSlice({
                 default:
                     return
             }
-        },
-        [getAll.rejected]: (state, {payload}) => {
+        });
+        builder.addCase(getAll.rejected, (state, {meta}) => {
             debugger
-            state.message = payload;
+            state.message = meta;
             state.shopState.loaded = false;
-        },
+        });
 
-        [getById.pending]: (state, {meta}) => {
+        builder.addCase(getById.pending, (state, {meta}) => {
             switch (meta.arg.collection) {
                 case 'products':
                     state.singleProductState.loading = true;
@@ -154,25 +154,25 @@ const shopSlice = createSlice({
                 default:
                     return
             }
-        },
-        [getById.fulfilled]: (state, {payload, meta}) => {
+        });
+        builder.addCase(getById.fulfilled, (state, {payload, meta}) => {
             switch (meta.arg.collection) {
                 case 'products':
-                    state.singleProduct = payload;
+                    state.singleProduct = payload[0];
                     state.singleProductState.loading = false;
                     state.singleProductState.loaded = true;
                     break;
                 default:
                     return
             }
-        },
-        [getById.rejected]: (state, {payload, meta}) => {
+        });
+        builder.addCase(getById.rejected, (state, {meta}) => {
             debugger
-            state.message = payload;
+            state.message = meta;
             state.singleProductState.loaded = false;
-        },
+        });
 
-        [create.pending]: (state, {meta}) => {
+        builder.addCase(create.pending, (state, {meta}) => {
             switch (meta.arg.collection) {
                 case 'products':
                     debugger
@@ -184,8 +184,8 @@ const shopSlice = createSlice({
                     return
             }
             state.addProductState.loading = true;
-        },
-        [create.fulfilled]: (state, {meta, payload}) => {
+        });
+        builder.addCase(create.fulfilled, (state, {meta, payload}) => {
             switch (meta.arg.collection){
                 case 'products':
                     debugger
@@ -203,12 +203,12 @@ const shopSlice = createSlice({
                 default:
                     return
             }
-        },
-        [create.rejected]: (state, {payload, meta}) => {
+        });
+        builder.addCase(create.rejected, (state, {meta}) => {
             debugger
-            state.message = payload;
+            state.message = meta;
             state.addProductState.loaded = false;
-        },
+        });
     }
 });
 

@@ -7,7 +7,7 @@ import {styled} from '@mui/material/styles';
 import MyAddress from "./myAddress/MyAddress";
 import MyPaymentMethod from "./myPaymentMethod/MyPaymentMethod";
 import {getCustomerData, urlFirebase, urlLocal} from "../../../helper/stripe/StripeApi";
-import {getAll} from "../../../helper/FirestoreApi";
+import {getAll, getById} from "../../../helper/FirestoreApi";
 import {fetchAPI} from "../../../helper/FetchApi";
 import {stripeSliceActions} from "../../../store/stripeSlice";
 
@@ -51,7 +51,7 @@ export default function MyProfile() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlLocal,
+                    urlFirebase,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}
@@ -73,14 +73,10 @@ export default function MyProfile() {
     //get customer id from stripe store in firestore db
     useEffect(_ => {
         if(!customerStatus.loaded)
-        window.dispatch(getAll({
-            collection: 'stripe_customers',
-            filters: [{
-                field: 'email',
-                operator: '==',
-                value: user.email
-            }]
-        }))
+            window.dispatch(getById({
+                id: user.uid,
+                collection: 'stripe_customers'
+            }))
     }, [customerStatus.loaded]);
 
     useEffect(_ => {

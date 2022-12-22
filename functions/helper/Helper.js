@@ -20,17 +20,13 @@ const UpdateProduct = async (orderItem) => {
                 let tProd = r.data()
                 prodParams.map(param => {
                     if (r.id === param.product_id) {
-                        // let tempSales = tProd.statistic.sales.reduce((acc, curr) => {}, {})
-                        debugger
+                        let hasProperty = param.variation_id in tProd.statistic.sales
                         tProd.statistic = {
                             ...tProd.statistic,
                             sales: {
                                 ...tProd.statistic.sales,
-                                [param.variation_id]: param.quantity
+                                [param.variation_id]: hasProperty ? tProd.statistic.sales[param.variation_id] + param.quantity : param.quantity
                             }
-                                // !!tProd.statistic.sales[param.variation_id] ?
-                                // tProd.statistic.sales[param.variation_id] = tProd.statistic.sales[param.variation_id] + param.quantity :
-                                // [param.variation_id] = param.quantity
                         }
                         let varToUpdate = tProd.variation.findIndex(v => v.id === param.variation_id);
                         tProd.variation[varToUpdate] = {
@@ -54,16 +50,6 @@ const UpdateDB = async (data, idRef, who) => {
             const {payment_method, ...stripeCustomerRest} = tempData.data();
             dataUpdated = {payment_method: payment_method.filter(item => item.pm !== data.pm), ...stripeCustomerRest}
             break;
-        case 'users':
-            const {order, ...userRest} = tempData.data();
-            dataUpdated = {
-                order: [{
-                    orderId: data.orderId,
-                    status: 'processing'
-                }],
-                ...userRest
-            }
-            break;
         default:
             return
 
@@ -72,6 +58,7 @@ const UpdateDB = async (data, idRef, who) => {
 };
 
 const GetProductAndReturnTotalAmount = async (item) => {
+    // debugger
     //check how many product we have to query
     let productToQuery = item.reduce((acc, curr) => {
         if(!acc[curr.product_id]) {
