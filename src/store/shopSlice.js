@@ -5,6 +5,8 @@ const shopSlice = createSlice({
     name: 'shop',
     initialState: {
         product: [],
+        newProduct: [],
+        trending: [],
         review: [],
         filter: {},
         activeFilter: {},
@@ -113,7 +115,9 @@ const shopSlice = createSlice({
             // debugger
             switch (meta.arg.collection) {
                 case 'products':
+                    debugger
                     state.product = payload;
+                    state.newProduct =
                     state.productState.loading = false;
                     state.productState.loaded = true;
                     break;

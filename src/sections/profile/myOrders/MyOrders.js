@@ -3,9 +3,8 @@ import {useEffect} from "react";
 // material
 import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import {getById, getRTDataFromUserOrder} from "../../../helper/FirestoreApi";
 import Table from "./table/table";
-import * as FirestoreApi from "../../../helper/FirestoreApi";
+import {getRTDataFromUserOrder} from "../../../helper/FirestoreApi";
 
 //----------------------------------------------------------------
 
@@ -40,7 +39,7 @@ export default function MyOrders() {
     // debugger
 
     useEffect(_ => {
-        FirestoreApi.getRTDataFromUserOrder({userId: user.uid, collection: 'orders'}).then()
+        getRTDataFromUserOrder({userId: user.uid, collection: 'orders'}).then()
     }, [])
 
     return (

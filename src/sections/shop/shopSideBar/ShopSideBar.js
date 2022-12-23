@@ -30,7 +30,8 @@ const StickySideBar = styled(Stack)(({theme}) => ({
     top: '115px',
     gap: '10px',
     [theme.breakpoints.down(900)]: {
-        gap: '5px'
+        gap: '5px',
+        top: 0,
     }
 }));
 

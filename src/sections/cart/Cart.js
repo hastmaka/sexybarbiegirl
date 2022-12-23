@@ -13,14 +13,14 @@ import CartItemTable from "./cartItemTable/CartItemTable";
 import CartSummary from "./cartSummary/CartSummary";
 import EzProductWidget from '../../components/ezComponents/EzProductWidget/EzProductWidget';
 import {calculateTotalFromCheckItems} from "../../helper/Helper";
+import Wrapper from "../../components/Wrapper/Wrapper";
 
 //----------------------------------------------------------------
 
 const RootStyle = styled(Stack)(({theme}) => ({
     alignItems: 'center',
     padding: '0 10px 10px 10px',
-    // backgroundColor: theme.palette.grey[300]
-    backgroundColor: theme.palette.grey[900]
+    backgroundColor: theme.palette.grey[300]
 }));
 
 const CartContainer = styled(Stack)(({theme}) => ({
@@ -51,15 +51,6 @@ const StickyFix = styled(Stack)(({screen, theme}) => ({
     }
 }));
 
-const ChildContainer = styled(Stack)(({theme}) => ({
-    gap: '20px',
-    padding: '20px',
-    boxShadow: theme.shadows[5],
-    // backgroundColor: theme.palette.grey[800],
-    backgroundColor: theme.palette.grey[800],
-    borderRadius: '4px',
-}));
-
 //-----------------------------------------------------------------------
 export default function Cart() {
     const navigate = useNavigate();
@@ -83,7 +74,7 @@ export default function Cart() {
                 <ParentContainer>
                     <StickyFix screen={screen}>
                         <CartSummary user={user} totalFromCheckedItems={totalFromCheckedItems} total={total}/>
-                        <ChildContainer>
+                        <Wrapper sx={{gap: '20px', padding: '20px'}}>
                             <EzLoadingBtn
                                 sx={{
                                     marginTop: '25px',
@@ -110,7 +101,7 @@ export default function Cart() {
                                 <LockIcon
                                     sx={{fontSize: '11px', paddingLeft: '2px', top: '2px', position: 'absolute'}}/>
                             </EzHelpText>
-                        </ChildContainer>
+                        </Wrapper>
                         {/*recently visited*/}
                         <EzProductWidget productToRender={product} header='Recently Visited'/>
                     </StickyFix>

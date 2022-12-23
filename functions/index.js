@@ -4,7 +4,8 @@ const app = express();
 const functions = require('firebase-functions');
 //stripe
 const stripe = require('stripe')(process.env.STRIPE_KEY);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
+const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
 
 const admin = require('firebase-admin');
 admin.initializeApp({credential: admin.credential.cert(credential)});
@@ -12,8 +13,7 @@ const db = admin.firestore();
 //CORS
 const cors = require('cors')({origin: '*'});
 app.use(cors);
-// Use JSON parser for all non-webhook routes
-app.use(express.json());
+// app.use(express.json());
 const {appCheckVerification} = require('./checkToken');
 const {listAllShippingOptions, retrieveCustomer, retrievePaymentMethod} = require("./stripe/Stripe");
 const {UpdateProduct, UpdateDB, GetProductAndReturnTotalAmount} = require("./helper/Helper");
@@ -23,7 +23,7 @@ let orderData = {};
 
 //Express
 app.get('/test', (req, res) => {
-    debugger
+    // debugger
     res.send('Hello world');
 });
 app.get('/test-cached', (req, res) => {
@@ -39,7 +39,7 @@ app.post('/webhook', (req, res) => {
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretFirebase);
     }
     catch (err) {
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -149,7 +149,7 @@ app.post('/create-payment-intent-to-save-a-card', appCheckVerification, async (r
         });
         res.status(200).json({client_secret: setupIntent.client_secret});
     } catch (e) {
-        debugger
+        // debugger
         switch (e.type) {
             case 'StripeCardError':
                 res.status(e.statusCode).json({error: e.message})

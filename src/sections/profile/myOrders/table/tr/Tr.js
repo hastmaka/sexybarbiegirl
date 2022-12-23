@@ -4,13 +4,34 @@ import {styled} from '@mui/material/styles';
 //
 import Cell from "../cell/Cell";
 import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
+import EzButton from "../../../../../components/ezComponents/EzButton/EzButton";
 
 //----------------------------------------------------------------
+const btnStyle = {
+    color: theme => theme.palette.ecommerce.pink,
+    border: `1px solid ${'#f438de'}`,
+    '&:hover': {
+        color: theme => theme.palette.ecommerce.swatch_8,
+        border: `1px solid ${'#fff'}`,
+        backgroundColor: theme => theme.palette.ecommerce.pink,
+    }
+}
+
+const CellContainer = styled(Box)(({theme}) => ({
+    display: 'grid',
+    gridGap: '10px',
+    gridTemplateColumns: '60% 40%',
+    '*': {
+        fontWeight: 700,
+    }
+}))
 
 const ImgContainer = styled(Box)(({theme}) => ({
     padding: '10px 5px',
+    borderRadius: '4px',
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
+    gridTemplateColumns: '1fr',
     gridGap: 'px'
 }))
 
@@ -18,44 +39,34 @@ const ImgContainer = styled(Box)(({theme}) => ({
 
 export default function Tr({iItem}) {
     const {amount, create_at, order_status, item} = iItem;
+    let date = new Date(create_at);
+    // debugger
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                    xs: 'minmax(100px, 1.5fr) 1fr .3fr .4fr',
-                    md: 'minmax(100px, 1.5fr) 1fr .6fr .4fr'
-                },
-                '*': {
-                    fontWeight: 700,
-                }
-            }}
-        >
+        <CellContainer>
             <Cell>
                 <Stack flexDirection='row' gap='5px'>
                     <ImgContainer>
                         {item.map(item =>
-                            <img key={item.variation_id} src={item.image.url} alt="product-image"/>
+                            <img
+                                key={item.variation_id}
+                                src={item.image.url}
+                                alt="product-image"
+                                style={{borderRadius: '4px'}}
+                            />
                         )}
                     </ImgContainer>
                 </Stack>
             </Cell>
-            <Cell>
-                <Typography
-                    variant='span'
+            <Cell sx={{gap: '5px'}}>
+                <EzText text={<EzPriceFormat price={amount / 100}/>}/>
+                <EzText text={date.toLocaleDateString()}/>
+                <EzText text={order_status}/>
+                <EzButton
+                    sx={{...btnStyle}}
                 >
-                    <EzPriceFormat
-                        price={amount / 100}
-                        color='#3a3a3a'
-                    />
-                </Typography>
+                    Details
+                </EzButton>
             </Cell>
-            <Cell>
-                <Typography variant='span'>{create_at}</Typography>
-            </Cell>
-            <Cell>
-                <Typography variant='span'>{order_status}</Typography>
-            </Cell>
-        </Box>
+        </CellContainer>
     )
 }

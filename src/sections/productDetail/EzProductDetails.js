@@ -300,7 +300,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
                         <Stack flexDirection='row' gap='2px' alignItems='center'>
                             <HeaderText variant='span' sx={{fontSize: '16px'}}>Share: </HeaderText>
                             <Share
-                                link={`https://5691-2600-8801-192-4500-8c76-8e05-b305-1305.ngrok.io/full-detail/${id}`}
+                                link={`https://sexybarbiegirl-f6068.web.app/full-detail/${id}`}
                                 data={[{
                                     social: 'Facebook',
                                     icon: <FacebookRoundedIcon/>

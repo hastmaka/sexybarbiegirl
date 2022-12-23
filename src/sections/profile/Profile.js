@@ -20,10 +20,10 @@ const RootStyle = styled(Stack)(({theme}) => ({
     alignItems: 'center',
     backgroundColor: theme.palette.grey[300],
     [theme.breakpoints.down(786)]: {
-        padding: '5px 0 5px 0'
+        // padding: '5px 0 5px 0'
     },
     [theme.breakpoints.up(786)]: {
-        padding: '10px'
+        // padding: '10px'
     }
 }));
 
@@ -46,9 +46,25 @@ const ProfileContainerFix = styled(Box)(({theme}) => ({
     }
 }));
 
+const StickySide = styled(Stack)(({theme}) => ({
+    height: 'calc(100% - 10px)',
+    backgroundColor: '#fff',
+    borderRadius: '0 4px 4px 0',
+    margin: '5px 0 5px 0',
+    [theme.breakpoints.up(786)]: {
+        height: 'calc(100% - 20px)',
+        borderRadius: '4px',
+        margin: '10px 0 10px 0',
+    }
+}));
+
 const TabContainer = styled(Stack)(({theme}) => ({
     backgroundColor: theme.palette.grey[300],
-    width: '100%'
+    width: '100%',
+    margin: '5px 0 5px 0',
+    [theme.breakpoints.up(786)]: {
+        margin: '10px 0 10px 0',
+    }
 }));
 
 const Parent = styled(Stack)(({theme}) => ({
@@ -104,70 +120,74 @@ export default function Profile() {
         <RootStyle>
             <ProfileContainer>
                 <ProfileContainerFix>
-                    <Tabs
-                        value={tabIndex}
-                        onChange={(e, newTabIndex) => setTabIndex(newTabIndex)}
-                        orientation="vertical"
-                        sx={({palette}) => ({
-                            borderRadius: screen <= 786 ? '0 4px 4px 0' : '4px',
-                            backgroundColor: '#fff',
-                            maxWidth: screen <= 786 ? '40px' : '160px',
-                            minWidth: screen <= 786 ? '40px' : '160px',
-                            '& .MuiTabs-indicator': {
-                                display: screen <= 786 ? 'none' : '',
-                                backgroundColor: palette.ecommerce.swatch_2,
-                                width: '3px'
-                            },
-                            '& .MuiTab-root': {
-                                display: screen <= 786 ? '' : 'flex',
-                                flexDirection: screen <= 786 ? '' : 'row',
-                                gap: screen <= 786 ? '' : '5px',
-                                justifyContent: screen <= 786 ? '' : 'flex-start',
-                                minHeight: '48px'
-                            },
-                            '& .Mui-selected': {
-                                color: `${palette.ecommerce.swatch_4} !important`,
-                                backgroundColor: palette.ecommerce.pink
-                            },
-                            '& .MuiButtonBase-root': {
-                                fontSize: '12px'
-                            },
-                            '& button': {
-                                minWidth: 0
-                            }
-                        })}
-                    >
-                        {screen <= 786 && tabMobile.map(tab =>
-                            <Tab key={tab.id} icon={tab.icon}/>
-                        )}
-                        {screen >= 786 && tabDesktop.map(tab =>
-                            <Tab key={tab.id} icon={tab.icon} label={tab.label} sx={{marginBottom: '3px'}}/>//fix align label and icon
-                        )}
-                    </Tabs>
-                        <TabContainer>
-                            <Parent>
-                                {tabIndex === 0 ? (
-                                    <Child>
-                                        <MyProfile/>
-                                    </Child>
-                                ) :
-                                tabIndex === 1 ? (
-                                    <Child>
-                                        <MyOrders/>
-                                    </Child>
-                                ) :
-                                tabIndex === 2 ? (
-                                    <Child>
-                                        <WishList/>
-                                    </Child>
-                                ) :
-                                tabIndex === 3 ? (
-                                    <Child>
-                                        Shipping Info - Return Policy - Privacy & Cookie Policy
-                                    </Child>
-                                ) : ''}
-                            </Parent>
-                        </TabContainer>
+                    <StickySide>
+                        <Tabs
+                            value={tabIndex}
+                            onChange={(e, newTabIndex) => setTabIndex(newTabIndex)}
+                            orientation="vertical"
+                            sx={({palette}) => ({
+                                borderRadius: screen <= 786 ? '0 4px 4px 0' : '4px',
+                                // backgroundColor: '#fff',
+                                maxWidth: screen <= 786 ? '40px' : '160px',
+                                minWidth: screen <= 786 ? '40px' : '160px',
+                                position: 'sticky',
+                                top: screen <= 786 ? '80px' : '120px',
+                                '& .MuiTabs-indicator': {
+                                    display: screen <= 786 ? 'none' : '',
+                                    backgroundColor: palette.ecommerce.swatch_2,
+                                    width: '3px'
+                                },
+                                '& .MuiTab-root': {
+                                    display: screen <= 786 ? '' : 'flex',
+                                    flexDirection: screen <= 786 ? '' : 'row',
+                                    gap: screen <= 786 ? '' : '5px',
+                                    justifyContent: screen <= 786 ? '' : 'flex-start',
+                                    minHeight: '48px'
+                                },
+                                '& .Mui-selected': {
+                                    color: `${palette.ecommerce.swatch_4} !important`,
+                                    backgroundColor: palette.ecommerce.pink
+                                },
+                                '& .MuiButtonBase-root': {
+                                    fontSize: '12px'
+                                },
+                                '& button': {
+                                    minWidth: 0
+                                }
+                            })}
+                        >
+                            {screen <= 786 && tabMobile.map(tab =>
+                                <Tab key={tab.id} icon={tab.icon}/>
+                            )}
+                            {screen >= 786 && tabDesktop.map(tab =>
+                                <Tab key={tab.id} icon={tab.icon} label={tab.label} sx={{marginBottom: '3px'}}/>//fix align label and icon
+                            )}
+                        </Tabs>
+                    </StickySide>
+                    <TabContainer>
+                        <Parent>
+                            {tabIndex === 0 ? (
+                                <Child>
+                                    <MyProfile/>
+                                </Child>
+                            ) :
+                            tabIndex === 1 ? (
+                                <Child>
+                                    <MyOrders/>
+                                </Child>
+                            ) :
+                            tabIndex === 2 ? (
+                                <Child>
+                                    <WishList/>
+                                </Child>
+                            ) :
+                            tabIndex === 3 ? (
+                                <Child>
+                                    Shipping Info - Return Policy - Privacy & Cookie Policy
+                                </Child>
+                            ) : ''}
+                        </Parent>
+                    </TabContainer>
                 </ProfileContainerFix>
             </ProfileContainer>
         </RootStyle>

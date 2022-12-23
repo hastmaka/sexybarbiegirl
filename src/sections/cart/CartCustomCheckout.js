@@ -11,7 +11,7 @@ import CartSummary from "./cartSummary/CartSummary";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
 import {getById} from "../../helper/FirestoreApi";
-import {getAllShippingOption, getCustomerData, urlFirebase, urlLocal} from "../../helper/stripe/StripeApi";
+import {getAllShippingOption, getCustomerData, url} from "../../helper/stripe/StripeApi";
 import {fetchAPI} from "../../helper/FetchApi";
 import {stripeSliceActions} from "../../store/stripeSlice";
 import {generalSliceActions} from "../../store/gs-manager-slice";
@@ -25,6 +25,7 @@ import {userSliceActions} from "../../store/userSlice";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
 import * as FirestoreApi from "../../helper/FirestoreApi";
+import Wrapper from "../../components/Wrapper/Wrapper";
 
 
 //----------------------------------------------------------------
@@ -61,14 +62,6 @@ const StickyFix = styled(Stack)(({theme}) => ({
         position: 'relative',
         top: 0,
     }
-}));
-
-const ChildContainer = styled(Stack)(({theme}) => ({
-    gap: '20px',
-    padding: '20px',
-    boxShadow: theme.shadows[5],
-    backgroundColor: theme.palette.grey[800],
-    borderRadius: '4px',
 }));
 
 //----------------------------------------------------------------
@@ -150,7 +143,7 @@ export default function CartCustomCheckout() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlFirebase,
+                    url,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}
@@ -205,7 +198,7 @@ export default function CartCustomCheckout() {
 
         setLoading(true);
         try {
-            const res = await fetchAPI(urlFirebase, 'create-payment-intent', 'POST', {
+            const res = await fetchAPI(url, 'create-payment-intent', 'POST', {
                 customer_id: customer_id,
                 item: itemChecked,
                 shipping: shippingOptionSelected.amount / 100 || 0,
@@ -229,19 +222,19 @@ export default function CartCustomCheckout() {
                     //create a temp order to give an instant feedback to the user then sync with db
                     // debugger
                     const {item, ...rest} = cart;
-                    // FirestoreApi.createOrder({
-                    //     data: {
-                    //         userId: user.uid,
-                    //         receipt_email: user.email,
-                    //         amount: result.paymentIntent.amount,
-                    //         create_at: Date.now(),
-                    //         customer_id: customer.customer_id,
-                    //         order_status: 'processing',
-                    //         shipping: {...user.address.filter(item => item.main)[0]},
-                    //         item: [...itemChecked]
-                    //     },
-                    //     id: res.idToCreateTheOrder
-                    // })
+                    FirestoreApi.createOrder({
+                        data: {
+                            userId: user.uid,
+                            receipt_email: user.email,
+                            amount: result.paymentIntent.amount,
+                            create_at: Date.now(),
+                            customer_id: customer.customer_id,
+                            order_status: 'processing',
+                            shipping: {...user.address.filter(item => item.main)[0]},
+                            item: [...itemChecked]
+                        },
+                        id: res.idToCreateTheOrder
+                    })
                     window.dispatch(userSliceActions.updateCartAfterPurchase({
                         cart: {
                             item: [...itemUnChecked],
@@ -293,7 +286,7 @@ export default function CartCustomCheckout() {
                             handleShippingRate={handleShippingRate}
                             shippingOptionSelected={shippingOptionSelected}
                         />
-                        <ChildContainer>
+                        <Wrapper sx={{gap: '20px', padding: '20px'}}>
                             <EzLoadingBtn
                                 sx={{
                                     marginTop: '25px',
@@ -330,7 +323,7 @@ export default function CartCustomCheckout() {
                                 <LockIcon
                                     sx={{fontSize: '11px', paddingLeft: '2px', top: '2px', position: 'absolute'}}/>
                             </EzHelpText>
-                        </ChildContainer>
+                        </Wrapper>
                     </StickyFix>
                 </ParentContainer>
             </CartContainer>

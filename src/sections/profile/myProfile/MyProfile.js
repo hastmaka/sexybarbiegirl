@@ -6,7 +6,7 @@ import {styled} from '@mui/material/styles';
 //
 import MyAddress from "./myAddress/MyAddress";
 import MyPaymentMethod from "./myPaymentMethod/MyPaymentMethod";
-import {getCustomerData, urlFirebase, urlLocal} from "../../../helper/stripe/StripeApi";
+import {getCustomerData, url} from "../../../helper/stripe/StripeApi";
 import {getAll, getById} from "../../../helper/FirestoreApi";
 import {fetchAPI} from "../../../helper/FetchApi";
 import {stripeSliceActions} from "../../../store/stripeSlice";
@@ -51,7 +51,7 @@ export default function MyProfile() {
         const getClientSecretFromStripe = async () => {
             try {
                 const res = await fetchAPI(
-                    urlFirebase,
+                    url,
                     'create-payment-intent-to-save-a-card',
                     'POST',
                     {customer_id: customer.customer_id}

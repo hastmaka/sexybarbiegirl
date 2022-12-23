@@ -138,7 +138,7 @@ export default function Tr({name, color, size, image, price, quantity, variation
                         />
                     </Stack>
                     <ImageContainer onClick={_ => navigate(`/full-detail/${product_id}`, {state: productToFullView[0]})}>
-                        <img src={image} alt="product image"/>
+                        <img src={image} alt="product image" style={{borderRadius: '4px'}}/>
                     </ImageContainer>
                     <Stack
                         sx={{

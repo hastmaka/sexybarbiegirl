@@ -17,7 +17,8 @@ const userSlice = createSlice({
             updateLocalStore('user', {...state.user});
         },
         setOrder(state, {payload}) {
-            state.order = [...payload]
+            state.order = [...payload];
+            state.orderStatus.loaded = true;
         },
 
         addToWishList(state, {payload}) {

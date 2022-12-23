@@ -153,7 +153,7 @@ export const updateAddressApi = (uid, address) => {
 export const getRTDataFromUserOrder = async ({userId, collection}) => {
     const q = query(firestoreCollection(db, collection), where('userId', "==", userId));
     await onSnapshot(q, {includeMetadataChanges: true}, (querySnapshot) => {
-        debugger
+        // debugger
         const order = [];
         querySnapshot.forEach(doc => {
             order.push({...doc.data(), id: doc.id});

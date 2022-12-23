@@ -1,0 +1,9 @@
+//deploy stage(test page)
+firebase hosting:channel:deploy (wherever id you want) --expires (how long it gonna be up)
+firebase hosting:channel:deploy         test           --expires            2d(two days)
+
+//list all channels
+firebase hosting:channel:list
+
+//delete channel
+firebase hosting:channel:delete (id)

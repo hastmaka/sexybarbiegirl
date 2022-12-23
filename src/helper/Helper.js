@@ -1,7 +1,7 @@
 import {generalSliceActions} from "../store/gs-manager-slice";
 import {userSliceActions} from "../store/userSlice";
 import {fetchAPI} from "./FetchApi";
-import {getCustomerData, urlLocal} from "./stripe/StripeApi";
+import {getCustomerData, url} from "./stripe/StripeApi";
 import {stripeSliceActions} from "../store/stripeSlice";
 
 export const sortPaymentMethod = (stripePm, firebasePm) => {
@@ -233,7 +233,7 @@ export const deletePaymentMethod = (pm, user, customer) => {
                 (async function () {
                     try {
                         const {deleted} = await fetchAPI(
-                            urlLocal,
+                            url,
                             'detach-payment-method',
                             'POST',
                             {pm, customer: user.uid}
