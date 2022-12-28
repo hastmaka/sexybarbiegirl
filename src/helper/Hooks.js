@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {generalSliceActions} from "../store/gs-manager-slice";
 
 export const useOnClickOutside = (ref, handler) => {
@@ -96,6 +96,54 @@ export const useLocalStorage = (key, initialValue) => {
     return [storedValue, setValue];
 };
 
+export const useCrossTabState = (stateKey,d) => {
+    // debugger
+    const [state,setState] = useState(d)
+    const isNewSession = useRef(true)
+
+    useEffect(()=>{
+        if(isNewSession.current){
+            const currentState = localStorage.getItem(stateKey)
+            if(currentState){
+                setState(JSON.parse(currentState))
+            }else{
+                setState(d)
+            }
+            isNewSession.current = false
+            return
+        }
+        try{
+            localStorage.setItem(stateKey,JSON.stringify(state))
+        }catch(error){}
+    },[state,stateKey,d])
+
+    useEffect(()=>{
+        // debugger
+        const onReceiveMessage = (e) => {
+            if(!localStorage.getItem('user') || localStorage.getItem('user') === 'undefined' ){
+                localStorage.setItem(stateKey,JSON.stringify(state))
+            }
+            const {key,newValue, oldValue} = e;
+            switch (key) {
+                case 'user':
+                    if(newValue !== oldValue) {
+                        setState(JSON.parse(oldValue))
+                    }
+                    break;
+                default:
+                    return;
+            }
+            // if(key === stateKey){
+            //     setState(JSON.parse(newValue))
+            // }
+        }
+        window.addEventListener('storage',onReceiveMessage)
+        return () => window.removeEventListener('storage',onReceiveMessage)
+    },[stateKey,setState])
+
+    return [state,setState]
+}
+
 export const useNotification = () => {
     const displayNotification = ({t, title, c, i}) => {
         window.dispatch(generalSliceActions.showNotification({t, title, c, i}))
@@ -125,6 +173,9 @@ export const useConfirmDialog = () => {
     return { onConfirm, onCancel, confirm }
 }
 
+
+
+//test
 const initBeforeUnLoad = (showExitPrompt) => {
     window.onbeforeunload = (event) => {
         if (showExitPrompt) {

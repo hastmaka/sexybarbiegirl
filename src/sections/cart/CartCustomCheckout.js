@@ -128,9 +128,9 @@ export default function CartCustomCheckout() {
     useEffect(_ => {
         if (customerStatus.loaded) {
             Promise.all([
-                window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer})),
-                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer})),
-                window.dispatch(getAllShippingOption({endpoint: 'list-all-shipping-option'})),
+                window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer, token: user.token})),
+                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer, token: user.token})),
+                window.dispatch(getAllShippingOption({endpoint: 'list-all-shipping-option', token: user.token})),
             ]).then()
         }
     }, [customerStatus.loaded]);
@@ -146,7 +146,8 @@ export default function CartCustomCheckout() {
                     url,
                     'create-payment-intent-to-save-a-card',
                     'POST',
-                    {customer_id: customer.customer_id}
+                    {customer_id: customer.customer_id},
+                    user.token
                 )
                 window.dispatch(stripeSliceActions.setSecret(res.client_secret))
             } catch (e) {
@@ -206,7 +207,7 @@ export default function CartCustomCheckout() {
                 email: user.email,
                 tempAddress: user.address.filter(item => item.main),
                 userId: user.uid
-            })
+            }, user.token)
             const result = await stripe.confirmCardPayment(res.clientSecret, {
                 payment_method: mainPaymentMethod[0].id
             });

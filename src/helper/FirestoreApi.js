@@ -59,7 +59,7 @@ export const getById = createAsyncThunk(
             let data = [];
             const tempData = await Promise.all(promise);
             tempData.forEach(doc => {
-                data.push({...doc.data(), id: doc.id})
+                data.push({...doc.data(), uid: doc.id})
             })
             return data;
         } catch (error) {
@@ -150,8 +150,8 @@ export const updateAddressApi = (uid, address) => {
  * @param collection
  * @returns {Promise<void>}
  */
-export const getRTDataFromUserOrder = async ({userId, collection}) => {
-    const q = query(firestoreCollection(db, collection), where('userId', "==", userId));
+export const getDataAndKeepSync = async ({id, collection}) => {
+    const q = query(firestoreCollection(db, collection), where('userId', "==", id));
     await onSnapshot(q, {includeMetadataChanges: true}, (querySnapshot) => {
         // debugger
         const order = [];
@@ -160,6 +160,17 @@ export const getRTDataFromUserOrder = async ({userId, collection}) => {
         });
         window.dispatch(userSliceActions.setOrder(order))
     });
+}
+
+export const getUser = (uid) => {
+    return new Promise(async (resolve, reject) => {
+        try{
+            const user = await getDoc(doc(db, 'users', uid))
+            resolve({...user.data(), uid: user.id})
+        } catch (err) {
+            reject(err)
+        }
+    })
 }
 
 export const createOrder = ({data, id}) => {

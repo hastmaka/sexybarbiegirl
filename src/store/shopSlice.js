@@ -115,7 +115,7 @@ const shopSlice = createSlice({
             // debugger
             switch (meta.arg.collection) {
                 case 'products':
-                    debugger
+                    // debugger
                     state.product = payload;
                     state.newProduct =
                     state.productState.loading = false;

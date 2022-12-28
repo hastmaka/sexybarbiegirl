@@ -16,7 +16,10 @@ import EzProductCard from "../EzProductCard/EzProductCard";
 //----------------------------------------------------------------
 
 export default function EzSwiper({data, show, freeMode, allowTouchMove = false, ...others}) {
-    //data is an array, [{id: any, el: React Node}] or, [products] to show in EzProductCard
+    /**
+     * data is an array, [{id: any, el: React Node}] or, [products] to show in EzProductCard
+     * @type {*[]}
+     */
     const slides = [];
         data.map(item => {
             return slides.push(
@@ -29,7 +32,7 @@ export default function EzSwiper({data, show, freeMode, allowTouchMove = false, 
         })
     return (
         <Swiper
-            freeMode={freeMode}
+            // freeMode={freeMode}
             grabCursor={true}
             allowTouchMove={allowTouchMove}
             modules={[FreeMode, A11y, Navigation, Pagination, Thumbs, Zoom, Lazy, Controller]}

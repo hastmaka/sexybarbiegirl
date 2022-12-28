@@ -10,9 +10,9 @@ export const url = urlFirebase;
 //need with createAsyncThunk to update the store
 export const getCustomerData = createAsyncThunk(
     'stripe/getCustomerData',
-    async ({endpoint, customer}, {rejectWithValue})  => {
+    async ({endpoint, customer, token}, {rejectWithValue})  => {
         try {
-            return await fetchAPI(url, endpoint, 'GET', customer);
+            return await fetchAPI(url, endpoint, 'GET', customer, token);
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);
@@ -22,9 +22,9 @@ export const getCustomerData = createAsyncThunk(
 
 export const getAllShippingOption = createAsyncThunk(
     'stripe/getAllShippingOption',
-    async ({endpoint}, {rejectWithValue})  => {
+    async ({endpoint, token}, {rejectWithValue})  => {
         try {
-            return await fetchAPI(url, endpoint, 'GET');
+            return await fetchAPI(url, endpoint, 'GET', null, token);
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);

@@ -36,8 +36,9 @@ export default function EzModal({open, handleClose, children}) {
                 // toolTipTitle='Close'
                 onClick={handleClose}
                 sx={{
-                    position: 'absolute',
-                    right: 0,
+                    position: 'fixed',
+                    right: {xs: '19px', md: 0},
+                    top: {xs: '27px', md: 0},
                     margin: '10px',
                     zIndex: 1000
                 }}

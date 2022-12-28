@@ -5,7 +5,7 @@ const functions = require('firebase-functions');
 //stripe
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
-const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
+// const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
 
 const admin = require('firebase-admin');
 admin.initializeApp({credential: admin.credential.cert(credential)});
@@ -22,7 +22,7 @@ const {createId} = require("./helper/Common");
 let orderData = {};
 
 //Express
-app.get('/test', (req, res) => {
+app.get('/test', appCheckVerification, (req, res) => {
     // debugger
     res.send('Hello world');
 });

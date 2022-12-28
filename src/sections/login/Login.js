@@ -3,17 +3,15 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {generalSliceActions} from "../../store/gs-manager-slice";
 import {userSliceActions} from "../../store/userSlice";
 // material
-import {Box, IconButton, InputAdornment, Stack, Typography} from '@mui/material';
+import {Box, IconButton, InputAdornment, Stack} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 //firebase
-import {doc, getDoc} from "firebase/firestore";
 import FirebaseAuthService from "../../helper/FirebaseAuthService";
-import {db} from "../../helper/FirebaseConfig";
 //
 import LoginWrapper from './LoginWrapper';
-import {mergeTwoCart, updateCart} from "../../helper/Helper";
-import {updateCartApi} from "../../helper/FirestoreApi";
+import {loginProcess} from "../../helper/Helper";
+import {getUser} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
@@ -42,34 +40,9 @@ export default function Login({modal}) {
             password = data.get('password');
         setLoading(true);
         try {
-            const user = await FirebaseAuthService.loginUser(email, password);
-            if(user) {
-                const data = await getDoc(doc(db, 'users', user.uid));
-                if(!data.data().dummy) {
-                    const {cart, ...rest} = data.data();
-                    const tempCart = JSON.parse(localStorage.getItem('user')).cart;
-                    if (tempCart.item.length > 0) {
-                        cart.item = cart.item.length > 0 ? mergeTwoCart([...tempCart.item, ...cart.item]) : [...tempCart.item];
-                        const cartUpdated = updateCart(cart);
-                        updateCartApi(user.uid, cartUpdated);
-                        window.dispatch(userSliceActions.setUser({...rest, cart: {...cartUpdated}}));
-                        if(modal) {
-                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
-                        }
-                        navigate(location.pathname === '/checkout' ? '/checkout' : '/')
-                        setLoading(false);
-                    } else {
-                        if(modal) {
-                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
-                        }
-                        window.dispatch(userSliceActions.setUser(data.data()))
-                        navigate('/');
-                        setLoading(false)
-                    }
-                }
-            } else {
-                setLoading(false)
-            }
+            const firebaseUser = await FirebaseAuthService.loginUser(email, password);
+            const dbUser = await getUser(firebaseUser.uid);
+            loginProcess({firebaseUser, dbUser, modal, navigate, location, setLoading}).then();
         } catch (err) {
             alert(`Login Error ${err.message}`);
             setLoading(false)

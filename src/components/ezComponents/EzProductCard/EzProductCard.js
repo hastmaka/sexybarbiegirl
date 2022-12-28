@@ -142,7 +142,6 @@ export default function EzProductCard({product}) {
     const [isHovered, setIsHovered] = useState(false);
     const isProductInWishlist = user.dummy ? false : user.wish_list.some(item => item.id === product.id);
     const {screen} = useSelector(slice => slice.generalState);
-    // debugger
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);

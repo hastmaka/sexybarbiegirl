@@ -16,26 +16,6 @@
     <title>SexyBarbieGirl</title>
 </head>
 <body>
-<div id="root"></div>
-<script>
-    window.addEventListener('storage', (e) => {
-        //check if someone alter the localStore manually
-        let t = {uid: 'tempUser', dummy: true, role: 3, cart: {}};
-        if(e.key === 'user') {
-            if(JSON.stringify(t) !== e.newValue) {
-                localStorage.setItem('user', JSON.stringify({uid: 'tempUser', dummy: true, role: 3, cart: {item: []}}))
-            }
-        }
-        if(e.key === 'profile') {
-            localStorage.setItem('profile', e.oldValue)
-        }
-        window.location.reload();
-    });
-
-    if(!localStorage.getItem('user') || localStorage.getItem('user') === 'undefined') {
-        localStorage.setItem('user', JSON.stringify({uid: 'tempUser', dummy: true, role: 3, cart: {item: []}}));
-    }
-</script>
-
+    <div id="root"></div>
 </body>
 </html>

@@ -9,7 +9,7 @@ import {
     signOut,
     getIdToken
 } from 'firebase/auth';
-import {getById} from "./FirestoreApi";
+import {getById, getUser} from "./FirestoreApi";
 import {userSliceActions} from "../store/userSlice";
 
 const registerUser = async (email, password) => {
@@ -35,7 +35,6 @@ const registerUser = async (email, password) => {
 const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password)
         .then(async userCredential => {
-            window.dispatch(userSliceActions.setUser({token: userCredential.user.accessToken}));
             return userCredential.user
         }).catch(e => {
             switch (e.code) {
@@ -78,12 +77,12 @@ const loginWithGoogle = () => {
     return signInWithPopup(auth, provider);
 }
 
-const subscribeToAuthChanges = ( user) => {
+const subscribeToAuthChanges = () => {
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
             let token = await getIdToken(firebaseUser);
             try {
-                window.dispatch(getById({id: user.uid, collection: 'users'}))
+                const user = await getUser(firebaseUser.uid);
                 window.dispatch(userSliceActions.setUser({...user, token}))
             } catch (err) {
                 console.log(err);

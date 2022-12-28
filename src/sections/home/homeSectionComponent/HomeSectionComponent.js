@@ -120,7 +120,7 @@ export default function HomeSectionComponent({blackText, pinkText, simpleLink, p
                             spaceBetween: 16
                         },
                         1920: {
-                            slidesPerView: 6,
+                            slidesPerView: 5,
                             spaceBetween: 8
                         }
                     }}

@@ -1,18 +1,18 @@
 import {useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 // material
-import {Box, IconButton, InputAdornment,Typography} from '@mui/material';
+import {Box, IconButton, InputAdornment} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 //firebase
-import {setDoc, doc, getDoc } from "firebase/firestore";
+import {setDoc, doc } from "firebase/firestore";
 import {db} from "../../helper/FirebaseConfig";
 import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import LoginWrapper from './LoginWrapper';
 import {userSliceActions} from "../../store/userSlice";
-import {mergeTwoCart, updateCart} from "../../helper/Helper";
-import {updateCartApi} from "../../helper/FirestoreApi";
+import {loginProcess, mergeTwoCart, updateCart} from "../../helper/Helper";
+import {getUser, updateCartApi} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
@@ -53,7 +53,6 @@ export default function CreateAccount({ modal}) {
                     userTemp.email = user.email;
                     userTemp.address = [];
                     userTemp.full_name = '';
-                    userTemp.uid = user.uid;
                     userTemp.role = 2;
                     userTemp.dummy = false;
                     userTemp.cart = {
@@ -70,31 +69,14 @@ export default function CreateAccount({ modal}) {
                     window.confirm({t: 'info', c: `Account Created Successfully want to 'Sign In Directly?'`})
                         .then(async (res) => {
                             if(res) {
-                                const user = await FirebaseAuthService.loginUser(email, password);
-                                const data = await getDoc(doc(db, 'users', user.uid));
-                                if(!data.data().dummy) {
-                                    const {cart, ...rest} = data.data();
-                                    const tempCart = JSON.parse(localStorage.getItem('user')).cart;
-                                    if (tempCart.item.length > 0) {
-                                        cart.item = cart.item.length > 0 ? mergeTwoCart([...tempCart.item, ...cart.item]) : [...tempCart.item];
-                                        const cartUpdated = updateCart(cart);
-                                        updateCartApi(user.uid, cartUpdated);
-                                        window.dispatch(userSliceActions.setUser({...rest, cart: {...cartUpdated}}));
-                                        if(modal) {
-                                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
-                                        }
-                                        navigate(location.pathname === '/checkout' ? '/checkout' : '/')
-                                        setLoading(false);
-                                    } else {
-                                        if(modal) {
-                                            window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
-                                        }
-                                        window.dispatch(userSliceActions.setUser(data.data()))
-                                        navigate('/');
-                                        setLoading(false)
-                                    }
+                                try {
+                                    const firebaseUser = await FirebaseAuthService.loginUser(email, password);
+                                    const dbUser = await getUser({uid: firebaseUser.uid, client: true});
+                                    loginProcess({firebaseUser, dbUser, modal, navigate, location, setLoading}).then();
+                                } catch (err) {
+                                    alert(`Login Error ${err.message}`);
+                                    setLoading(false)
                                 }
-                                setLoading(false);
                             } else {
                                 navigate('/login')
                             }

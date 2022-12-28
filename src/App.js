@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo} from 'react';
 import Routes from './routes/index';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAll} from "./helper/FirestoreApi";
+import {getAll, getById} from "./helper/FirestoreApi";
 import {Box} from "@mui/material";
 import FirebaseAuthService from "./helper/FirebaseAuthService";
 import {useCheckScreen, useConfirmDialog, useIsScroll, useNotification} from "./helper/Hooks";
-import {userSliceActions} from "./store/userSlice";
 import {generalSliceActions} from "./store/gs-manager-slice";
 import ScrollToTop from "./components/scrollToTop/ScrollToTop";
 import EzModalWithTransition from "./components/ezComponents/EzModalWithTransition/EzModalWithTransition";
+import {userSliceActions} from "./store/userSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -21,6 +21,7 @@ function App() {
 
     //get scroll from top for topbar shadow effect
     useIsScroll();
+
 
     useEffect(() => {
         if (!userStatus.loading && !userStatus.loaded) {
@@ -65,10 +66,15 @@ function App() {
     //user logic
     useEffect(_ => {
         const getUser = async () => {
-            if(!user.dummy) {
-                FirebaseAuthService.subscribeToAuthChanges(user);
+            if(!user) {
+                dispatch(getById({id: 'tempUser', collection: 'users'}))
             } else {
-                dispatch(userSliceActions.setUser(user))
+                if(user.dummy) {
+                    dispatch(userSliceActions.setUser(user))
+                } else {
+                    // debugger
+                    FirebaseAuthService.subscribeToAuthChanges();
+                }
             }
         }
         getUser()

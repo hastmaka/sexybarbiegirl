@@ -165,7 +165,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
     const {id, name, image, price, discount, category, statistic, color} = product;
     const variation = getVariation(product.variation);
     const {IMGTHUMBS, IMGMAIN} = getDummy(image);
-    const isProductInWishlist = user.dummy ? false : user.wish_list.some(item => item.id === product.id);
+    const isProductInWishlist = !!user ? false : user.wish_list.some(item => item.id === product.id);
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const {screen} = useSelector(slice => slice.generalState);
     const [selected, setSelected] = useState({

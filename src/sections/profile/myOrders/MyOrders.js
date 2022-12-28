@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import Table from "./table/table";
-import {getRTDataFromUserOrder} from "../../../helper/FirestoreApi";
+import {getDataAndKeepSync} from "../../../helper/FirestoreApi";
 
 //----------------------------------------------------------------
 
@@ -39,8 +39,8 @@ export default function MyOrders() {
     // debugger
 
     useEffect(_ => {
-        getRTDataFromUserOrder({userId: user.uid, collection: 'orders'}).then()
-    }, [])
+        getDataAndKeepSync({id: user.uid, collection: 'orders'}).then()
+    }, [user])
 
     return (
         <RootStyle>

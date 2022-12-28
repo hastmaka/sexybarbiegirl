@@ -54,7 +54,8 @@ export default function MyProfile() {
                     url,
                     'create-payment-intent-to-save-a-card',
                     'POST',
-                    {customer_id: customer.customer_id}
+                    {customer_id: customer.customer_id},
+                    user.token
                 )
                 window.dispatch(stripeSliceActions.setSecret(res.client_secret))
             } catch (e) {
@@ -81,8 +82,8 @@ export default function MyProfile() {
 
     useEffect(_ => {
         if (customerStatus.loaded && !getCustomerDataStatus.loaded) {
-            window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer}))
-            window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}))
+            window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer,token: user.token}))
+            window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer,token: user.token}))
         }
     }, [customerStatus.loaded, getCustomerDataStatus.loaded]);
 

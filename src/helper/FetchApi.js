@@ -1,5 +1,4 @@
-export async function fetchAPI(tempUrl, endpoint, method, data) {
-    const user = JSON.parse(localStorage.getItem('user'));
+export async function fetchAPI(tempUrl, endpoint, method, data, token) {
     let body = method === 'POST' ? JSON.stringify(data) : {},
         url;
         url = new URL(tempUrl + endpoint)
@@ -10,16 +9,14 @@ export async function fetchAPI(tempUrl, endpoint, method, data) {
             method: method.toUpperCase(),
             headers: {
                 'Content-Type': 'application/json',
-                authToken: user.token,
-                uid: user.uid,
+                authToken: token,
                 data: JSON.stringify(data)
             }
         } : {
             method: method.toUpperCase(),
             headers: {
                 'Content-Type': 'application/json',
-                authToken: user.token,
-                uid: user.uid
+                authToken: token
             },
             body
         })

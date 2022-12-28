@@ -100,7 +100,7 @@ export default function TopBar() {
 
     const PROFILEMENU = [{
         id: 1,
-        text: user.uid !== 'tempUser' ? user.email : 'Sign In',
+        text: user.dummy ? 'Sign In' : user.email,
         listItemIcon: false,
         functionality: {
             onClick: () => {
@@ -165,14 +165,7 @@ export default function TopBar() {
         }
     }]
 
-    let PROFILEMENUFILTERED = [];
-    if(user) {
-        if(user.uid !== 'tempUser') {
-            PROFILEMENUFILTERED = PROFILEMENU;
-        } else {
-            PROFILEMENUFILTERED = PROFILEMENU.filter((item, index) => index < 5);
-        }
-    }
+    let PROFILEMENUFILTERED = !user.dummy ? PROFILEMENU : PROFILEMENU.filter((item, index) => index < 5);
 
     const RIGHTCONTAINERITEMS = [{
         id: 1,
@@ -213,7 +206,7 @@ export default function TopBar() {
         id: 4,
         tooltip: 'Cart',
         visibleOnMobile: 1,
-        badgeValue: user.cart.item.reduce((acc, curr) => { return acc + curr.quantity}, 0) || '',
+        badgeValue: user?.cart?.item?.reduce((acc, curr) => { return acc + curr.quantity}, 0) || '',
         icon: <LocalMallOutlinedIcon/>,
         functionality: {
             onClick: () => {navigate('/cart')}

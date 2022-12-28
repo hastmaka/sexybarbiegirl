@@ -68,7 +68,7 @@ const stripeSlice = createSlice({
                     state.customer.paymentMethod = {...payload.paymentMethods}
                     state.getCustomerDataStatus.loading = false;
                     state.getCustomerDataStatus.loaded = true;
-                    updateLocalStore('stripe', {...state.customer}, 'stripe')
+                    // updateLocalStore('stripe', {...state.customer}, 'stripe')
                     break;
                 default:
                     return

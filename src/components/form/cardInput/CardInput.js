@@ -72,7 +72,7 @@ export default function CardInput() {
                         }
                     ]
                 }))
-                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer}));
+                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer, token: user.token}));
                 window.dispatch(generalSliceActions.setModal({open: false, who: ''}));
                 return window.displayNotification({
                     t: 'success',

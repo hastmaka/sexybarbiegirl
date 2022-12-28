@@ -3,6 +3,7 @@ import {userSliceActions} from "../store/userSlice";
 import {fetchAPI} from "./FetchApi";
 import {getCustomerData, url} from "./stripe/StripeApi";
 import {stripeSliceActions} from "../store/stripeSlice";
+import {updateCartApi} from "./FirestoreApi";
 
 export const sortPaymentMethod = (stripePm, firebasePm) => {
     let defaultPm = firebasePm.find(item => item.main);
@@ -61,13 +62,13 @@ export const updateLocalStore = (key, data) => {
     if(JSON.parse(localStorage.getItem(key)) === null) {
         localStorage.setItem(key, JSON.stringify({}))
     }
-
     switch (key) {
         case 'user':
-            localStorage.setItem(key, JSON.stringify(data))
+            const {token, email, uid, address, role, ...rest} = data;
+            localStorage.setItem(key, JSON.stringify(rest))
             break;
         case 'stripe':
-            localStorage.setItem(key, JSON.stringify({...data}))
+            // localStorage.setItem(key, JSON.stringify({...data}))
             break;
         default:
             return
@@ -270,3 +271,65 @@ export const prepareCheckedItemToServer = (item) => {
         return acc
     }, [])
 }
+
+export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, setLoading}) => {
+    return new Promise((resolve, reject) => {
+        try {
+            if(!dbUser.dummy) {
+                const {cart, ...rest} = dbUser;
+                const tempCart = JSON.parse(localStorage.getItem('user')).cart;
+                if (tempCart.item.length > 0) {
+                    cart.item = cart.item.length > 0 ? mergeTwoCart([...tempCart.item, ...cart.item]) : [...tempCart.item];
+                    const cartUpdated = updateCart(cart);
+                    updateCartApi(dbUser.uid, cartUpdated);
+                    window.dispatch(userSliceActions.setUser({
+                        ...rest,
+                        cart: {...cartUpdated},
+                        token: firebaseUser.accessToken
+                    }));
+                    if(modal) {
+                        window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                    }
+                    navigate(location.pathname === '/checkout' ? '/checkout' : '/')
+                    setLoading(false);
+                    resolve()
+                } else {
+                    if(modal) {
+                        window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                    }
+                    window.dispatch(userSliceActions.setUser({
+                        ...dbUser,
+                        token: firebaseUser.accessToken
+                    }))
+                    navigate('/');
+                    setLoading(false);
+                    resolve();
+                }
+            }
+        } catch (e) {
+            return reject(e)
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

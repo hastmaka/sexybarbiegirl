@@ -1,24 +1,19 @@
 const {getAuth} = require("firebase-admin/auth");
 
 const appCheckVerification = async (req, res, next) => {
-    next()
-    // const {authtoken, uid} = req.headers;
-    //
-    // if (!authtoken) {
-    //     res.status(401);
-    //     return next('Unauthorized');
-    // }
-    //
-    // try {
-    //     const authUser = await getAuth().verifyIdToken(authtoken);
-    //     if(uid !== authUser.uid) {
-    //         return res.status(403)
-    //     }
-    //     next()
-    // } catch (err) {
-    //     res.status(401);
-    //     return next('Unauthorized');
-    // }
+    // next()
+    const {authtoken} = req.headers;
+
+    if (!authtoken) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    try {
+        await getAuth().verifyIdToken(authtoken);
+        return next()
+    } catch (err) {
+        return res.status(401).send('Unauthorized');
+    }
 }
 
 module.exports = {appCheckVerification}
