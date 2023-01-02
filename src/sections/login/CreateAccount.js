@@ -5,14 +5,11 @@ import {Box, IconButton, InputAdornment} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 //firebase
-import {setDoc, doc } from "firebase/firestore";
-import {db} from "../../helper/FirebaseConfig";
 import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import LoginWrapper from './LoginWrapper';
-import {userSliceActions} from "../../store/userSlice";
-import {loginProcess, mergeTwoCart, updateCart} from "../../helper/Helper";
-import {getUser, updateCartApi} from "../../helper/FirestoreApi";
+import {createAccountProcess, loginProcess} from "../../helper/Helper";
+import {getUser} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
@@ -49,29 +46,14 @@ export default function CreateAccount({ modal}) {
             try {
                 const user = await FirebaseAuthService.registerUser(email, password);
                 if(user) {
-                    const userTemp = JSON.parse(localStorage.getItem('user'))
-                    userTemp.email = user.email;
-                    userTemp.address = [];
-                    userTemp.full_name = '';
-                    userTemp.role = 2;
-                    userTemp.dummy = false;
-                    userTemp.cart = {
-                        item: [],
-                        create_at: Date.now(),
-                        last_update: Date.now(),
-                        quantity: 0,
-                        sub_total: 0,
-                        total: 0,
-                    }
-                    userTemp.wish_list = []
-                    await setDoc(doc(db, 'users', user.uid), userTemp);
+                    createAccountProcess(user).then();
                     setLoading(false)
                     window.confirm({t: 'info', c: `Account Created Successfully want to 'Sign In Directly?'`})
                         .then(async (res) => {
                             if(res) {
                                 try {
                                     const firebaseUser = await FirebaseAuthService.loginUser(email, password);
-                                    const dbUser = await getUser({uid: firebaseUser.uid, client: true});
+                                    const dbUser = await getUser(firebaseUser.uid);
                                     loginProcess({firebaseUser, dbUser, modal, navigate, location, setLoading}).then();
                                 } catch (err) {
                                     alert(`Login Error ${err.message}`);

@@ -75,7 +75,7 @@ export default function Tr({product}) {
                                 padding: '10px 5px',
                             }}
                         >
-                            <img src={image[0].url} alt="product image"/>
+                            <img src={image[0].url} alt="product image" style={{borderRadius: '4px'}}/>
                         </Stack>
                         <Stack
                             sx={{

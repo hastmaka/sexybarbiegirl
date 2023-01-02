@@ -166,7 +166,11 @@ export const getUser = (uid) => {
     return new Promise(async (resolve, reject) => {
         try{
             const user = await getDoc(doc(db, 'users', uid))
-            resolve({...user.data(), uid: user.id})
+            if(user.exists()) {
+                resolve({...user.data(), uid: user.id})
+            } else {
+                resolve(false)
+            }
         } catch (err) {
             reject(err)
         }

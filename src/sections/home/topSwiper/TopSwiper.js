@@ -7,8 +7,9 @@ import EastIcon from '@mui/icons-material/East';
 import './TopSwiper.scss';
 //
 import EzButton from "../../../components/ezComponents/EzButton/EzButton";
-import img_1 from "../../../resources/Barbie Bikinis/web_optimized/Carousel/_LSP4867.jpg";
 import EzSwiper from "../../../components/ezComponents/EzSwiper/EzSwiper";
+import img_1 from "../../../resources/Barbie Bikinis/web_optimized/Carousel/_LSP4867.jpg";
+import {swipe1} from "./Phrase";
 
 //----------------------------------------------------------------
 
@@ -19,7 +20,8 @@ const RootStyle = styled(Stack)(({theme}) => ({
         height: '100%',
     },
     [theme.breakpoints.down(786)]: {
-        height: 'calc(100vh - 75px)',
+        height: 'calc(100vh + 75px)',
+        marginTop: '-75px'
     }
 
 }));
@@ -71,10 +73,7 @@ export default function TopSwiper() {
                                 }
                             }}
                         >
-                            <span>All</span>
-                            <span>Dreams</span>
-                            <span>Come</span>
-                            <span>True</span>
+                            {swipe1.map(i => <span key={i.id}>{i.word}</span>)}
                             <EzButton
                                 sx={{
                                     border: '1px solid white',

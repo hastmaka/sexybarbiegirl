@@ -235,7 +235,10 @@ exports.createStripeCustomer = functions.firestore
     .document('users/{userId}')
     .onCreate(async (snapshot, context) => {
         const user = snapshot.data();
-        const customer = await stripe.customers.create({email: user.email, name: user.email.split('@')[0]});
+        const customer = await stripe.customers.create({
+            email: user.email,
+            name: user.provider === 'google.com' ? user.full_name : user.email.split('@')[0]
+        });
         try {
             return await db.collection('stripe_customers').doc(context.params.userId).set({
                 customer_id: customer.id,

@@ -6,11 +6,12 @@ import {userSliceActions} from "../../store/userSlice";
 import {Box, IconButton, InputAdornment, Stack} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import GoogleIcon from '@mui/icons-material/Google';
 //firebase
 import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import LoginWrapper from './LoginWrapper';
-import {loginProcess} from "../../helper/Helper";
+import {createAccountProcess, loginProcess} from "../../helper/Helper";
 import {getUser} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
@@ -32,6 +33,49 @@ export default function Login({modal}) {
     const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [googleBtnLoading, setGoogleBtnLoading] = useState(false);
+
+    const onLoginWithGoogle = async () => {
+        setGoogleBtnLoading(true);
+        try {
+            const googleUser = await FirebaseAuthService.loginWithGoogle();
+            const dbUser = await getUser(googleUser.user.uid);
+            let tempGoogleUser = {
+                accessToken: googleUser.user.accessToken
+            }
+            if(!dbUser) {
+                const res = await createAccountProcess(googleUser.user);
+                if(res === 'created') {
+                    const dbUserL = await getUser(googleUser.user.uid);
+                    loginProcess({
+                        firebaseUser: tempGoogleUser,
+                        dbUser: dbUserL,
+                        modal,
+                        navigate,
+                        location,
+                        setLoading
+                    }).then();
+                }
+            }
+            loginProcess({
+                firebaseUser: tempGoogleUser,
+                dbUser,
+                modal,
+                navigate,
+                location,
+                setLoading
+            }).then();
+        } catch (err) {
+            if(err.code === 'auth/popup-closed-by-user') {
+                setGoogleBtnLoading(false)
+            } else {
+                window.displayNotification({
+                    t: 'error',
+                    c: 'There is some error with you Google Account'
+                })
+            }
+        }
+    }
 
     const onLoginSubmit = async (e) => {
         e.preventDefault();
@@ -88,6 +132,16 @@ export default function Login({modal}) {
                     loading={loading}
                 >
                     Sign in
+                </EzLoadingBtn>
+                <EzLoadingBtn
+                    onClick={onLoginWithGoogle}
+                    startIcon={<GoogleIcon/>}
+                    fullWidth
+                    size='large'
+                    variant='outlined'
+                    loading={googleBtnLoading}
+                >
+                    Sign in with Google
                 </EzLoadingBtn>
                 <Stack flexDirection='row' gap='5px' justifyContent='space-between'>
                     {!modal && <EzButton

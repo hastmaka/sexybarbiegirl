@@ -15,7 +15,7 @@ export default function Td({data}) {
         <Stack
             justifyContent='center'
             sx={{
-                background: theme => theme.palette.ecommerce.pink_3,
+                // background: theme => theme.palette.ecommerce.pink_3,
                 color: theme => theme.palette.ecommerce.checkBoxActive,
                 letterSpacing: '1px',
                 fontWeight: 700,
