@@ -21,7 +21,7 @@ const RootStyle = styled(Stack)(({theme}) => ({
     backgroundColor: theme.palette.ecommerce.bg_parent,
     [theme.breakpoints.down(786)]: {
         height: '100%',
-        marginBottom: '50px'
+        // marginBottom: '50px'
     }
 }));
 

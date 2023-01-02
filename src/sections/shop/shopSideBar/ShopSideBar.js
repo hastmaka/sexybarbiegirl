@@ -85,9 +85,9 @@ export default function ShopSideBar() {
                     )}
                 </Wrapper>
                 {/*new products*/}
-                <EzProductWidget productToRender={product} header='New Products'/>
+                <EzProductWidget productToRender={product.filter((i, index) => index < 3)} header='New Products'/>
                 {/*trending products*/}
-                <EzProductWidget productToRender={product} header='Trending'/>
+                <EzProductWidget productToRender={product.filter((i, index) => index < 3)} header='Trending'/>
             </StickySideBar>
         </RootStyle>
     );

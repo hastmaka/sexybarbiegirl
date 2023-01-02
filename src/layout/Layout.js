@@ -54,44 +54,45 @@ export default function Layout() {
 
     return (
         <RootStyle>
-            {userStatus.loaded && screen <= 786 ? <TopBarMobile/> : <TopBar/>}
+            {/*{userStatus.loaded && screen <= 786 ? <TopBarMobile/> : <TopBar/>}*/}
+            {userStatus.loaded && <TopBar/>}
 
             <OutletContainer>
                 <Outlet/>
             </OutletContainer>
 
             <Footer/>
-            {screen <= 786 &&
-                <StickyMobileMenu scrolltop={scrollTop}>
-                    <IconContainer>
-                        {MobileNavigation.map(item =>
-                            <EzCustomIconButton
-                                onClick={_ => {
-                                    let path =
-                                        item.to === '/' ? {p: '/'} :
-                                        item.to === '/profile/wishlist' ? {p: '/profile/wishlist', s: 3} :
-                                        item.to === '/profile/myProfile' ? {p: '/profile/wishlist', s: 1} :
-                                        item.to === '/cart' ? {p: 'cart'} :
-                                            ''
-                                    user.dummy ?
-                                        window.confirm({t: 'info', c: `Sign in first to manage your 'Wishlist'`})
-                                            .then(res => {
-                                                if (res) {
-                                                    window.dispatch(generalSliceActions.setModal({
-                                                        open: true,
-                                                        who: 'login'
-                                                    }))
-                                                }
-                                            }) :
-                                        navigate(path.p, {state: path.s})
-                                }}
-                                key={item.id}
-                                icon={item.icon}
-                            />
-                        )}
-                    </IconContainer>
-                </StickyMobileMenu>
-            }
+            {/*{screen <= 786 &&*/}
+            {/*    <StickyMobileMenu scrolltop={scrollTop}>*/}
+            {/*        <IconContainer>*/}
+            {/*            {MobileNavigation.map(item =>*/}
+            {/*                <EzCustomIconButton*/}
+            {/*                    onClick={_ => {*/}
+            {/*                        let path =*/}
+            {/*                            item.to === '/' ? {p: '/'} :*/}
+            {/*                            item.to === '/profile/wishlist' ? {p: '/profile/wishlist', s: 3} :*/}
+            {/*                            item.to === '/profile/myProfile' ? {p: '/profile/wishlist', s: 1} :*/}
+            {/*                            item.to === '/cart' ? {p: 'cart'} :*/}
+            {/*                                ''*/}
+            {/*                        user.dummy ?*/}
+            {/*                            window.confirm({t: 'info', c: `Sign in first to manage your 'Wishlist'`})*/}
+            {/*                                .then(res => {*/}
+            {/*                                    if (res) {*/}
+            {/*                                        window.dispatch(generalSliceActions.setModal({*/}
+            {/*                                            open: true,*/}
+            {/*                                            who: 'login'*/}
+            {/*                                        }))*/}
+            {/*                                    }*/}
+            {/*                                }) :*/}
+            {/*                            navigate(path.p, {state: path.s})*/}
+            {/*                    }}*/}
+            {/*                    key={item.id}*/}
+            {/*                    icon={item.icon}*/}
+            {/*                />*/}
+            {/*            )}*/}
+            {/*        </IconContainer>*/}
+            {/*    </StickyMobileMenu>*/}
+            {/*}*/}
         </RootStyle>
     );
 }

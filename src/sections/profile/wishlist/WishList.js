@@ -11,7 +11,7 @@ const RootStyle = styled(Stack)(({theme}) => ({
     backgroundColor: '#fff',
     boxShadow: theme.shadows[5],
     borderRadius: '4px',
-    height: 'calc(100vh - 150px)',
+    height: 'calc(100vh - 130px)',
     [theme.breakpoints.down(786)]: {
         borderRadius: '4px 0 0 4px',
         height: 'calc(100vh - 85px)',

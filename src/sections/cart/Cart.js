@@ -103,7 +103,7 @@ export default function Cart() {
                             </EzHelpText>
                         </Wrapper>
                         {/*recently visited*/}
-                        <EzProductWidget productToRender={product} header='Recently Visited'/>
+                        <EzProductWidget productToRender={product.filter((i, index) => index < 3)} header='Recently Visited'/>
                     </StickyFix>
                 </ParentContainer>
             </CartContainer>
