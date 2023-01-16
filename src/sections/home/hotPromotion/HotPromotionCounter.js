@@ -2,6 +2,8 @@ import {useSelector} from "react-redux";
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
+import EzText from "../../../components/ezComponents/EzText/EzText";
+import {timer} from '../../../helper/Helper'
 
 //-------------------------------------------------------
 
@@ -19,7 +21,7 @@ const RootStyle = styled(Stack)(({theme}) => ({
     }
 }));
 
-const TimerTypography = styled(Typography)(({theme}) => ({
+const Timer = styled(EzText)(({theme}) => ({
     color: theme.palette.ecommerce.inactive_color,
     fontSize: '24px',
     [theme.breakpoints.down(786)]: {
@@ -27,23 +29,19 @@ const TimerTypography = styled(Typography)(({theme}) => ({
     }
 }));
 
+const CounterText = styled(EzText)(({theme}) => ({
+    color: theme.palette.ecommerce.pink,
+    padding: '8px 0 12px 0'
+}))
 //-------------------------------------------------------
 
-export default function HotPromotionCounter({text, timer}) {
+export default function HotPromotionCounter({text}) {
+    let a = timer();
+    // debugger
     return (
         <RootStyle>
-            <Typography
-                variant='span'
-                sx={({palette}) => ({
-                    color: palette.ecommerce.pink,
-                    padding: '8px 0 12px 0'
-                })}
-            >
-                {text}
-            </Typography>
-            <TimerTypography variant='span'>
-                {timer}
-            </TimerTypography>
+            <CounterText text={text}/>
+            {/*<Timer text={timer}/>*/}
         </RootStyle>
     )
 }

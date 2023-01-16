@@ -56,8 +56,8 @@ export default function EzColorAndSize({
                 <Stack flexDirection='row' gap='10px'>
                     {variant.map(item =>
                         <EzSizePicker
-                            active={item.active}
                             key={item.id}
+                            stock={item.stock}
                             checked={item.size === selectedSize}
                             onClick={_ => onSizeClick(item.size)}
                             size={item.size}
@@ -68,61 +68,3 @@ export default function EzColorAndSize({
         </RootStyle>
     );
 }
-
-/**
- * Data structure converted from server with getVariation Helper
- * export const variation = [{
- *     pink: [{
- *         active: false,
- *         discount: 0,
- *         id: 771129655101.3947,
- *         price: 32.99,
- *         size: 1,
- *         stock: 10
- *     }, {
- *         active: true,
- *         discount: 0,
- *         id: 725429655101.3947,
- *         price: 32.99,
- *         size: 2,
- *         stock: 10
- *     }, {
- *         active: true,
- *         discount: 0,
- *         id: 725129655101.3947,
- *         price: 32.99,
- *         size: 3,
- *         stock: 10
- *     }]
- * }, {
- *     red: [{
- *         active: true,
- *         discount: 0,
- *         id: 221129655101.3947,
- *         price: 32.99,
- *         size: 1,
- *         stock: 10
- *     }, {
- *         active: false,
- *         discount: 0,
- *         id: 115429655101.3947,
- *         price: 32.99,
- *         size: 2,
- *         stock: 10
- *     }, {
- *         active: true,
- *         discount: 0,
- *         id: 125129655101.3947,
- *         price: 32.99,
- *         size: 3,
- *         stock: 10
- *     }, {
- *         active: false,
- *         discount: 0,
- *         id: 121144655101.3947,
- *         price: 32.99,
- *         size: 4,
- *         stock: 10
- *     }]
- * }]
- */

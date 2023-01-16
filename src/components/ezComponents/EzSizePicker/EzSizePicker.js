@@ -32,14 +32,14 @@ const OutOfStock = styled(Stack)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function EzSizePicker({active = true, size, onClick, checked}) {
+export default function EzSizePicker({stock, size, onClick, checked}) {
     return (
         <RootStyle
-            active={active.toString()}
+            active={(stock > 0).toString()}
             checked={checked}
             onClick={_ => onClick(size)}
         >
-            {!active && <OutOfStock>out of stock</OutOfStock>}
+            {stock === 0 && <OutOfStock>out of stock</OutOfStock>}
             {size}
         </RootStyle>
     );

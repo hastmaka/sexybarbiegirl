@@ -6,6 +6,7 @@ import {styled} from '@mui/material/styles';
 import HotPromotionComponent from "./HotPromotionComponent";
 import bg_img from '../../../resources/Barbie Bikinis/web_optimized/mac_hot_promotion_section.jpg';
 import bgImgCard from '../../../resources/Barbie Bikinis/web_optimized/_LSP5209.jpg';
+import EzText from "../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -37,6 +38,11 @@ const Child = styled(Stack)(({theme}) => ({
     }
 }))
 
+const Promotion = styled(EzText)(({theme}) => ({
+    fontWeight: 700,
+    fontSize: '14px',
+    color: theme.palette.ecommerce.pink
+}))
 //----------------------------------------------------------------
 
 export default function HotPromotion() {
@@ -44,17 +50,8 @@ export default function HotPromotion() {
     return (
         <RootStyle>
             <HeaderContainer>
-                <Typography variant='span' sx={{fontWeight: 500, fontSize: '14px'}}>Hot</Typography>
-                <Typography
-                    variant='span'
-                    sx={({palette}) => ({
-                        fontWeight: 700,
-                        fontSize: '14px',
-                        color: palette.ecommerce.pink
-                    })}
-                >
-                    Promotions
-                </Typography>
+                <EzText text='Hot' sx={{fontWeight: 500, fontSize: '14px'}}/>
+                <Promotion text='Promotions'/>
             </HeaderContainer>
             <Stack flexDirection='row' gap='50px' justifyContent='center'>
                 <Child flex={1}>

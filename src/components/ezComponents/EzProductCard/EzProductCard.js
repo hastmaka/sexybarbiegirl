@@ -82,16 +82,16 @@ const HeartContainer = styled(Stack)(({theme}) => ({
 }));
 
 const NameContainer = styled(Stack)(({ishovered, theme}) => ({
-    // opacity: ishovered === 'true' ? 1 : 0,
-    // transform: ishovered === 'true' ? 'translateY(0px)' : 'translateY(47px)',
+    opacity: ishovered === 'true' ? 1 : 0,
+    transform: ishovered === 'true' ? 'translateY(0px)' : 'translateY(47px)',
+    transition: 'all 200ms cubic-bezier(0.550, 0.085, 0.680, 0.530)',
     position: 'absolute',
     zIndex: 12,
     bottom: 0,
-    backgroundColor: 'rgba(73,73,73,0.18)',
+    backgroundColor: 'rgba(255,255,255,0.9)',
     width: '100%',
     borderRadius: '0 0 4px 4px',
-    padding: '15px 0',
-    transition: 'all 400ms'
+    padding: '15px 0'
 }));
 
 const OutOfStockContent = styled(Stack)(({theme}) => ({
@@ -148,19 +148,16 @@ export default function EzProductCard({product}) {
     const handleClose = () => setOpen(false);
 
     return (
-        <RootStyle>
+        <RootStyle
+            onMouseEnter={_ => setIsHovered(true)}
+            onMouseLeave={_ => setIsHovered(false)}
+        >
             <EzModal open={open} handleClose={_ => handleClose()}>
                 <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>
             </EzModal>
             <ImageContainer
-                onMouseEnter={_ => {
-                    setActive(image[1].url)
-                    setIsHovered(true)
-                }}
-                onMouseLeave={_ => {
-                    setActive(image[0].url)
-                    setIsHovered(false)
-                }}
+                onMouseEnter={_ => setActive(image[1].url)}
+                onMouseLeave={_ => setActive(image[0].url)}
                 onClick={e => {
                     if(!ref.current.contains(e.target)) handleOpen()
 
@@ -183,7 +180,12 @@ export default function EzProductCard({product}) {
                     />
                 </HeartContainer>
                 <NameContainer ishovered={isHovered.toString()}>
-                    <Stack alignItems='center'>
+                    <Stack
+                        alignItems='center'
+                        sx={({palette}) => ({
+                            color: palette.ecommerce.inactive_color
+                        })}
+                    >
                         {name}
                     </Stack>
                 </NameContainer>

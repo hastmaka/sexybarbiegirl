@@ -18,7 +18,7 @@ export const getColor = (v) => {
 };
 
 export const getActiveSize = (v) => {
-    const active = v.find(item => item.active)
+    const active = v.find(item => item.stock > 1)
     return active.size;
 };
 
@@ -35,6 +35,11 @@ export const getVariation = (v) => {
     }, {})
     return tempA;
 };
+
+export const getCurrentPrice = (selected) => {
+    let variation = selected.variationToRender.find(item => item.color === selected.selectedColor && item.size === selected.selectedSize)
+    return variation.price
+}
 
 export const calcDiscount = (price, discount) => {
     return (price * (100 - discount) / 100).toFixed(2);
@@ -314,7 +319,6 @@ export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, s
     })
 }
 
-
 export const createAccountProcess = async (user) => {
     const userTemp = JSON.parse(localStorage.getItem('user'))
     userTemp.email = user.email;
@@ -338,6 +342,29 @@ export const createAccountProcess = async (user) => {
     } catch (err) {
         return(err)
     }
+}
+
+export const timer = () => {
+    // debugger
+    let actualDate = +new Date(),
+        extendedDate = '';
+    /**
+     * 1 - actual date
+     * 2 - extended date
+     * @type {{}}
+     */
+
+    let timeLeft = {};
+    // if (difference > 0) {
+    //     timeLeft = {
+    //         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    //         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    //         minutes: Math.floor((difference / 1000 / 60) % 60),
+    //         seconds: Math.floor((difference / 1000) % 60)
+    //     };
+    // }
+
+    return timeLeft;
 }
 
 

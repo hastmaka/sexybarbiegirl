@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 // material
@@ -13,7 +13,7 @@ import EzSwiper from "../../components/ezComponents/EzSwiper/EzSwiper";
 import EzRating from "../../components/ezComponents/EzRating/EzRating";
 import EzPriceFormat from "../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import Share from "./share/Share";
-import {AddToCart, getActiveSize, getColor, getVariation} from "../../helper/Helper";
+import {AddToCart, getActiveSize, getColor, getCurrentPrice, getVariation} from "../../helper/Helper";
 import EzWishlistBtn from "../../components/ezComponents/EzWishlistBtn/EzWishlistBtn";
 import {getDummy} from "./dummyData";
 import ShippingInformation from "./shippingInformation/ShippingInformation";
@@ -159,15 +159,17 @@ const AddToCArtButton = styled(Button)(({theme}) => ({
 
 //----------------------------------------------------------------
 export default function EzProductDetails({product, handleCloseCard, totalReview, modal = false}) {
+    // debugger
     // const {pathname} = useLocation();
     const navigate = useNavigate();
     const {user} = useSelector(slice => slice.user);
-    const {id, name, image, price, discount, category, statistic, color} = product;
-    const variation = getVariation(product.variation);
+    const {screen} = useSelector(slice => slice.generalState);
+    const {id, name, image, price, discount, category, statistic} = product;
+    const variation = useMemo(() => getVariation(product.variation), [product.variation]);
     const {IMGTHUMBS, IMGMAIN} = getDummy(image);
     const isProductInWishlist = !!user ? false : user.wish_list.some(item => item.id === product.id);
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
-    const {screen} = useSelector(slice => slice.generalState);
+    const [selectedStatus, setSelectedStatus] = useState(false);
     const [selected, setSelected] = useState({
         selectedColor: '',
         selectedSize: '',
@@ -183,7 +185,17 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
             variationToRender: variation[Object.entries(variation)[0][0]],
             selectedColorToRender: getColor(variation)
         })
+        setSelectedStatus(true)
     }, [product]);
+
+    useEffect(_ => {
+        if(selectedStatus)
+        setSelected({
+            ...selected,
+            currentPrice: getCurrentPrice(selected)
+        })
+    }, [selectedStatus, selected.selectedColor, selected.selectedSize])
+
 
     const ITEMS = [{
         id: 1, title: 'Shipping Info', element: <ShippingInformation/>
@@ -244,7 +256,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
                         </RatingContainer>
                         <Stack flexDirection='row' gap='5px'>
                             {!!price && <EzPriceFormat
-                                price={price}
+                                price={selected.currentPrice}
                                 priceFS={18}
                             />}
                             {discount > 0 && <EzPriceFormat

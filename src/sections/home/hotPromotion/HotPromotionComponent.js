@@ -52,10 +52,10 @@ export default function HotPromotionComponent({time, bgImg, bgImgCard, name, rat
             }}
         >
             <Time>
-                <HotPromotionCounter text='Days' timer='01'/>
-                <HotPromotionCounter text='Hours' timer='04'/>
-                <HotPromotionCounter text='Min' timer='34'/>
-                <HotPromotionCounter text='Sec' timer='55'/>
+                <HotPromotionCounter text='Days'/>
+                <HotPromotionCounter text='Hours'/>
+                <HotPromotionCounter text='Min'/>
+                <HotPromotionCounter text='Sec'/>
             </Time>
             {screen >= 786 && <HotPromotionCardContainer>
                 <HotPromotionCard
