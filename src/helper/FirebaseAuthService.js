@@ -12,7 +12,7 @@ import {
 import {getById, getUser} from "./FirestoreApi";
 import {userSliceActions} from "../store/userSlice";
 
-const registerUser = async (email, password) => {
+export const registerUser = async (email, password) => {
     return await createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
             return userCredential.user
@@ -32,7 +32,7 @@ const registerUser = async (email, password) => {
         })
 };
 
-const loginUser = async (email, password) => {
+export const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password)
         .then(async userCredential => {
             return userCredential.user
@@ -64,20 +64,20 @@ const loginUser = async (email, password) => {
         })
 }
 
-const logoutUser = () => {
+export const logoutUser = () => {
     return signOut(auth);
 }
 
-const passwordResetEmail = (email) => {
+export const passwordResetEmail = (email) => {
     return sendPasswordResetEmail(auth, email);
 }
 
-const loginWithGoogle = () => {
+export const loginWithGoogle = () => {
     const provider = new GoogleAuthProvider()
     return signInWithPopup(auth, provider);
 }
 
-const subscribeToAuthChanges = () => {
+export const subscribeToAuthChanges = () => {
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
             let token = await getIdToken(firebaseUser);
@@ -90,14 +90,3 @@ const subscribeToAuthChanges = () => {
         }
     })
 }
-
-const FirebaseAuthService = {
-    registerUser,
-    loginUser,
-    logoutUser,
-    passwordResetEmail,
-    loginWithGoogle,
-    subscribeToAuthChanges
-}
-
-export default FirebaseAuthService;

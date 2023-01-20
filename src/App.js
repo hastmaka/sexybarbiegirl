@@ -3,7 +3,6 @@ import Routes from './routes/index';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAll, getById} from "./helper/FirestoreApi";
 import {Box} from "@mui/material";
-import FirebaseAuthService from "./helper/FirebaseAuthService";
 import {useCheckScreen, useConfirmDialog, useIsScroll, useNotification} from "./helper/Hooks";
 import {generalSliceActions} from "./store/gs-manager-slice";
 import ScrollToTop from "./components/scrollToTop/ScrollToTop";
@@ -73,7 +72,9 @@ function App() {
                     dispatch(userSliceActions.setUser(user))
                 } else {
                     // debugger
-                    FirebaseAuthService.subscribeToAuthChanges();
+                    import('./helper/FirebaseAuthService').then(module => {
+                        module.subscribeToAuthChanges()
+                    })
                 }
             }
         }

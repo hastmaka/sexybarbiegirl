@@ -1,0 +1,1 @@
+export const stripeJs = async () => await import("@stripe/stripe-js");

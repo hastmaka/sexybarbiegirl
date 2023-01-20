@@ -36,9 +36,10 @@ export const getVariation = (v) => {
     return tempA;
 };
 
-export const getCurrentPrice = (selected) => {
-    let variation = selected.variationToRender.find(item => item.color === selected.selectedColor && item.size === selected.selectedSize)
-    return variation.price
+export const getCurrentPriceAndDiscount = (selected) => {
+    let variation = selected.variationToRender.find(item =>
+        item.color === selected.selectedColor && item.size === selected.selectedSize)
+    return {price: variation.price, discount: variation.discount}
 }
 
 export const calcDiscount = (price, discount) => {
@@ -279,7 +280,17 @@ export const prepareCheckedItemToServer = (item) => {
     }, [])
 }
 
-export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, setLoading}) => {
+/**
+ *
+ * @param token - token to send all request
+ * @param dbUser - current user from db
+ * @param modal - state of the login section
+ * @param navigate
+ * @param location
+ * @param setLoading
+ * @returns {Promise<unknown>}
+ */
+export const loginProcess = ({token, dbUser, modal, navigate, location, setLoading}) => {
     return new Promise((resolve, reject) => {
         try {
             if(!dbUser.dummy) {
@@ -292,7 +303,7 @@ export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, s
                     window.dispatch(userSliceActions.setUser({
                         ...rest,
                         cart: {...cartUpdated},
-                        token: firebaseUser.accessToken
+                        token
                     }));
                     if(modal) {
                         window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
@@ -306,7 +317,7 @@ export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, s
                     }
                     window.dispatch(userSliceActions.setUser({
                         ...dbUser,
-                        token: firebaseUser.accessToken
+                        token
                     }))
                     navigate('/');
                     setLoading(false);
@@ -319,6 +330,11 @@ export const loginProcess = ({firebaseUser, dbUser, modal, navigate, location, s
     })
 }
 
+/**
+ *
+ * @param user - user returned after the register process
+ * @returns {Promise<*|string>}
+ */
 export const createAccountProcess = async (user) => {
     const userTemp = JSON.parse(localStorage.getItem('user'))
     userTemp.email = user.email;

@@ -1,22 +1,19 @@
 import {useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {generalSliceActions} from "../../store/gs-manager-slice";
-import {userSliceActions} from "../../store/userSlice";
 // material
 import {Box, IconButton, InputAdornment, Stack} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import GoogleIcon from '@mui/icons-material/Google';
-//firebase
-import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import LoginWrapper from './LoginWrapper';
-import {createAccountProcess, loginProcess} from "../../helper/Helper";
-import {getUser} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzText from "../../components/ezComponents/EzText/EzText";
+
+//dynamic import
 
 //----------------------------------------------------------------
 const btnStyle = {
@@ -38,33 +35,43 @@ export default function Login({modal}) {
     const onLoginWithGoogle = async () => {
         setGoogleBtnLoading(true);
         try {
-            const googleUser = await FirebaseAuthService.loginWithGoogle();
-            const dbUser = await getUser(googleUser.user.uid);
-            let tempGoogleUser = {
-                accessToken: googleUser.user.accessToken
-            }
+            const googleUser = await import('../../helper/FirebaseAuthService').then(module => {
+                return module.loginWithGoogle()
+            });
+            const dbUser = await import('../../helper/FirestoreApi').then(module => {
+                return module.getUser(googleUser.user.uid)
+            });
             if(!dbUser) {
-                const res = await createAccountProcess(googleUser.user);
+                const res = await import('../../helper/Helper').then(module => {
+                    return module.createAccountProcess(googleUser.user)
+                });
                 if(res === 'created') {
-                    const dbUserL = await getUser(googleUser.user.uid);
-                    loginProcess({
-                        firebaseUser: tempGoogleUser,
-                        dbUser: dbUserL,
-                        modal,
-                        navigate,
-                        location,
-                        setLoading
-                    }).then();
+                    const dbCurrentUser = await import('../../helper/FirestoreApi').then(module => {
+                        return module.getUser(googleUser.user.uid)
+                    });
+                    import('../../helper/Helper').then(module => {
+                        module.loginProcess({
+                            token: googleUser.user.accessToken,
+                            dbUser: dbCurrentUser,
+                            modal,
+                            navigate,
+                            location,
+                            setLoading
+                        }).then();
+                    });
+
                 }
             }
-            loginProcess({
-                firebaseUser: tempGoogleUser,
-                dbUser,
-                modal,
-                navigate,
-                location,
-                setLoading
-            }).then();
+            import('../../helper/Helper').then(module => {
+                module.loginProcess({
+                    token: googleUser.user.accessToken,
+                    dbUser,
+                    modal,
+                    navigate,
+                    location,
+                    setLoading
+                }).then();
+            });
         } catch (err) {
             if(err.code === 'auth/popup-closed-by-user') {
                 setGoogleBtnLoading(false)
@@ -83,14 +90,25 @@ export default function Login({modal}) {
         let email = data.get('email'),
             password = data.get('password');
         setLoading(true);
-        try {
-            const firebaseUser = await FirebaseAuthService.loginUser(email, password);
-            const dbUser = await getUser(firebaseUser.uid);
-            loginProcess({firebaseUser, dbUser, modal, navigate, location, setLoading}).then();
-        } catch (err) {
-            alert(`Login Error ${err.message}`);
-            setLoading(false)
+        const firebaseUser = await import('../../helper/FirebaseAuthService').then(module => {
+            return module.loginUser(email, password)
+        });
+        if(firebaseUser) {
+            const dbUser = await import('../../helper/FirestoreApi').then(module => {
+                return module.getUser(firebaseUser.uid)
+            });
+            import('../../helper/Helper').then(module => {
+                module.loginProcess({
+                    firebaseUser,
+                    dbUser,
+                    modal,
+                    navigate,
+                    location,
+                    setLoading
+                }).then()
+            });
         }
+        setLoading(false);
     }
 
     return (

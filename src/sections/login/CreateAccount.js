@@ -4,12 +4,8 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import {Box, IconButton, InputAdornment} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-//firebase
-import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import LoginWrapper from './LoginWrapper';
-import {createAccountProcess, loginProcess} from "../../helper/Helper";
-import {getUser} from "../../helper/FirestoreApi";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
@@ -43,32 +39,42 @@ export default function CreateAccount({ modal}) {
             })
         } else {
             setLoading(true)
-            try {
-                const user = await FirebaseAuthService.registerUser(email, password);
-                if(user) {
-                    createAccountProcess(user).then();
+            const user = await import('../../helper/FirebaseAuthService').then(module => {
+                return module.registerUser(email, password)
+            })
+            if(user) {
+                const dbUser = await import('../../helper/Helper').then(module => {
+                    return module.createAccountProcess(user)
+                });
+                if(dbUser === 'created') {
                     setLoading(false)
                     window.confirm({t: 'info', c: `Account Created Successfully want to 'Sign In Directly?'`})
                         .then(async (res) => {
                             if(res) {
-                                try {
-                                    const firebaseUser = await FirebaseAuthService.loginUser(email, password);
-                                    const dbUser = await getUser(firebaseUser.uid);
-                                    loginProcess({firebaseUser, dbUser, modal, navigate, location, setLoading}).then();
-                                } catch (err) {
-                                    alert(`Login Error ${err.message}`);
-                                    setLoading(false)
-                                }
+                                const dbCurrentUser = await import('../../helper/FirestoreApi').then(module => {
+                                    return module.getUser(user.uid)
+                                });
+                                import('../../helper/Helper').then(module => {
+                                    module.loginProcess({
+                                        token: user.accessToken,
+                                        dbUser: dbCurrentUser,
+                                        modal,
+                                        navigate,
+                                        location,
+                                        setLoading
+                                    }).then()
+                                });
                             } else {
                                 navigate('/login')
                             }
                         })
                 } else {
-                    setLoading(false)
+                    window.displayNotification({
+                        t: 'info',
+                        c: 'Error while creating the account'
+                    })
                 }
-            } catch (err) {
-                debugger
-                console.log(`Create Account Error ${err.message}`);
+            } else {
                 setLoading(false)
             }
         }

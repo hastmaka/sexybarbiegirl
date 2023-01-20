@@ -3,7 +3,6 @@ import {useNavigate} from 'react-router-dom';
 import {Box, Typography} from '@mui/material';
 //
 import LoginWrapper from './LoginWrapper';
-import FirebaseAuthService from "../../helper/FirebaseAuthService";
 import {useState} from "react";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
@@ -23,16 +22,22 @@ const ForgotPassword = () => {
         let email = data.get('email');
         setLoading(true)
         try {
-            await FirebaseAuthService.passwordResetEmail(email);
-            alert('An email was sent to you email addressAndPayment, with instruction to reset your password')
+            import('../../helper/FirebaseAuthService').then(module => {
+                module.passwordResetEmail(email)
+            })
+            window.displayNotification({
+                t: 'info',
+                c: 'An email was sent to you email addressAndPayment, with instruction to reset your password'
+            })
             navigate('/login');
             setLoading(false)
         } catch (err) {
-            alert(err.message);
+            window.displayNotification({
+                t: 'info',
+                c: err.message
+            })
             setLoading(false)
         }
-
-
     }
     return (
         <LoginWrapper>

@@ -9,8 +9,6 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-//firebase
-import FirebaseAuthService from "../../helper/FirebaseAuthService";
 //
 import BannerSection from './bannerSection/BannerSection';
 import Menu from './menu/Menu';
@@ -151,16 +149,17 @@ export default function TopBar() {
         listItemIcon: true,
         functionality: {
             onClick: () => {
-                FirebaseAuthService.logoutUser()
-                    .then(_ => {
+                import('../../helper/FirebaseAuthService').then(module => {
+                    module.logoutUser().then(_ => {
                         for (const [key] of Object.entries(window.localStorage)) {
                             if(key) {
                                 window.localStorage.removeItem(key)
                             }
                         }
-                    })
-                    .then(_ => navigate('/login'))
+                    }).then(_ => navigate('/login'))
                     .then(_ => window.location.reload())
+                })
+
             }
         }
     }]

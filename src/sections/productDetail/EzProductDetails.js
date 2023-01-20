@@ -13,7 +13,7 @@ import EzSwiper from "../../components/ezComponents/EzSwiper/EzSwiper";
 import EzRating from "../../components/ezComponents/EzRating/EzRating";
 import EzPriceFormat from "../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import Share from "./share/Share";
-import {AddToCart, getActiveSize, getColor, getCurrentPrice, getVariation} from "../../helper/Helper";
+import {AddToCart, getActiveSize, getColor, getCurrentPriceAndDiscount, getVariation} from "../../helper/Helper";
 import EzWishlistBtn from "../../components/ezComponents/EzWishlistBtn/EzWishlistBtn";
 import {getDummy} from "./dummyData";
 import ShippingInformation from "./shippingInformation/ShippingInformation";
@@ -22,6 +22,7 @@ import SizeAndFit from "./sizeAndFit/SizeAndFit";
 import EzAccordion from "../../components/ezComponents/EzAccordion/EzAccordion";
 import {shopSliceActions} from "../../store/shopSlice";
 import EzColorAndSize from "../../components/ezComponents/EzColorAndSize/EzColorAndSize";
+import EzText from "../../components/ezComponents/EzText/EzText";
 //----------------------------------------------------------------
 
 const RootStyle = styled(Stack)(({modal, theme}) => ({
@@ -141,6 +142,13 @@ const RatingContainer = styled(Stack)(({theme}) => ({
     }
 }));
 
+const PercentOffContainer = styled(Stack)(({theme}) => ({
+    border: '1px solid whitesmoke',
+    borderRadius: '4px',
+    padding: '4px 6px',
+    backgroundColor: '#ff6060'
+}));
+
 const HeaderText = styled(Typography)(({theme}) => ({
     fontSize: '12px',
     fontWeight: 600,
@@ -164,7 +172,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
     const navigate = useNavigate();
     const {user} = useSelector(slice => slice.user);
     const {screen} = useSelector(slice => slice.generalState);
-    const {id, name, image, price, discount, category, statistic} = product;
+    const {id, name, image, price, category, statistic} = product;
     const variation = useMemo(() => getVariation(product.variation), [product.variation]);
     const {IMGTHUMBS, IMGMAIN} = getDummy(image);
     const isProductInWishlist = !!user ? false : user.wish_list.some(item => item.id === product.id);
@@ -192,7 +200,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
         if(selectedStatus)
         setSelected({
             ...selected,
-            currentPrice: getCurrentPrice(selected)
+            priceAndDiscount: {...getCurrentPriceAndDiscount(selected)}
         })
     }, [selectedStatus, selected.selectedColor, selected.selectedSize])
 
@@ -254,17 +262,27 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
                             />
                             <HeaderText variant='span'>({totalReview} reviews)</HeaderText>
                         </RatingContainer>
-                        <Stack flexDirection='row' gap='5px'>
-                            {!!price && <EzPriceFormat
-                                price={selected.currentPrice}
-                                priceFS={18}
-                            />}
-                            {discount > 0 && <EzPriceFormat
-                                price={discount > 0 ? price - ((discount / 100) * price) : price}
-                                priceFS={14}
-                                oldPrice={discount > 0}
-                                justifyContent={'left'}
-                            />}
+                        <Stack flexDirection='row' gap='5px' alignItems='center' sx={{height: '30px'}}>
+                            {selected?.priceAndDiscount?.discount > 0 &&
+                                <EzPriceFormat
+                                    price={selected.priceAndDiscount.price - ((selected.priceAndDiscount.discount / 100) * price)}
+                                    priceFS={18}
+                                    justifyContent={'left'}
+                                />
+                            }
+                            {!!price &&
+                                <EzPriceFormat
+                                    price={selected?.priceAndDiscount?.price}
+                                    priceFS={selected?.priceAndDiscount?.discount > 0 ? 14 : 18}
+                                    oldPrice={selected?.priceAndDiscount?.discount > 0}
+                                />
+                            }
+
+                            {selected?.priceAndDiscount?.discount > 0 &&
+                                <PercentOffContainer>
+                                    <EzText text={`${selected.priceAndDiscount.discount}% Off`} sx={{color: 'whitesmoke'}}/>
+                                </PercentOffContainer>
+                            }
                         </Stack>
                         <Divider/>
                         {/*color and size*/}
