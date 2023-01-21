@@ -82,8 +82,10 @@ export default function MyProfile() {
 
     useEffect(_ => {
         if (customerStatus.loaded && !getCustomerDataStatus.loaded) {
-            window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer,token: user.token}))
-            window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer,token: user.token}))
+            Promise.all([
+                window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer,token: user.token})),
+                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer,token: user.token}))
+            ]).then()
         }
     }, [customerStatus.loaded, getCustomerDataStatus.loaded]);
 

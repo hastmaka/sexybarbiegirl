@@ -18,14 +18,14 @@ import EzProductFullDetails from "../sections/productDetail/EzProductFullDetails
 import Test from "../sections/testMode/Test";
 
 //async import
-const Shop = lazy(() => import('../sections/shop/Shop'))
-const Cart = lazy(() => import('../sections/cart/Cart'))
-const CartCustomCheckout = lazy(() => import('../sections/cart/CartCustomCheckout'))
-const Thanks = lazy(() => import('../sections/cart/thanks/Thanks'))
-const Profile = lazy(() => import('../sections/profile/Profile'))
-const Login = lazy(() => import('../sections/login/Login'))
-const CreateAccount = lazy(() => import('../sections/login/CreateAccount'))
-const ForgotPassword = lazy(() => import('../sections/login/ForgotPassword'))
+const Shop = lazy(() => import('../sections/shop/Shop'));
+const Cart = lazy(() => import('../sections/cart/Cart'));
+const CartCustomCheckout = lazy(() => import('../sections/cart/CartCustomCheckout'));
+const Thanks = lazy(() => import('../sections/cart/thanks/Thanks'));
+const Profile = lazy(() => import('../sections/profile/Profile'));
+const Login = lazy(() => import('../sections/login/Login'));
+const CreateAccount = lazy(() => import('../sections/login/CreateAccount'));
+const ForgotPassword = lazy(() => import('../sections/login/ForgotPassword'));
 
 // import {Elements} from "@stripe/react-stripe-js";
 // import {stripeJs} from "./stripeAsyncImport";
@@ -40,13 +40,13 @@ export default function Router() {
         element: <TestLayout/>,
     }, {
         path: '/login',
-        element: <Suspense fallback={<div>Loading Shop...</div>}><Login/></Suspense>,
+        element: <Suspense fallback={<div>Loading Login...</div>}><Login/></Suspense>,
     }, {
         path: '/create-account',
-        element: <Suspense fallback={<div>Loading Shop...</div>}><CreateAccount/></Suspense>,
+        element: <Suspense fallback={<div>Loading Create Account...</div>}><CreateAccount/></Suspense>,
     }, {
         path: '/forgot-password',
-        element: <Suspense fallback={<div>Loading Shop...</div>}><ForgotPassword/></Suspense>,
+        element: <Suspense fallback={<div>Loading Forgot Password...</div>}><ForgotPassword/></Suspense>,
     }, {
         path: '/',
         element: <Layout/>,
@@ -64,13 +64,13 @@ export default function Router() {
             element: <Suspense fallback={<div>Loading Cart...</div>}><Cart/></Suspense>,
         }, {
             path: '/checkout',
-            element: <Suspense fallback={<div>Loading Cart...</div>}><CartCustomCheckout/></Suspense>,
+            element: <Suspense fallback={<div>Loading CheckOut...</div>}><CartCustomCheckout/></Suspense>,
         }, {
             path: '/thanks',
-            element: <Suspense fallback={<div>Loading Cart...</div>}><Thanks/></Suspense>,
+            element: <Suspense fallback={<div>Loading Thanks...</div>}><Thanks/></Suspense>,
         }, {
             path: '/profile/:path',//taking dynamic params
-            element: <Suspense fallback={<div>Loading Cart...</div>}><Profile/></Suspense>,
+            element: <Suspense fallback={<div>Loading Profile...</div>}><Profile/></Suspense>,
         }, {
             path: '/full-detail/:id',//taking dynamic params
             element: <EzProductFullDetails/>,

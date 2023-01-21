@@ -1,9 +1,9 @@
+import {useState} from "react";
 import {useNavigate} from 'react-router-dom';
 //material
 import {Box, Typography} from '@mui/material';
 //
 import LoginWrapper from './LoginWrapper';
-import {useState} from "react";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
@@ -12,7 +12,7 @@ import EzText from "../../components/ezComponents/EzText/EzText";
 //--------------------------------------------------------
 
 
-const ForgotPassword = () => {
+export default function ForgotPassword(){
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -39,6 +39,7 @@ const ForgotPassword = () => {
             setLoading(false)
         }
     }
+
     return (
         <LoginWrapper>
             <EzText text='Forgot Password' variant='h4' sx={{textAlign: 'center', margin: '0 20px 20px 20px', fontSize: '1.5rem'}}/>
@@ -75,5 +76,3 @@ const ForgotPassword = () => {
         </LoginWrapper>
     );
 }
-
-export default ForgotPassword;

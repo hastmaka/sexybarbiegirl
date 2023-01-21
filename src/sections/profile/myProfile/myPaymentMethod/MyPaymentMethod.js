@@ -24,7 +24,7 @@ const Child = styled(Stack)(() => ({
 export default function MyPaymentMethod({onClick}) {
     const {customer, updatePaymentMethodStatus} = useSelector(slice => slice.stripe);
     const {user} = useSelector(slice => slice.user);
-    const paymentMethodSorted = sortPaymentMethod(customer.paymentMethod.data, customer.payment_method);
+    const paymentMethodSorted = (customer?.payment_method?.length && customer?.paymentMethod?.data?.length) && sortPaymentMethod(customer?.paymentMethod?.data, customer?.payment_method);
 
     const handleCardSelection = (pm) => {
         let payment_methodUpdated = customer.payment_method.map(item => {
@@ -52,20 +52,20 @@ export default function MyPaymentMethod({onClick}) {
                     onClick={_ => window.dispatch(generalSliceActions.setModal({open: true, who: 'card'}))}
                 />
             </Stack>
-            {updatePaymentMethodStatus.loading ? <EzCircularLoader/> :
-            !customer.paymentMethod.data.length ?
-                <EzText text='Need to add some Payment Method' sx={{marginTop: '20px'}}/> :
-                <Child>
-                    {paymentMethodSorted.map(item =>
-                        <CreditCardSelection
-                            key={item.id}
-                            card={item.card}
-                            pm={item.id}
-                            checked={(customer.payment_method.findIndex(i => i.pm === item.id && i.main)) >= 0}
-                            handleCardSelection={customer.paymentMethod.data.length > 1 ? handleCardSelection : false}
-                        />
-                    )}
-                </Child>
+            {updatePaymentMethodStatus?.loading ? <EzCircularLoader/> :
+                !customer?.paymentMethod?.data?.length ?
+                    <EzText text='Need to add some Payment Method' sx={{marginTop: '20px'}}/> :
+                    <Child>
+                        {paymentMethodSorted.map(item =>
+                            <CreditCardSelection
+                                key={item.id}
+                                card={item.card}
+                                pm={item.id}
+                                checked={(customer.payment_method.findIndex(i => i.pm === item.id && i.main)) >= 0}
+                                handleCardSelection={customer.paymentMethod.data.length > 1 ? handleCardSelection : false}
+                            />
+                        )}
+                    </Child>
             }
         </>
     );

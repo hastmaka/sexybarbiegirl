@@ -99,7 +99,7 @@ export default function Login({modal}) {
             });
             import('../../helper/Helper').then(module => {
                 module.loginProcess({
-                    firebaseUser,
+                    token: firebaseUser.accessToken,
                     dbUser,
                     modal,
                     navigate,

@@ -20,7 +20,7 @@ import CartShippingAddress from "./cartShippingAddress/CartShippingAddress";
 import CartPayment from "./cartPayment/CartPayment";
 import CartShippingRate from "./cartShippingRate/CartShippingRate";
 import {useIsScroll} from "../../helper/Hooks";
-import {calculateTotalFromCheckItems} from "../../helper/Helper";
+import {calculateTotalFromCheckItems, getMainPaymentMethod} from "../../helper/Helper";
 import {userSliceActions} from "../../store/userSlice";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
@@ -81,8 +81,7 @@ export default function CartCustomCheckout() {
         getCustomerDataStatus,
         getAllShippingOptionStatus
     } = useSelector(slice => slice.stripe);
-    const [mainPaymentMethod, setMainPaymentMethod] = useState(null)
-    // debugger
+    const mainPaymentMethod = customer?.paymentMethod?.data?.length && getMainPaymentMethod(customer)
     const totalFromCheckedItems = useMemo(() => {
         return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
     }, [user.cart.item]);
@@ -90,23 +89,6 @@ export default function CartCustomCheckout() {
     // debugger
     //get scroll from top for topbar shadow effect
     useIsScroll();
-
-    //main payment method
-    useEffect(_ => {
-        if(customer?.paymentMethod?.data?.length) {
-            let main = customer.paymentMethod.data.filter(item => {
-                if(customer.payment_method.length) {
-                    let main = customer.payment_method.find(item => item.main).pm;
-                    return main === item.id
-                } else {
-                    return item
-                }
-
-            });
-            setMainPaymentMethod(main)
-        }
-    }, [customer])
-
 
     //redirect to cart if cart is empty, prevent uer type on bar navigation
     useEffect(_ => {

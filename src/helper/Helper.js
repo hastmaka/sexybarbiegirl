@@ -11,6 +11,18 @@ export const sortPaymentMethod = (stripePm, firebasePm) => {
     let defaultPm = firebasePm.find(item => item.main);
     return [...stripePm].sort((x,y) => x['id'] === defaultPm.pm ? -1 : y['id'] === defaultPm.pm);
 }
+
+export const getMainPaymentMethod = (customer) => {
+    // debugger
+    return customer.paymentMethod.data.filter(item => {
+        if(customer.payment_method.length) {
+            let main = customer.payment_method.find(item => item.main).pm;
+            return main === item.id
+        } else {
+            return item
+        }
+    });
+}
 export const getColor = (v) => {
     let tempV = [];
     Object.entries(v).map(item => tempV.push(item[0]));

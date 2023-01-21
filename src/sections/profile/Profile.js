@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 import {useIsScroll, useLocalStorage} from "../../helper/Hooks";
 import {useLocation} from "react-router-dom";
-import {useEffect} from "react";
+import {lazy, Suspense, useEffect} from "react";
 //material
 import {Box, Stack, Tab, Tabs} from '@mui/material';
 import {styled} from "@mui/material/styles";
@@ -10,9 +10,14 @@ import TocIcon from "@mui/icons-material/Toc";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
 //
-import MyOrders from "./myOrders/MyOrders";
-import WishList from "./wishlist/WishList";
-import MyProfile from "./myProfile/MyProfile";
+// import MyOrders from "./myOrders/MyOrders";
+// import WishList from "./wishlist/WishList";
+// import MyProfile from "./myProfile/MyProfile";
+
+//dynamic import
+const MyOrders = lazy(() => import('./myOrders/MyOrders'));
+const WishList = lazy(() => import('./wishlist/WishList'));
+const MyProfile = lazy(() => import('./myProfile/MyProfile'));
 
 //--------------------------------------------------------------
 
@@ -168,17 +173,17 @@ export default function Profile() {
                         <Parent>
                             {tabIndex === 0 ? (
                                 <Child>
-                                    <MyProfile/>
+                                    <Suspense fallback={<div>Loading my profile</div>}><MyProfile/></Suspense>
                                 </Child>
                             ) :
                             tabIndex === 1 ? (
                                 <Child>
-                                    <MyOrders/>
+                                    <Suspense fallback={<div>Loading my orders</div>}><MyOrders/></Suspense>
                                 </Child>
                             ) :
                             tabIndex === 2 ? (
                                 <Child>
-                                    <WishList/>
+                                    <Suspense fallback={<div>Loading my wishlist</div>}><WishList/></Suspense>
                                 </Child>
                             ) :
                             tabIndex === 3 ? (
