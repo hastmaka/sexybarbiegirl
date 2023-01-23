@@ -128,11 +128,6 @@ const InfoContainer = styled(Stack)(({theme}) => ({
 }));
 
 //----------------------------------------------------------------
-// const image = [{
-//     url: img_1
-// }, {
-//     url: img_2
-// }];
 
 export default function EzProductCard({product}) {
     const {name, price, discount, stock, statics, image} = product;
@@ -160,7 +155,6 @@ export default function EzProductCard({product}) {
                 onMouseLeave={_ => setActive(image[0].url)}
                 onClick={e => {
                     if(!ref.current.contains(e.target)) handleOpen()
-
                 }}
             >
                 <Image  active={active}/>

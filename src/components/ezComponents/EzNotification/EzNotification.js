@@ -1,19 +1,18 @@
 import {useSelector} from "react-redux";
 // material
-import {Alert, AlertTitle, Grow, Snackbar, Typography} from "@mui/material";
+import {Alert, AlertTitle, Slide, Snackbar, Typography} from "@mui/material";
 //
 import {useNotification} from "../../../helper/Hooks";
 
 //----------------------------------------------------------------
 
 function GrowTransition(props) {
-    return <Grow {...props} />;
+    return <Slide {...props} direction="up" />;
 }
 
 export default function EzNotification() {
     const {clearNotification} = useNotification();
     const {notification} = useSelector(slice => slice.generalState);
-
     return (
         <Snackbar
             open={notification.open}
@@ -33,8 +32,11 @@ export default function EzNotification() {
                 severity={notification.t}
                 sx={{
                     fontSize: '13px !important',
-                    color: '#f7f8fa',
-                    backgroundColor: '#89007D',
+                    color: '#dd0095',
+                    // borderRadius: '4px',
+                    background: 'rgba(231, 231, 231, 72%)',
+                    border: '1px solid #E9E9E9',
+                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 }}
             >
                 {notification.title !== '' && <AlertTitle sx={{fontWeight: 700}}>{notification.title}</AlertTitle>}

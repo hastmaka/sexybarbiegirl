@@ -10,12 +10,12 @@ import TocIcon from "@mui/icons-material/Toc";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
 //
-// import MyOrders from "./myOrders/MyOrders";
+// import MyOrder from "./myOrder/MyOrder";
 // import WishList from "./wishlist/WishList";
 // import MyProfile from "./myProfile/MyProfile";
 
 //dynamic import
-const MyOrders = lazy(() => import('./myOrders/MyOrders'));
+const MyOrders = lazy(() => import('./myOrder/MyOrder'));
 const WishList = lazy(() => import('./wishlist/WishList'));
 const MyProfile = lazy(() => import('./myProfile/MyProfile'));
 
@@ -113,6 +113,8 @@ export default function Profile() {
     const [tabIndex, setTabIndex] = useLocalStorage('profile', 0);
     //update scroll position
     useIsScroll();
+
+    // debugger
 
     useEffect(_ => {
         //check if the page was reloaded

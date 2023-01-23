@@ -9,7 +9,8 @@ export default function EzCircularLoader() {
         thickness={2}
         size={20}
         sx={({palette}) => ({
-            color: palette.ecommerce.pink
+            color: palette.ecommerce.pink,
+            marginTop: '20px'
         })}
     />;
 }

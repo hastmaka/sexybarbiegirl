@@ -101,7 +101,7 @@ export default function MyProfile() {
             </Parent>
             {/*payment method*/}
             <Parent>
-                {(customerStatus.loaded && getCustomerDataStatus.loaded) && <MyPaymentMethod/>}
+                <MyPaymentMethod/>
             </Parent>
         </RootStyle>
     );

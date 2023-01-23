@@ -42,7 +42,7 @@ export default function CreditCardSelection({card, pm, handleCardSelection, chec
         const isMain = customer.payment_method.find(item => item.pm === pm && item.main);
         //!!isMain && length > 1 can't do it, user have to change pm manually
         if(!!isMain && customer.payment_method.length > 1) {
-            return window.displayNotification({t: 'info', c: 'You can Delete Default Payment Method, Change to other first'})
+            return window.displayNotification({t: 'info', c: 'You can Delete Default Payment Method, Change it first', })
         }
         //length = 1 delete with a message tell have to add some pm later
         if(!!isMain && customer.payment_method.length === 1) {

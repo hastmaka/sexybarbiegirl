@@ -122,7 +122,7 @@ export default function TopBar() {
         text: 'Orders',
         listItemIcon: true,
         functionality: {
-            onClick: () => navigate(user.dummy ? '/login' : '/profile/myOrders', {state: 2})
+            onClick: () => navigate(user.dummy ? '/login' : '/profile/myOrder', {state: 2})
         }
     }, {
         id: 5,

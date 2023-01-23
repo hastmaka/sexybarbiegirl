@@ -12,19 +12,11 @@ import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBt
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzText from "../../components/ezComponents/EzText/EzText";
+import {btnOutlined} from "../../helper/Style";
 
 //dynamic import
 
 //----------------------------------------------------------------
-const btnStyle = {
-    color: theme => theme.palette.ecommerce.pink,
-    border: `1px solid ${'#f438de'}`,
-    '&:hover': {
-        color: theme => theme.palette.ecommerce.swatch_8,
-        border: `1px solid ${'#fff'}`,
-        backgroundColor: theme => theme.palette.ecommerce.pink,
-    }
-}
 export default function Login({modal}) {
     const navigate = useNavigate();
     const location = useLocation();
@@ -163,14 +155,14 @@ export default function Login({modal}) {
                 </EzLoadingBtn>
                 <Stack flexDirection='row' gap='5px' justifyContent='space-between'>
                     {!modal && <EzButton
-                        sx={{...btnStyle}}
+                        sx={{...btnOutlined}}
                         variant='outlined'
                         onClick={() => navigate('/forgot-password')}
                     >
                         Forgot
                     </EzButton>}
                     <EzButton
-                        sx={{...btnStyle}}
+                        sx={{...btnOutlined}}
                         fullWidth={!!modal}
                         variant='outlined'
                         onClick={() => {

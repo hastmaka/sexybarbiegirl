@@ -66,14 +66,13 @@ const stripeSlice = createSlice({
                     break;
                 case 'retrieve-payment-method':
                     state.customer.paymentMethod = {...payload.paymentMethods}
-                    // updateLocalStore('stripe', {...state.customer}, 'stripe')
+                    state.getCustomerDataStatus.loading = false;
+                    state.getCustomerDataStatus.loaded = true;
                     break;
                 default:
                     return
 
             }
-            state.getCustomerDataStatus.loading = false;
-            state.getCustomerDataStatus.loaded = true;
         });
         builder.addCase(getCustomerData.rejected, (state, {payload}) => {
             debugger

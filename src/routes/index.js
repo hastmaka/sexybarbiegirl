@@ -2,30 +2,33 @@ import {lazy, Suspense} from "react";
 import {useRoutes} from 'react-router-dom';
 // Routes
 import Layout from '../layout/Layout';
+import CartCustomCheckout from "../sections/cart/CartCustomCheckout";
+import Home from '../sections/home/Home';
+import TestLayout from "../layout/test_layout/TestLayout";
+import Test from "../sections/testMode/Test";
 // import Shop from '../sections/shop/Shop';
 // import Cart from '../sections/cart/Cart';
-// import CartCustomCheckout from "../sections/cart/CartCustomCheckout";
 // import Thanks from "../sections/cart/thanks/Thanks";
 // import Profile from "../sections/profile/Profile";
 // import Login from '../sections/login/Login';
 // import CreateAccount from '../sections/login/CreateAccount';
 // import ForgotPassword from '../sections/login/ForgotPassword';
-import Home from '../sections/home/Home';
-import AboutUs from '../sections/aboutUs/AboutUs';
-import Error from "../pages/Error";
-import TestLayout from "../layout/test_layout/TestLayout";
-import EzProductFullDetails from "../sections/productDetail/EzProductFullDetails";
-import Test from "../sections/testMode/Test";
+// import EzProductFullDetails from "../sections/productDetail/EzProductFullDetails";
+// import AboutUs from '../sections/aboutUs/AboutUs';
+// import Error from "../pages/Error";
 
 //async import
+// const CartCustomCheckout = lazy(() => import('../sections/cart/CartCustomCheckout'));
 const Shop = lazy(() => import('../sections/shop/Shop'));
 const Cart = lazy(() => import('../sections/cart/Cart'));
-const CartCustomCheckout = lazy(() => import('../sections/cart/CartCustomCheckout'));
 const Thanks = lazy(() => import('../sections/cart/thanks/Thanks'));
 const Profile = lazy(() => import('../sections/profile/Profile'));
 const Login = lazy(() => import('../sections/login/Login'));
 const CreateAccount = lazy(() => import('../sections/login/CreateAccount'));
 const ForgotPassword = lazy(() => import('../sections/login/ForgotPassword'));
+const EzProductFullDetails = lazy(() => import('../sections/productDetail/EzProductFullDetails'));
+const AboutUs = lazy(() => import('../sections/aboutUs/AboutUs'));
+const Error = lazy(() => import('../pages/Error'));
 
 // import {Elements} from "@stripe/react-stripe-js";
 // import {stripeJs} from "./stripeAsyncImport";
@@ -57,29 +60,29 @@ export default function Router() {
             path: '/',
             element: <Home/>,
         }, {
-            path: '/shop',
+            path: 'shop',
             element: <Suspense fallback={<div>Loading Shop...</div>}><Shop/></Suspense>,
         }, {
-            path: '/cart',
+            path: 'cart',
             element: <Suspense fallback={<div>Loading Cart...</div>}><Cart/></Suspense>,
         }, {
-            path: '/checkout',
-            element: <Suspense fallback={<div>Loading CheckOut...</div>}><CartCustomCheckout/></Suspense>,
+            path: 'checkout',
+            element: <CartCustomCheckout/>,
         }, {
-            path: '/thanks',
+            path: 'thanks',
             element: <Suspense fallback={<div>Loading Thanks...</div>}><Thanks/></Suspense>,
         }, {
-            path: '/profile/:path',//taking dynamic params
+            path: 'profile/:path',//taking dynamic params
             element: <Suspense fallback={<div>Loading Profile...</div>}><Profile/></Suspense>,
         }, {
-            path: '/full-detail/:id',//taking dynamic params
-            element: <EzProductFullDetails/>,
+            path: 'full-detail/:id',//taking dynamic params
+            element: <Suspense fallback={<div>Loading Profile...</div>}><EzProductFullDetails/></Suspense>,
         }, {
-            path: '/about-us',
-            element: <AboutUs/>,
+            path: 'about-us',
+            element: <Suspense fallback={<div>Loading Profile...</div>}><AboutUs/></Suspense>,
         }, {
             path: '/error',
-            element: <Error/>,
+            element: <Suspense fallback={<div>Loading Profile...</div>}><Error/></Suspense>,
         }, {
             path: '/test',
             element: <Test/>,
