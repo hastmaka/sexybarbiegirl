@@ -1,13 +1,13 @@
 import {useSelector} from 'react-redux';
 // material
-import {Stack, Typography} from '@mui/material';
+import {Stack} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
 import EzCheckBox from '../../../../../components/ezComponents/EzCheckBox/EzCheckBox';
 import CheckBoxContainer from '../../localComponents/checkBoxContainer/CheckBoxContainer';
-import {generalSliceActions} from '../../../../../store/gs-manager-slice';
 import ClearBtn from "../../localComponents/ClearBtn";
 import {shopSliceActions} from "../../../../../store/shopSlice";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -20,15 +20,6 @@ const SizeContainer = styled(Stack)(({theme}) => ({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: '5px'
-}));
-
-const BadgeContainer = styled(Stack)(({theme}) => ({
-    border: '1px solid lightgrey',
-    borderRadius: '5px',
-    color: theme.palette.ecommerce.swatch_2,
-    padding: '0 5px',
-    margin: '-10px 0 0 10px',
-    backgroundColor: theme.palette.ecommerce.pink
 }));
 
 //----------------------------------------------------------------
@@ -48,7 +39,7 @@ export default function FilterSize() {
                             checked={checked}
                             onChange={_ => onCheckHandler(name, !checked)}
                         />
-                        <Typography>{name === 1 ? 'XS' : name === 2 ? 'S' : name === 3 ? 'M' : name === 4 ? 'L' : name === 5 ? 'XL' : ''}</Typography>
+                        <EzText text={name}/>
                     </CheckBoxContainer>
                 )}
             </SizeContainer>

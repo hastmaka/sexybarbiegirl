@@ -21,7 +21,6 @@ function App() {
     //get scroll from top for topbar shadow effect
     useIsScroll();
 
-
     useEffect(() => {
         if (!userStatus.loading && !userStatus.loaded) {
             dispatch(getAll({

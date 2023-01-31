@@ -1,11 +1,11 @@
 // material
-import {Stack, Typography} from '@mui/material';
+import {Stack} from '@mui/material';
 import {styled} from '@mui/material/styles';
 //
 import EzCheckBox from '../../../../../components/ezComponents/EzCheckBox/EzCheckBox';
 import {useSelector} from 'react-redux';
-import {generalSliceActions} from '../../../../../store/gs-manager-slice';
 import {shopSliceActions} from "../../../../../store/shopSlice";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -38,7 +38,7 @@ export default function FilterAvailability() {
                     checked={filter.availability === 'instock'}
                     onChange={_ => onCheckHandler('instock')}
                 />
-                <Typography>In Stock</Typography>
+                <EzText text='In Stock'/>
             </CheckBoxContainer>
             <CheckBoxContainer>
                 <EzCheckBox
@@ -46,7 +46,7 @@ export default function FilterAvailability() {
                     checked={filter.availability === 'outofstock'}
                     onChange={_ => onCheckHandler('outofstock')}
                 />
-                <Typography>Out of Stock</Typography>
+                <EzText text='Out of Stock'/>
             </CheckBoxContainer>
         </RootStyle>
     );

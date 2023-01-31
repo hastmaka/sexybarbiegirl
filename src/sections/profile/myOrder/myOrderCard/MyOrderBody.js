@@ -1,10 +1,9 @@
 // material
-import {Box, Button, Stack} from "@mui/material";
+import {Button, Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import EzButton from "../../../../components/ezComponents/EzButton/EzButton";
 import {btnContained, btnOutlined} from "../../../../helper/Style";
-import OrderProduct from "./OrderProduct";
 import {useSelector} from "react-redux";
+import OrderProductContainer from "./OrderProductContainer";
 
 //----------------------------------------------------------------
 
@@ -13,20 +12,6 @@ const RootStyle = styled(Stack)(({theme}) => ({
     padding: '10px',
     justifyContent: 'space-between'
 }));
-
-const OrderProductContainer = styled(Box)(({theme}) => ({
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
-    [theme.breakpoints.down(1200)]: {
-        gridTemplateColumns: '1fr 1fr',
-    },
-    [theme.breakpoints.down(786)]: {
-        gridTemplateColumns: '1fr 1fr',
-    },
-    [theme.breakpoints.down(520)]: {
-        gridTemplateColumns: '1fr',
-    }
-}))
 
 const MediaQueryBtn = styled(Button)(({theme}) => ({
     [theme.breakpoints.up(1200)]: {
@@ -43,20 +28,12 @@ const MediaQueryBtn = styled(Button)(({theme}) => ({
 
 export default function MyOrderBody({data}) {
     const {screen} = useSelector(slice => slice.generalState);
+
     return (
         <RootStyle>
-            <OrderProductContainer>
-                {data.map(item =>
-                    <OrderProduct
-                        key={item.variation_id}
-                        img={item.image}
-                        name={item.name}
-                        color={item.color}
-                        size={item.size}
-                        price={item.price}
-                    />
-                )}
-            </OrderProductContainer>
+            <Stack sx={{flex: 1}}>
+                <OrderProductContainer data={data}/>
+            </Stack>
             {screen >= 786 && <Stack gap='10px' justifyContent='flex-end'>
                 <MediaQueryBtn sx={{...btnContained}}>Problem With Order</MediaQueryBtn>
                 <MediaQueryBtn sx={{...btnOutlined}}>Feedback</MediaQueryBtn>

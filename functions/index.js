@@ -4,8 +4,8 @@ const app = express();
 const functions = require('firebase-functions');
 //stripe
 const stripe = require('stripe')(process.env.STRIPE_KEY);
-const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
-// const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
+// const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
+const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
 
 const admin = require('firebase-admin');
 admin.initializeApp({credential: admin.credential.cert(credential)});
@@ -39,7 +39,7 @@ app.post('/webhook', (req, res) => {
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretFirebase);
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretLocal);
     }
     catch (err) {
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -47,15 +47,30 @@ app.post('/webhook', (req, res) => {
     // Handle the event
     switch (event.type) {
         case 'payment_intent.succeeded':
+            // debugger
             const {amount, created, customer, receipt_email, charges, metadata } = event.data.object;
             const order = {
                 userId: orderData.userId,
                 receipt_email,
                 amount,
+                last_four: charges.data[0].payment_method_details.card.last4,
+                network: charges.data[0].payment_method_details.card.network,
                 create_at: created,
                 customer_id: customer,
                 order_status: 'processing',
-                shipping: charges.data[0].shipping,
+                shipping: {
+                    address: {
+                        city: charges.data[0].shipping.address.city,
+                        country: charges.data[0].shipping.address.country,
+                        line1: charges.data[0].shipping.address.line1,
+                        line2: charges.data[0].shipping.address.line2,
+                        postal_code: charges.data[0].shipping.address.postal_code,
+                        state: charges.data[0].shipping.address.state
+                    },
+                    first_name: charges.data[0].shipping.name.split(' ')[0],
+                    last_name: charges.data[0].shipping.name.split(' ')[1],
+                    phone: charges.data[0].shipping.phone
+                },
                 item: orderData.item
             }
             try {
@@ -142,6 +157,7 @@ app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
 
 //save card to stripe without charging it
 app.post('/create-payment-intent-to-save-a-card', appCheckVerification, async (req, res) => {
+    // debugger
     try {
         const setupIntent = await stripe.setupIntents.create({
             customer: req.body.customer_id,

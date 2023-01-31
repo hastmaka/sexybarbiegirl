@@ -4,6 +4,7 @@ import {styled} from '@mui/material/styles';
 import EzText from "../../../../components/ezComponents/EzText/EzText";
 import EzPriceFormat from "../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import {useSelector} from "react-redux";
+import EzSimpleLink from "../../../../components/ezComponents/EzSimpleLink/EzSimpleLink";
 
 //----------------------------------------------------------------
 
@@ -19,15 +20,25 @@ const RootStyle = styled(Stack)(({theme}) => ({
 
 const Child = styled(Stack)(({theme}) => ({
     gap: '5px'
-}))
+}));
+
+const linkStyle = {
+    borderBottom: '1px solid transparent',
+    width: 'fit-content',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    cursor: 'pointer',
+    '&:hover' : {
+        borderBottom: '1px solid #999',
+    }
+}
 
 //----------------------------------------------------------------
 
-export default function MyOrderHeader({date, total, shipTo, status, orderId}) {
-    const {first_name, last_name, address, city, country, state, zip} = shipTo;
+export default function MyOrderHeader({date, total, shipTo, status, orderId, setOpen}) {
     const {screen} = useSelector(slice => slice.generalState);
     const color = status === "processing" ? '#1fa60b' : '';
-
     return (
         <RootStyle>
             <Child>
@@ -43,14 +54,16 @@ export default function MyOrderHeader({date, total, shipTo, status, orderId}) {
                     <Child>
                         <EzText text='Ship to'/>
                         <EzText
-                            text={`${first_name} ${last_name}, ${address}, ${city}, ${country}, ${state}, ${zip} `}
-                            sx={{
-                                textDecoration: 'underline',
-                                width: '200px',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap'
-                            }}
+                            text={`
+                                ${shipTo.first_name} 
+                                ${shipTo.last_name}, 
+                                ${shipTo.address.line1}, 
+                                ${shipTo.address.country}, 
+                                ${shipTo.address.city},
+                                ${shipTo.address.state}, 
+                                ${shipTo.address.postal_code}
+                            `}
+                            sx={{...linkStyle, width: '200px'}}
                         />
                     </Child>
                     <Child>
@@ -60,15 +73,29 @@ export default function MyOrderHeader({date, total, shipTo, status, orderId}) {
                     <Child>
                         <EzText text={`Order Id - ${orderId}`}/>
                         <Stack flexDirection='row' justifyContent='space-around'>
-                            <EzText text='View Order Details' sx={{color: '#e105c3'}}/>
+                            <EzText
+                                onClick={_ => setOpen(true)}
+                                text='View Order Details'
+                                sx={{
+                                    ...linkStyle,
+                                    color: '#e105c3'
+                                }}
+                            />
                             <EzText text='|'/>
-                            <EzText text='View invoice' sx={{color: '#e105c3'}}/>
+                            <EzText text='View Invoice' sx={{...linkStyle, color: '#e105c3'}}/>
                         </Stack>
                     </Child>
                 </>
                 :
                 <Stack sx={{alignItems: 'flex-end', gap: '5px'}}>
-                    <EzText text='View Order Details' sx={{color: '#e105c3'}}/>
+                    <EzText
+                        onClick={_ => setOpen(true)}
+                        text='View Order Details'
+                        sx={{
+                            ...linkStyle,
+                            color: '#e105c3'
+                        }}
+                    />
                     <EzText text={status} sx={{color: color}}/>
                 </Stack>
             }

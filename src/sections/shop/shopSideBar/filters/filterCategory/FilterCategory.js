@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import {generalSliceActions} from "../../../../../store/gs-manager-slice";
 import ClearBtn from "../../localComponents/ClearBtn";
 import {shopSliceActions} from "../../../../../store/shopSlice";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -38,7 +39,7 @@ export default function FilterCategory() {
                             checked={checked}
                             onChange={_ => onCheckHandler(name, !checked)}
                         />
-                        <Typography>{name}</Typography>
+                        <EzText text={name}/>
                     </CheckBoxContainer>
                 )}
             </CategoryContainer>

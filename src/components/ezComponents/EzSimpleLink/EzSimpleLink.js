@@ -8,6 +8,7 @@ import {NavLink} from "react-router-dom";
 const LinkStyle = styled(Typography)(({theme}) => ({
     textDecoration: 'none',
     fontSize: '12px',
+    width: 'fit-content',
     fontWeight: 600,
     borderBottom: '1px solid transparent',
     '&:hover': {
@@ -17,8 +18,9 @@ const LinkStyle = styled(Typography)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function EzSimpleLink({text, to}) {
+export default function EzSimpleLink({text, to, sx}) {
+    // debugger
     return (
-        <LinkStyle component={NavLink} to={to}>{text}</LinkStyle>
+        <LinkStyle component={NavLink} to={to} sx={{...sx}}>{text}</LinkStyle>
     );
 }

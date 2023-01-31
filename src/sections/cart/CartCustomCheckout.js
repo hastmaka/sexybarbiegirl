@@ -86,7 +86,7 @@ export default function CartCustomCheckout() {
         return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
     }, [user.cart.item]);
     const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) + (shippingOptionSelected?.amount / 100 || 0);
-    // debugger
+    
     //get scroll from top for topbar shadow effect
     useIsScroll();
 
@@ -203,17 +203,24 @@ export default function CartCustomCheckout() {
                 if (result.paymentIntent.status === 'succeeded') {
                     //update the cart items deleting the ones which was purchased
                     //create a temp order to give an instant feedback to the user then sync with db
-                    // debugger
+                    const {receipt_email, amount, created, shipping} = result.paymentIntent;
                     const {item, ...rest} = cart;
                     FirestoreApi.createOrder({
                         data: {
                             userId: user.uid,
-                            receipt_email: user.email,
-                            amount: result.paymentIntent.amount,
-                            create_at: Date.now(),
+                            receipt_email,
+                            amount,
+                            last_four: mainPaymentMethod[0].card.last4,
+                            network: mainPaymentMethod[0].card.brand,
+                            create_at: created,
                             customer_id: customer.customer_id,
                             order_status: 'processing',
-                            shipping: {...user.address.filter(item => item.main)[0]},
+                            shipping: {
+                                address: {...shipping.address},
+                                first_name: shipping.name.split(' ')[0],
+                                last_name: shipping.name.split(' ')[1],
+                                phone: shipping.phone
+                            },
                             item: [...itemChecked]
                         },
                         id: res.idToCreateTheOrder

@@ -14,6 +14,7 @@ const RootStyle = styled(Stack)(({theme}) => ({
     backgroundColor: '#fff',
     borderRadius: '4px',
     padding: '10px',
+    gap: '10px',
     [theme.breakpoints.down(786)]: {
         borderRadius: '4px 0 0 4px'
     }

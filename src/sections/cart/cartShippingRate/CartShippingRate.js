@@ -5,11 +5,14 @@ import EzText from "../../../components/ezComponents/EzText/EzText";
 import ShippingRate from "./shippingRate/ShippingRate";
 import EzSkeleton from "../../../components/EzSkeleton/EzSkeleton";
 
-export default function CartShippingRate({
-                                             getAllShippingOptionStatus,
-                                             shippingRate,
-                                             handleShippingRate,
-                                             shippingOptionSelected}) {
+export default function CartShippingRate(
+    {
+        getAllShippingOptionStatus,
+        shippingRate,
+        handleShippingRate,
+        shippingOptionSelected
+    }) {
+    debugger
     return (
         <Wrapper sx={{gap: '10px', padding: '20px'}}>
             <Stack gap='10px'>
@@ -31,7 +34,7 @@ export default function CartShippingRate({
                 )
                 :
                 getAllShippingOptionStatus.loading ?
-                <EzSkeleton variant='rectangular' height='180px' width='100%'/>
+                    <EzSkeleton variant='rectangular' height='180px' width='100%'/>
                     :
                     <EzText text='Sign in first to see shipping options'/>
             }

@@ -3,6 +3,7 @@ import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import EzText from "../../../../components/ezComponents/EzText/EzText";
 import EzPriceFormat from "../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
+import EzSimpleLink from "../../../../components/ezComponents/EzSimpleLink/EzSimpleLink";
 
 //----------------------------------------------------------------
 
@@ -45,6 +46,7 @@ export default function OrderProduct({img, price, size, name, color}) {
                     <EzText text='Price: '/>
                     <EzText text={<EzPriceFormat price={price}/>}/>
                 </Stack>
+                <EzSimpleLink text='Write a review' to='' sx={{color: '#e105c3'}}/>
             </Stack>
         </RootStyle>
     );

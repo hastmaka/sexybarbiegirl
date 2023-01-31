@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react';
 // material
-import {Stack, Typography} from '@mui/material';
+import {Stack} from '@mui/material';
 import Slider from '@mui/material/Slider';
 import {styled} from '@mui/material/styles';
 import {useSelector} from 'react-redux';
-import {generalSliceActions} from '../../../../../store/gs-manager-slice';
 import ClearBtn from "../../localComponents/ClearBtn";
 import {shopSliceActions} from "../../../../../store/shopSlice";
+import EzText from "../../../../../components/ezComponents/EzText/EzText";
 
 //----------------------------------------------------------------
 
@@ -61,8 +61,8 @@ export default function FilterPrice() {
                     max={value.sliderMax}
                 />
                 <Stack flexDirection='row' justifyContent='space-between'>
-                    <Typography variant='span'>US$ {value.visualMin}</Typography>
-                    <Typography variant='span'>US$ {value.visualMax}</Typography>
+                    <EzText text={`US$ ${value.visualMin}`}/>
+                    <EzText text={`US$ ${value.visualMax}`}/>
                 </Stack>
             </Stack>
             {(priceRange[0] !== filter.priceRange[0] || priceRange[1] !== filter.priceRange[1]) &&
