@@ -6,16 +6,6 @@ import CartCustomCheckout from "../sections/cart/CartCustomCheckout";
 import Home from '../sections/home/Home';
 import TestLayout from "../layout/test_layout/TestLayout";
 import Test from "../sections/testMode/Test";
-// import Shop from '../sections/shop/Shop';
-// import Cart from '../sections/cart/Cart';
-// import Thanks from "../sections/cart/thanks/Thanks";
-// import Profile from "../sections/profile/Profile";
-// import Login from '../sections/login/Login';
-// import CreateAccount from '../sections/login/CreateAccount';
-// import ForgotPassword from '../sections/login/ForgotPassword';
-// import EzProductFullDetails from "../sections/productDetail/EzProductFullDetails";
-// import AboutUs from '../sections/aboutUs/AboutUs';
-// import Error from "../pages/Error";
 
 //async import
 // const CartCustomCheckout = lazy(() => import('../sections/cart/CartCustomCheckout'));

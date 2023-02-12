@@ -10,7 +10,8 @@ import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBt
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzText from "../../components/ezComponents/EzText/EzText";
-import {generalSliceActions} from "../../store/gs-manager-slice";
+import Login from "./Login";
+import {openModal} from "../../helper/Helper";
 
 //----------------------------------------------------------------
 
@@ -81,7 +82,7 @@ export default function CreateAccount({ modal}) {
     }
 
     return (
-        <LoginWrapper>
+        <LoginWrapper modal={modal}>
             <EzText text='Sign up' variant='h4' sx={{textAlign: 'center', margin: '0 20px 20px 20px', fontSize: '1.5rem'}}/>
             <Box component='form' onSubmit={onCreateAccountSubmit}>
                 <EzTextField required type='email' name='email' label='Email address' autoFocus/>
@@ -145,7 +146,7 @@ export default function CreateAccount({ modal}) {
                     color='error'
                     onClick={() => {
                         if(modal) {
-                            return window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                            return openModal(<Login modal/>)
                         }
                         navigate('/login')
                     }}

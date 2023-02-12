@@ -12,7 +12,7 @@ export default function CartShippingRate(
         handleShippingRate,
         shippingOptionSelected
     }) {
-    debugger
+    // debugger
     return (
         <Wrapper sx={{gap: '10px', padding: '20px'}}>
             <Stack gap='10px'>

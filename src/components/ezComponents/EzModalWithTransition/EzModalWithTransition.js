@@ -23,6 +23,18 @@ const Transition = forwardRef(function Transition(props, ref) {
 //----------------------------------------------------------------
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 
+const initialAddressFormData = {
+    first_name: '',
+    last_name: '',
+    phone: '',
+    country: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    id: ''
+}
+
 export default function EzModalWithTransition() {
     const {modal} = useSelector(slice => slice.generalState);
     const {clientSecret} = useSelector(slice => slice.stripe);
@@ -42,7 +54,7 @@ export default function EzModalWithTransition() {
             lChildren = <CreateAccount modal />
             break;
         case 'address':
-            lChildren = <AddressForm type='create'/>
+            lChildren = <AddressForm type='create' tempData={initialAddressFormData}/>
             break;
         case 'card':
             lChildren = <Elements stripe={stripePromise} options={options}>
@@ -51,7 +63,6 @@ export default function EzModalWithTransition() {
             break
         default:
             return
-
     }
 
     return (

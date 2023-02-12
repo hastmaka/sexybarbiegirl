@@ -73,7 +73,7 @@ export default function CardInput() {
                     ]
                 }))
                 window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer, token: user.token}));
-                window.dispatch(generalSliceActions.setModal({open: false, who: ''}));
+                window.dispatch(generalSliceActions.closeModal());
                 return window.displayNotification({
                     t: 'success',
                     c: 'Your Payment method was added Successfully'

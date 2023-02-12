@@ -6,6 +6,7 @@ import {stripeSliceActions} from "../store/stripeSlice";
 import {updateCartApi} from "./FirestoreApi";
 import {doc, setDoc} from "firebase/firestore";
 import {db} from "./FirebaseConfig";
+import Login from "../sections/login/Login";
 
 export const sortPaymentMethod = (stripePm, firebasePm) => {
     let defaultPm = firebasePm.find(item => item.main);
@@ -231,7 +232,7 @@ export const AddToWishlist = (product, user) => {
         window.confirm({t: 'warning', c: `Sign In first to manage your 'Wishlist'`})
             .then(res=> {
                 if(res) {
-                    window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                    openModal(<Login modal/>)
                 }
             })
     } else {
@@ -318,14 +319,14 @@ export const loginProcess = ({token, dbUser, modal, navigate, location, setLoadi
                         token
                     }));
                     if(modal) {
-                        window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                        window.dispatch(generalSliceActions.closeModal())
                     }
                     navigate(location.pathname === '/checkout' ? '/checkout' : '/')
                     setLoading(false);
                     resolve()
                 } else {
                     if(modal) {
-                        window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+                        window.dispatch(generalSliceActions.closeModal())
                     }
                     window.dispatch(userSliceActions.setUser({
                         ...dbUser,
@@ -370,6 +371,11 @@ export const createAccountProcess = async (user) => {
     } catch (err) {
         return(err)
     }
+}
+
+export const openModal = (children) => {
+    window.dispatch(generalSliceActions.openModal());
+    window.setChildren(children)
 }
 
 export const timer = () => {

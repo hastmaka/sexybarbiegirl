@@ -15,9 +15,8 @@ const parent = {
 };
 
 const text = {
-    color: '#8f8f8f'
+    color: ''
 }
-
 const RootStyle = styled(Stack)(({theme}) => ({
     borderRadius: '4px',
     maxWidth: '1080px',
@@ -32,9 +31,6 @@ const RootStyle = styled(Stack)(({theme}) => ({
     [theme.breakpoints.down(700)]: {
         width: '90vw'
     },
-    // [theme.breakpoints.down(900)]: {
-    //     width: '80vw'
-    // }
 }));
 
 const Parent = styled(Stack)(({theme}) => ({
@@ -42,7 +38,7 @@ const Parent = styled(Stack)(({theme}) => ({
     [theme.breakpoints.down(900)]: {
         flexDirection: 'column'
     }
-}))
+}));
 
 
 //----------------------------------------------------------------
@@ -109,24 +105,24 @@ export default function OrderSummaryModal({orderData}) {
                         <EzText text='Order Summary' sx={{fontSize: '14px'}}/>
                         <Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
-                                <span style={{...text}}>Item(s) Subtotal</span>
-                                <EzText text={`$ ${total}`} sx={{...text}}/>
+                                <EzText text='Item(s) Subtotal' sx={{...text}}/>
+                                <EzText text={`$ ${total}`}  sx={{...text}}/>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
-                                <span style={{...text}}>Shipping and Handling</span>
-                                <EzText text='$ 0' sx={{...text}}/>
+                                <EzText text='Shipping and Handling' sx={{...text}}/>
+                                <EzText text='$ 0'  sx={{...text}}/>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
-                                <span style={{...text}}>Total before Tax</span>
-                                <EzText text={`$ ${total}`} sx={{...text}}/>{/*plus handling*/}
+                                <EzText text='Total before Tax' sx={{...text}}/>
+                                <EzText text={`$ ${total}`}  sx={{...text}}/>{/*plus handling*/}
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
-                                <span style={{...text}}>Tax</span>
-                                <EzText text={`$ ${tax}`} sx={{...text}}/>
+                                <EzText text='Tax' sx={{...text}}/>
+                                <EzText text={`$ ${tax}`}  sx={{...text}}/>
                             </Stack>
                             <Stack flexDirection='row' justifyContent='space-between'>
-                                <span style={{...text}}>Gran Total</span>
-                                <EzText text={`$ ${granTotal}`} sx={{...text}}/>
+                                <EzText text='Gran Total' sx={{...text}}/>
+                                <EzText text={`$ ${granTotal}`}  sx={{...text}}/>
                             </Stack>
                         </Stack>
                     </Stack>

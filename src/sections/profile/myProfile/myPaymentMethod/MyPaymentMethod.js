@@ -8,11 +8,13 @@ import AddCardIcon from "@mui/icons-material/AddCard";
 import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 // import CreditCardSelection from "../../../cart/cartPayment/creditCardSelection/CreditCardSelection";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
-import {generalSliceActions} from "../../../../store/gs-manager-slice";
 import {update} from "../../../../helper/FirestoreApi";
 import EzCircularLoader from "../../../../components/ezComponents/EzCircularLoader/EzCircularLoader";
-import {sortPaymentMethod} from "../../../../helper/Helper";
+import {openModal, sortPaymentMethod} from "../../../../helper/Helper";
 import CreditCardSkeleton from "../../../../components/Skeleton/CreditCardSkeleton";
+import CardInput from "../../../../components/form/cardInput/CardInput";
+import {Elements} from "@stripe/react-stripe-js";
+import {loadStripe} from "@stripe/stripe-js";
 
 //----------------------------------------------------------------
 
@@ -22,13 +24,36 @@ const Child = styled(Stack)(() => ({
 }));
 
 //----------------------------------------------------------------
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 const CreditCardSelection = lazy(() => import('../../../cart/cartPayment/creditCardSelection/CreditCardSelection'))
 
 export default function MyPaymentMethod() {
-    const {customer, updatePaymentMethodStatus, getCustomerDataStatus, customerStatus} = useSelector(slice => slice.stripe);
+    const {clientSecret, customer, updatePaymentMethodStatus, getCustomerDataStatus, customerStatus} = useSelector(slice => slice.stripe);
     const {user} = useSelector(slice => slice.user);
     const paymentMethodSorted = (customer?.payment_method?.length && customer?.paymentMethod?.data?.length) &&
         sortPaymentMethod(customer?.paymentMethod?.data, customer?.payment_method);
+    const options = {
+        // passing the client secret obtained in step 3
+        clientSecret: clientSecret,
+        // Fully customizable with appearance API.
+        // appearance: {/*...*/},
+    };
+
+    const handleCardSelection = (pm) => {
+        let payment_methodUpdated = customer.payment_method.map(item => {
+            return item.main ? {...item, main: !item.main} :
+                item.pm === pm ? {...item, main: !item.main} : item
+        })
+        window.dispatch(update({
+            id: user.uid,
+            collection: 'stripe_customers',
+            data: payment_methodUpdated
+        }))
+        window.displayNotification({
+            t: 'info',
+            c: 'Payment method changed successfully'
+        })
+    }
 
     const Data = () => {
         return (
@@ -48,21 +73,6 @@ export default function MyPaymentMethod() {
         )
     }
 
-    const handleCardSelection = (pm) => {
-        let payment_methodUpdated = customer.payment_method.map(item => {
-            return item.main ? {...item, main: !item.main} :
-                item.pm === pm ? {...item, main: !item.main} : item
-        })
-        window.dispatch(update({
-            id: user.uid,
-            collection: 'stripe_customers',
-            data: payment_methodUpdated
-        }))
-        window.displayNotification({
-            t: 'info',
-            c: 'Payment method changed successfully'
-        })
-    }
     return (
         <>
             <Stack flexDirection='row' justifyContent='space-between'>
@@ -71,7 +81,9 @@ export default function MyPaymentMethod() {
                     sx={{padding: 0}}
                     icon={<AddCardIcon/>}
                     toolTipTitle='Add Card'
-                    onClick={_ => window.dispatch(generalSliceActions.setModal({open: true, who: 'card'}))}
+                    onClick={_ => openModal(<Elements stripe={stripePromise} options={options}>
+                        <CardInput/>
+                    </Elements>)}
                 />
             </Stack>
             {(getCustomerDataStatus.loaded && customerStatus.loaded) &&

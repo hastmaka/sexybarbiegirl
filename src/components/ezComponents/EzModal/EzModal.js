@@ -3,6 +3,8 @@ import {Dialog, Zoom} from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import EzCustomIconButton from "../EzCustomIconButton/EzCustomIconButton";
 import {forwardRef} from "react";
+import {useSelector} from "react-redux";
+import {generalSliceActions} from "../../../store/gs-manager-slice";
 
 //----------------------------------------------------------------
 
@@ -12,10 +14,12 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 //----------------------------------------------------------------
 
-export default function EzModal({open, handleClose, children}) {
+export default function EzModal({children}) {
+    const {modal} = useSelector(slice => slice.generalState)
+
     return (
         <Dialog
-            open={open}
+            open={modal.open}
             onClose={(e, reason) => {
                 // debugger
             }}
@@ -34,7 +38,7 @@ export default function EzModal({open, handleClose, children}) {
             <EzCustomIconButton
                 icon={<CloseIcon/>}
                 // toolTipTitle='Close'
-                onClick={handleClose}
+                onClick={_ => window.dispatch(generalSliceActions.closeModal())}
                 sx={{
                     position: 'fixed',
                     right: {xs: '19px', md: 0},

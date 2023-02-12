@@ -11,6 +11,8 @@ import EzPriceFormat from "../EzPriceFormat/EzPriceFormat";
 import EzProductDetails from "../../../sections/productDetail/EzProductDetails";
 import EzWishlistBtn from "../EzWishlistBtn/EzWishlistBtn";
 import EzModal from "../EzModal/EzModal";
+import {generalSliceActions} from "../../../store/gs-manager-slice";
+import {openModal} from "../../../helper/Helper";
 
 //------------------------------------------------------------------------
 
@@ -138,23 +140,16 @@ export default function EzProductCard({product}) {
     const isProductInWishlist = user.dummy ? false : user.wish_list.some(item => item.id === product.id);
     const {screen} = useSelector(slice => slice.generalState);
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     return (
         <RootStyle
             onMouseEnter={_ => setIsHovered(true)}
             onMouseLeave={_ => setIsHovered(false)}
         >
-            <EzModal open={open} handleClose={_ => handleClose()}>
-                <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>
-            </EzModal>
             <ImageContainer
                 onMouseEnter={_ => setActive(image[1].url)}
                 onMouseLeave={_ => setActive(image[0].url)}
                 onClick={e => {
-                    if(!ref.current.contains(e.target)) handleOpen()
+                    if(!ref.current.contains(e.target)) openModal(<EzProductDetails product={product} modal/>)
                 }}
             >
                 <Image  active={active}/>
@@ -221,7 +216,7 @@ export default function EzProductCard({product}) {
                         }
                     }}
                     startIcon={<AddShoppingCartIcon sx={{padding: 0}}/>}
-                    onClick={_ => handleOpen()}
+                    onClick={_ => openModal(<EzProductDetails product={product} modal/>)}
                 >
                     {screen >= 1366 ? 'Add to Cart' : ''}
                 </EzButton>

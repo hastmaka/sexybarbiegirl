@@ -52,9 +52,9 @@ export default function Tr({product}) {
 
     return (
         <>
-            <EzModal open={open} handleClose={_ => handleClose()}>
-                <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>
-            </EzModal>
+            {/*<EzModal open={open} handleClose={_ => handleClose()}>*/}
+            {/*    <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>*/}
+            {/*</EzModal>*/}
             <Box
                 sx={{
                     display: 'grid',

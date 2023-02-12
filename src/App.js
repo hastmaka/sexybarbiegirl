@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {lazy, Suspense, useEffect, useMemo, useState} from 'react';
 import Routes from './routes/index';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAll, getById} from "./helper/FirestoreApi";
@@ -6,14 +6,18 @@ import {Box} from "@mui/material";
 import {useCheckScreen, useConfirmDialog, useIsScroll, useNotification} from "./helper/Hooks";
 import {generalSliceActions} from "./store/gs-manager-slice";
 import ScrollToTop from "./components/scrollToTop/ScrollToTop";
-import EzModalWithTransition from "./components/ezComponents/EzModalWithTransition/EzModalWithTransition";
+// import EzModalWithTransition from "./components/ezComponents/EzModalWithTransition/EzModalWithTransition";
 import {userSliceActions} from "./store/userSlice";
+
+//async import
+const EzModal = lazy(() => import('./components/ezComponents/EzModal/EzModal'));
 
 function App() {
     const dispatch = useDispatch();
     const {confirm} = useConfirmDialog();
     const {displayNotification} = useNotification();
     const {userStatus} = useSelector(slice => slice.user);
+    const [children, setChildren] = useState(null);
     const user = useMemo(() => {
         return JSON.parse(localStorage.getItem('user'))
     }, []);
@@ -86,6 +90,7 @@ function App() {
 
     useEffect(_ => {
         window.dispatch = dispatch;
+        window.setChildren = setChildren;
         window.confirm = confirm;
         window.displayNotification = displayNotification;
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,7 +111,9 @@ function App() {
             <>
                 <ScrollToTop/>
                 <Routes/>
-                <EzModalWithTransition/>
+                <Suspense fallback={<div>Loading Login...</div>}>
+                    <EzModal children={children}/>
+                </Suspense>
             </>
     );
 }

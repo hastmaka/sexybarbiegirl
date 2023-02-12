@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useSelector} from "react-redux";
 // material
 import {Box, InputAdornment, Stack, TextField, Typography} from "@mui/material";
@@ -38,24 +38,10 @@ const RootStyle = styled(Stack)(({theme}) => ({
 export default function AddressForm({type, tempData, afterSubmit}) {
     const {user} = useSelector(slice => slice.user);
     const [loading, setLoading] = useState(false);
-    const [addData, setAddData] = useState({});
-    const title = type === 'edit' ? 'Save' : type === 'create' ? 'Create' : '';
+    const [addData, setAddData] = useState({...tempData});
+    const title = type === 'edit' ? 'Edit' : type === 'create' ? 'Create' : '';
 
     // debugger
-    // console.log('render')
-    useEffect(_ => {
-        setAddData(tempData || {
-            first_name: '',
-            last_name: '',
-            phone: '',
-            country: '',
-            address: '',
-            city: '',
-            state: '',
-            zip: '',
-            id: ''
-        })
-    }, [tempData]);
 
     const onChangeHandler = (e) => {
         setAddData({...addData, [e.target.name]: e.target.value})
@@ -86,7 +72,7 @@ export default function AddressForm({type, tempData, afterSubmit}) {
                 id: createId()
             }));
         }
-        !!afterSubmit ? afterSubmit() : window.dispatch(generalSliceActions.setModal({open: false, who: ''}))
+        window.dispatch(generalSliceActions.closeModal())
         setLoading(false)
     }
 

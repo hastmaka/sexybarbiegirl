@@ -6,8 +6,7 @@ const generalStateSlice = createSlice({
         screen: '',
         scrollTop: 0,
         modal: {
-            open: false,
-            who: ''
+            open: false
         },
         notification: {
             open: false,
@@ -33,11 +32,11 @@ const generalStateSlice = createSlice({
         setScroll(state, {payload}){
             state.scrollTop = payload
         },
-        setModal(state, {payload}) {
-            state.modal = {...state.modal, ...payload};
+        openModal(state) {
+            state.modal.open = true;
         },
         closeModal(state){
-
+            state.modal.open = false;
         },
         showNotification(state, {payload}) {
             state.notification = {

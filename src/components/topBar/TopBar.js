@@ -17,6 +17,8 @@ import Logo from '../../resources/Asset 56@2x.png';
 import EzSetOfIcons from '../ezComponents/EzSetOfIcons/EzSetOfIcons';
 import EzMenu from "../ezComponents/EzMenu/EzMenu";
 import {generalSliceActions} from "../../store/gs-manager-slice";
+import Login from '../../sections/login/Login'
+import {openModal} from "../../helper/Helper";
 
 //----------------------------------------------------------------
 
@@ -196,7 +198,7 @@ export default function TopBar() {
                 window.confirm({t: 'info', c: `Sign in first to manage your 'Wishlist'`})
                     .then(res => {
                         if (res) {
-                            window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                            openModal(<Login modal/>)
                         }
                     }):
                 navigate('/profile/wishlist', {state: 3})

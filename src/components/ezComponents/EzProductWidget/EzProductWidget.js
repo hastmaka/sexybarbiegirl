@@ -18,9 +18,9 @@ export default function ProductWidget({productToRender, header, sx}) {
 
     return (
         <>
-            <EzModal open={open} handleClose={_ => handleClose()}>
-                <EzProductDetails product={tempProduct} modal handleCloseCard={_ => handleClose()}/>
-            </EzModal>
+            {/*<EzModal open={open} handleClose={_ => handleClose()}>*/}
+            {/*    <EzProductDetails product={tempProduct} modal handleCloseCard={_ => handleClose()}/>*/}
+            {/*</EzModal>*/}
             <Wrapper sx={{padding: '0 0 20px 0', ...sx}}>
                 <WidgetHeader text={header}/>
                 {productToRender.map(item =>

@@ -65,6 +65,7 @@ const stripeSlice = createSlice({
                     }
                     break;
                 case 'retrieve-payment-method':
+                    debugger
                     state.customer.paymentMethod = {...payload.paymentMethods}
                     state.getCustomerDataStatus.loading = false;
                     state.getCustomerDataStatus.loaded = true;

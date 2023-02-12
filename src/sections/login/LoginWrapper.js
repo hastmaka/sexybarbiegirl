@@ -35,11 +35,11 @@ const FormContainer = styled(Stack)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function LoginWrapper({children}) {
-    const {modal} = useSelector(slice => slice.generalState);
+export default function LoginWrapper({children, modal = false}) {
+    // debugger
     return (
-        <RootStyle modal={modal.open.toString()}>
-            {!modal.open && <Link
+        <RootStyle modal={modal.toString()}>
+            {!modal && <Link
                 component={RouterLink}
                 to={'/'}
                 sx={({palette}) => ({
@@ -57,7 +57,7 @@ export default function LoginWrapper({children}) {
                 {children}
             </FormContainer>
 
-            {!modal.open && <Stack
+            {!modal && <Stack
                 sx={{
                     position: 'absolute',
                     bottom: '20px',

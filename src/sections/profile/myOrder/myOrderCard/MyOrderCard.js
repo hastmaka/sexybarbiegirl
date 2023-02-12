@@ -27,9 +27,9 @@ export default function MyOrderCard({orderData}) {
     // debugger
     return (
         <RootStyle>
-            {open && <EzModal open={open} handleClose={_ => handleClose()}>
-                <OrderSummaryModal orderData={orderData}/>
-            </EzModal>}
+            {/*{open && <EzModal open={open} handleClose={_ => handleClose()}>*/}
+            {/*    <OrderSummaryModal orderData={orderData}/>*/}
+            {/*</EzModal>}*/}
             <MyOrderHeader
                 date={fixDate}
                 total={amount}

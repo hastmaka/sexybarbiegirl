@@ -1,13 +1,15 @@
+import {useSelector} from "react-redux";
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import AddressCard from "../../../cart/cartShippingAddress/addressCard/AddressCard";
+//
 import {userSliceActions} from "../../../../store/userSlice";
-import {useSelector} from "react-redux";
-import {generalSliceActions} from "../../../../store/gs-manager-slice";
+import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
+import AddressCard from "../../../cart/cartShippingAddress/addressCard/AddressCard";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
+import {openModal} from "../../../../helper/Helper";
+import AddressForm from "../../../../components/form/addressForm/AddressForm";
 
 //----------------------------------------------------------------
 
@@ -17,12 +19,22 @@ const Child = styled(Stack)(() => ({
 }));
 
 //----------------------------------------------------------------
+const initialAddressFormData = {
+    first_name: '',
+    last_name: '',
+    phone: '',
+    country: '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    id: ''
+}
 
-export default function MyAddress({onClick}) {
+export default function MyAddress() {
     const {user} = useSelector(slice => slice.user);
-    const addressSorted = [...user.address].sort((x, y) => {
-        return (y.main - x.main) * 2 - 1
-    });
+    const addressSorted = [...user.address].sort((x, y) => {return (y.main - x.main) * 2 - 1});
+
     return (
         <>
             <Stack flexDirection='row' justifyContent='space-between'>
@@ -31,7 +43,7 @@ export default function MyAddress({onClick}) {
                     sx={{padding: 0}}
                     icon={<AddLocationAltIcon/>}
                     toolTipTitle='Add Address'
-                    onClick={_ => window.dispatch(generalSliceActions.setModal({open: true, who: 'address'}))}
+                    onClick={_ => openModal(<AddressForm type='create' tempData={initialAddressFormData}/>)}
                 />
             </Stack>
             {!user.address.length ?

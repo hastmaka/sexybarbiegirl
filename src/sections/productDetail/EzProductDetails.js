@@ -23,6 +23,7 @@ import EzAccordion from "../../components/ezComponents/EzAccordion/EzAccordion";
 import {shopSliceActions} from "../../store/shopSlice";
 import EzColorAndSize from "../../components/ezComponents/EzColorAndSize/EzColorAndSize";
 import EzText from "../../components/ezComponents/EzText/EzText";
+import {generalSliceActions} from "../../store/gs-manager-slice";
 //----------------------------------------------------------------
 
 const RootStyle = styled(Stack)(({modal, theme}) => ({
@@ -351,7 +352,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
                                 onClick={_ => {
                                     window.dispatch(shopSliceActions.setSingleProduct(product))
                                     navigate(`/full-detail/${id}`)
-                                    handleCloseCard()
+                                    window.dispatch(generalSliceActions.closeModal())
                                 }}
                                 sx={{
                                     paddingTop: '5px',

@@ -6,7 +6,7 @@ import {styled} from '@mui/material/styles';
 
 const RootStyle = styled(Typography)(({theme}) => ({
     fontSize: '13px',
-    fontWeight: 600,
+    fontWeight: 500,
     textTransform: 'capitalize',
     color: theme.palette.ecommerce.inactive_color
 }));

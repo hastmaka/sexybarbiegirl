@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import {generalSliceActions} from "../../store/gs-manager-slice";
 // material
 import {Box, IconButton, InputAdornment, Stack} from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -13,6 +12,8 @@ import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzText from "../../components/ezComponents/EzText/EzText";
 import {btnOutlined} from "../../helper/Style";
+import CreateAccount from "./CreateAccount";
+import {openModal} from "../../helper/Helper";
 
 //dynamic import
 
@@ -104,7 +105,7 @@ export default function Login({modal}) {
     }
 
     return (
-        <LoginWrapper>
+        <LoginWrapper modal={modal}>
             <EzText text='Sign in' variant='h4' sx={{textAlign: 'center', margin: '0 20px 20px 20px', fontSize: '1.5rem'}}/>
             <Box component='form' onSubmit={onLoginSubmit}>
                 <EzTextField
@@ -167,7 +168,7 @@ export default function Login({modal}) {
                         variant='outlined'
                         onClick={() => {
                             if(modal) {
-                                return window.dispatch(generalSliceActions.setModal({open: true, who: 'create-account'}))
+                                return openModal(<CreateAccount modal />)
                             }
                             navigate('/create-account')
                         }}
