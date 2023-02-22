@@ -1,4 +1,3 @@
-import {tempReview} from "./dummyReview";
 // material
 import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
@@ -8,9 +7,6 @@ import ReviewCard from "./ReviewCard";
 import EzCustomIconButton from "../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import {useSelector} from "react-redux";
 import ReviewForm from "./ReviewForm";
-import Login from "../../login/Login";
-import EzModalWithTransition from "../../../components/ezComponents/EzModalWithTransition/EzModalWithTransition";
-import {useState} from "react";
 import {generalSliceActions} from "../../../store/gs-manager-slice";
 //----------------------------------------------------------------
 

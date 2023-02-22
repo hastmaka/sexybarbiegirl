@@ -213,7 +213,6 @@ export const mergeTwoCart = (cart) => {
     }(Object.create(null)), []);
 };
 
-
 export const AddToCart = (selectedColor, selectedSize, item, id, image, name, user) => {
     const variation = item.variation.filter(i => selectedColor === i.color && selectedSize === i.size);
     window.dispatch(userSliceActions.addToCart({

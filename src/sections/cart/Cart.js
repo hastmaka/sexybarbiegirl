@@ -60,7 +60,7 @@ export default function Cart() {
     const {shippingOptionSelected} = useSelector(slice => slice.stripe);
     const [loading, setLoading] = useState(false);
     const totalFromCheckedItems = useMemo(() => {
-        return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
+        return user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
     }, [user.cart.item]);
     const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) + (shippingOptionSelected?.amount / 100 || 0);
     //get scroll from top for topbar shadow effect

@@ -6,6 +6,7 @@ import Table from "./table/table";
 import Wrapper from "../../../components/Wrapper/Wrapper";
 import noItemImg from '../../../resources/no_item_in_cart.png';
 import {userSliceActions} from "../../../store/userSlice";
+import {linkStyle} from "../../../helper/Style";
 
 //----------------------------------------------------------------
 
@@ -20,14 +21,7 @@ const TableContainer = styled(Stack)(() => ({
     width: '100%',
 }));
 
-const linkStyle = {
-    borderBottom: '1px solid transparent',
-    cursor: 'pointer',
-    transition: 'all 200ms',
-    '&:hover': {
-        borderBottom: '1px solid #999',
-    }
-}
+
 
 //----------------------------------------------------------------
 
@@ -41,7 +35,7 @@ export default function CartItemTable({user, screen}) {
                 padding: '20px',
             }}
         >
-            <Stack flexDirection='row' gap='10px' sx={{paddingBottom: '15px'}}>
+            <Stack flexDirection='row'  gap='10px' sx={{paddingBottom: '15px'}}>
                 <EzText text={`Items(${user.cart.item.length})`}/>
                 <EzText
                     onClick={_ => window.dispatch(userSliceActions.toggleAllCheck({user}))}

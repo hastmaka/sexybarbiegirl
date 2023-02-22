@@ -24,3 +24,12 @@ export const btnContained = {
         color: '#FFF'
     }
 }
+
+export const linkStyle = {
+    borderBottom: '1px solid transparent',
+    cursor: 'pointer',
+    transition: 'all 200ms',
+    '&:hover': {
+        borderBottom: `1px solid ${'#999'}`,
+    }
+}

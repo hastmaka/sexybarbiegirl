@@ -3,6 +3,9 @@ import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import EzText from "../../components/ezComponents/EzText/EzText";
 import EzSimpleLink from "../../components/ezComponents/EzSimpleLink/EzSimpleLink";
+import EzButton from "../../components/ezComponents/EzButton/EzButton";
+import {fetchAPI} from "../../helper/FetchApi";
+import {url} from "../../helper/stripe/StripeApi";
 
 //----------------------------------------------------------------
 
@@ -21,95 +24,57 @@ const RootStyle = styled(Stack)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function Test() {
+    const handleClick = () => {
+        fetchAPI(url, 'get-rates', 'POST', {
+            rateOptions: {
+                carrierIds: ['se-4087584']
+            },
+            shipment: {
+                validateAddress: "no_validation",
+                shipTo: {
+                    name: "luis",
+                    // phone: "555-555-5555",
+                    addressLine1: "11011 sw 88 st apt f312",
+                    cityLocality: "Miami",
+                    stateProvince: "FL",
+                    postalCode: "33176",
+                    countryCode: "US",
+                    addressResidentialIndicator: "yes",
+                },
+                shipFrom: {
+                    companyName: "PartyLifestyle",
+                    name: "Yanet",
+                    phone: "305-748-1194",
+                    addressLine1: "1476 reef redge ct",
+                    // addressLine2: "Suite 300",
+                    cityLocality: "Las Vegas",
+                    stateProvince: "NV",
+                    postalCode: "89128",
+                    countryCode: "US",
+                    addressResidentialIndicator: "no",
+                },
+                packages: [{
+                    weight: {
+                        value: 1,
+                        unit: "pound",
+                    },
+                    dimensions: {
+                        length: 10,
+                        width: 5,
+                        height: 2,
+                        unit: "inch"
+                    }
+                }],
+            }
+        }).then(res => {
+            debugger
+        })
+    }
     return (
         <RootStyle>
-            <Stack
-                border={1}
-                sx={{
-                    borderRadius: '4px',
-                    width: '1080px',
-                    height: '680px',
-                    padding: '30px',
-                    gap: '20px'
-                }}
-            >
-                {/*<Stack>*/}
-                {/*    <EzText*/}
-                {/*        text='Order Details'*/}
-                {/*        sx={{*/}
-                {/*            paddingBottom: '10px',*/}
-                {/*            fontSize: '24px'*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</Stack>*/}
-                {/*/!*top-section*!/*/}
-                {/*<Stack>*/}
-                {/*    <Stack flexDirection='row' justifyContent='space-between' pb={1}>*/}
-                {/*        <Stack flexDirection='row' gap='20px'>*/}
-                {/*            <EzText text='Ordered on November 15, 2022'/>*/}
-                {/*            <EzText text='|'/>*/}
-                {/*            <EzText text='Order Id - UMGTu50o64ggHHT5mreg5rH1znxL'/>*/}
-                {/*        </Stack>*/}
-                {/*        <Stack>*/}
-                {/*            <EzSimpleLink text='View Invoice' to=''/>*/}
-                {/*        </Stack>*/}
-                {/*    </Stack>*/}
-
-                {/*    <Stack flexDirection='row' border={1} sx={{borderRadius: '4px'}}>*/}
-                {/*        <Stack flex={1} p={1} gap='10px'>*/}
-                {/*            <EzText text='Shipping Address' sx={{fontSize: '14px'}}/>*/}
-                {/*            <Stack>*/}
-                {/*                <span>Luis Castro</span>*/}
-                {/*                <span>400 Tamiami Blvd, 33160</span>*/}
-                {/*                <span>Florida</span>*/}
-                {/*            </Stack>*/}
-                {/*        </Stack>*/}
-
-                {/*        <Stack flex={1} p={1} gap='10px'>*/}
-                {/*            <EzText text='Payment Method' sx={{fontSize: '14px'}}/>*/}
-                {/*            <Stack>*/}
-                {/*                <span>Debit **** 3525</span>*/}
-                {/*            </Stack>*/}
-                {/*        </Stack>*/}
-
-                {/*        <Stack flex={1} p={1} gap='10px'>*/}
-                {/*            <EzText text='Order Summary' sx={{fontSize: '14px'}}/>*/}
-                {/*            <Stack>*/}
-                {/*                <Stack flexDirection='row' justifyContent='space-between'>*/}
-                {/*                    <span>Item(s) Subtotal</span>*/}
-                {/*                    <EzText text='$26.96'/>*/}
-                {/*                </Stack>*/}
-                {/*                <Stack flexDirection='row' justifyContent='space-between'>*/}
-                {/*                    <span>Shipping and Handling</span>*/}
-                {/*                    <EzText text='$0'/>*/}
-                {/*                </Stack>*/}
-                {/*                <Stack flexDirection='row' justifyContent='space-between'>*/}
-                {/*                    <span>Total before Tax</span>*/}
-                {/*                    <EzText text='$26.96'/>*/}
-                {/*                </Stack>*/}
-                {/*                <Stack flexDirection='row' justifyContent='space-between'>*/}
-                {/*                    <span>Tax</span>*/}
-                {/*                    <EzText text='$2.54'/>*/}
-                {/*                </Stack>*/}
-                {/*                <Stack flexDirection='row' justifyContent='space-between'>*/}
-                {/*                    <span>Gran Total</span>*/}
-                {/*                    <EzText text='$26.96'/>*/}
-                {/*                </Stack>*/}
-                {/*            </Stack>*/}
-                {/*        </Stack>*/}
-                {/*    </Stack>*/}
-                {/*</Stack>*/}
-                {/*/!*bottom-section*!/*/}
-                {/*<Stack>*/}
-                {/*    <Stack pb={1}>*/}
-                {/*        <EzText text='Item(s)'/>*/}
-                {/*    </Stack>*/}
-
-                {/*    <Stack flexDirection='row' border={1} sx={{borderRadius: '4px'}}>*/}
-                {/*        */}
-                {/*    </Stack>*/}
-                {/*</Stack>*/}
-            </Stack>
+           <EzButton
+                onClick={_ => handleClick()}
+           >ShipEngine</EzButton>
         </RootStyle>
     );
 }

@@ -1,6 +1,5 @@
 // material
 import {Stack} from "@mui/material";
-import {styled} from '@mui/material/styles';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 //
 import EzText from "../../../components/ezComponents/EzText/EzText";
@@ -8,7 +7,10 @@ import Wrapper from "../../../components/Wrapper/Wrapper";
 import EzCustomIconButton from "../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddressCard from "./addressCard/AddressCard";
 import EzHelpText from "../../../components/ezComponents/EzHelpText/EzHelpText";
-import {generalSliceActions} from "../../../store/gs-manager-slice";
+import {openModal} from "../../../helper/Helper";
+import Login from "../../login/Login";
+import AddressForm from "../../../components/form/addressForm/AddressForm";
+import {initialAddressFormData} from "../../../helper/ShipEngine";
 
 //----------------------------------------------------------------
 
@@ -26,11 +28,11 @@ export default function CartShippingAddress({user}) {
                             window.confirm({t: 'info', c: `Sign in to manage your 'Address'`})
                                 .then(res => {
                                     if (res) {
-                                        window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                                        openModal(<Login modal/>)
                                     }
                                 })
                         } else {
-                            window.dispatch(generalSliceActions.setModal({open: true, who: 'address'}))
+                            openModal(<AddressForm type='create' tempData={initialAddressFormData}/>)
                         }
                     }}
                 />
@@ -42,7 +44,7 @@ export default function CartShippingAddress({user}) {
                     <>
                         <AddressCard
                             action={false}
-                            data={user.address.filter(item => item.main === true)[0]}
+                            data={user.address.filter(item => item.main)[0]}
                         />
                         <EzHelpText
                             text='to manage addresses go profile/My Profile/Address Book'

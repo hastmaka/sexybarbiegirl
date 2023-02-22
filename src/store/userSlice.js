@@ -130,7 +130,20 @@ const userSlice = createSlice({
             updateAddressApi(state.user.uid, [...state.user.address]);
         },
         removeAddress(state, {payload}) {
-            state.user.address = [...state.user.address].filter(item => item.id !== payload.id);
+            let addressToDelete = [],
+                addressToUpdate = [];
+            // eslint-disable-next-line array-callback-return
+            state.user.address.map(item => {
+                if(item.id === payload.id) {
+                    addressToDelete.push(item)
+                } else {
+                    addressToUpdate.push(item)
+                }
+            });
+            if(state.user.address.length > 1 && addressToDelete[0].main) {
+                addressToUpdate[0].main = !addressToUpdate[0].main
+            }
+            state.user.address = [...addressToUpdate];
             updateAddressApi(state.user.uid, [...state.user.address])
         },
 

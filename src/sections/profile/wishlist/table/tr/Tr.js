@@ -9,9 +9,8 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 //
 import Cell from "../cell/Cell";
 import EzPriceFormat from "../../../../../components/ezComponents/EzPriceFormat/EzPriceFormat";
-import EzModalWithTransition from "../../../../../components/ezComponents/EzModalWithTransition/EzModalWithTransition";
 import EzProductDetails from "../../../../productDetail/EzProductDetails";
-import EzModal from "../../../../../components/ezComponents/EzModal/EzModal";
+import {openModal} from "../../../../../helper/Helper";
 
 //----------------------------------------------------------------
 
@@ -44,17 +43,9 @@ const ActionContainer = styled(Stack)(({theme}) => ({
 export default function Tr({product}) {
     const {name, price, image} = product;
     const {user} = useSelector(slice => slice.user);
-    //modal
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
 
     return (
         <>
-            {/*<EzModal open={open} handleClose={_ => handleClose()}>*/}
-            {/*    <EzProductDetails product={product} modal handleCloseCard={_ => handleClose()}/>*/}
-            {/*</EzModal>*/}
             <Box
                 sx={{
                     display: 'grid',
@@ -68,14 +59,14 @@ export default function Tr({product}) {
                 <Cell>
                     <Stack flexDirection='row' gap='5px'>
                         <Stack
-                            onClick={_ => handleOpen()}
+                            onClick={_ => openModal(<EzProductDetails product={product} modal/>)}
                             sx={{
                                 cursor: 'pointer',
                                 width: {xs: '90px', sm: '110px'},
                                 padding: '10px 5px',
                             }}
                         >
-                            <img src={image[0].url} alt="product image" style={{borderRadius: '4px'}}/>
+                            <img src={image[0].url} alt="product-img" style={{borderRadius: '4px'}}/>
                         </Stack>
                         <Stack
                             sx={{
@@ -101,7 +92,7 @@ export default function Tr({product}) {
                     <ActionContainer>
                         <Tooltip title='Add to Cart' arrow placement='bottom'>
                             <IconButton
-                                onClick={_ => handleOpen()}
+                                onClick={_ => openModal(<EzProductDetails product={product} modal/>)}
                                 aria-label="add_to_cart" sx={{p: 0}}>
                                 <AddShoppingCartIcon/>
                             </IconButton>

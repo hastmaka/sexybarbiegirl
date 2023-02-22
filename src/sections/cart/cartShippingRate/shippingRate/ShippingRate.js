@@ -18,17 +18,17 @@ const CardElementContent = styled(EzCard)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function ShippingRate({checked, handleShippingRate, shr, amount, min, max, name}) {
+export default function ShippingRate({checked, handleShippingRate, shr, amount, min, totalFromCheckedItems}) {
     const {user} = useSelector(slice => slice.user);
     // debugger
     return (
         <CardElementContent>
             <Stack flexDirection='row' gap='5px' alignItems='center'>
-                <EzCheckBox onChange={_ => handleShippingRate(shr, amount)} checked={!!user.cart.item.length && checked} disabled={!user.cart.item.length}/>
-                <EzText text={`(${min.value} - ${max.value} business-days)`}/>
+                <EzCheckBox onChange={_ => handleShippingRate(shr, amount)} checked={user.cart.item.length && checked} disabled={!user.cart.item.length}/>
+                <EzText text={`(${min} - business-days)`}/>
             </Stack>
             <EzText
-                text={amount === 0 ? 'Free' : <EzPriceFormat price={amount / 100} color='#3a3a3a' priceFS={16}/>}
+                text={totalFromCheckedItems > 100 ? 'Free' : <EzPriceFormat price={amount} color='#3a3a3a' priceFS={16}/>}
                 sx={{paddingRight: amount === 0 ? '5px' : ''}}
             />
         </CardElementContent>

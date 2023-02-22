@@ -7,36 +7,42 @@ import EzSkeleton from "../../../components/EzSkeleton/EzSkeleton";
 
 export default function CartShippingRate(
     {
-        getAllShippingOptionStatus,
+        user,
+        getRatesStatus,
         shippingRate,
         handleShippingRate,
-        shippingOptionSelected
+        shippingOptionSelected,
+        totalFromCheckedItems
     }) {
-    // debugger
+
     return (
         <Wrapper sx={{gap: '10px', padding: '20px'}}>
             <Stack gap='10px'>
                 <EzText text='Shipping Rates'/>
-                <EzText text='Ground-FedEx' sx={{fontWeight: 500}}/>
+                <EzText text='USPS' sx={{fontWeight: 500}}/>
             </Stack>
-            {getAllShippingOptionStatus.loaded ?
-                shippingRate.data.map(item =>
-                    <ShippingRate
-                        key={item.id}
-                        shr={item.id}
-                        name={item.display_name}
-                        amount={item.fixed_amount.amount}
-                        min={item.delivery_estimate.minimum}
-                        max={item.delivery_estimate.maximum}
+            {getRatesStatus.loaded && totalFromCheckedItems > 0 ?
+                shippingRate.map(item => {
+                    // debugger
+                    return <ShippingRate
+                        key={item.rateId}
+                        shr={item.rateId}
+                        name={item.carrierFriendlyName}
+                        amount={item.shippingAmount.amount}
+                        min={item.carrierDeliveryDays}
+                        totalFromCheckedItems={totalFromCheckedItems}
                         handleShippingRate={handleShippingRate}
-                        checked={shippingOptionSelected.shr === item.id}
+                        checked={shippingOptionSelected.shr === item.rateId}
                     />
-                )
+                })
                 :
-                getAllShippingOptionStatus.loading ?
+                getRatesStatus.loading ?
                     <EzSkeleton variant='rectangular' height='180px' width='100%'/>
                     :
-                    <EzText text='Sign in first to see shipping options'/>
+                    user.dummy ?
+                        <EzText text='Sign in first to see shipping options'/>
+                        :
+                        <EzText text='No item selected'/>
             }
         </Wrapper>
     );

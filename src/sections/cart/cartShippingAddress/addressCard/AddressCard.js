@@ -31,7 +31,7 @@ const DefaultAddress = styled(Typography)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function AddressCard({data, onClick, action = true}) {
-    const {address, city, state, country, zip, main, first_name, last_name, phone, id} = data;
+    const {address_line_1, city_locality, country_code, postal_code, state_province, first_name, last_name, main, id, phone} = data;
 
     const onClickHandler = (e, data) => {
         if(e.currentTarget.ariaLabel === 'edit_address') {
@@ -55,8 +55,8 @@ export default function AddressCard({data, onClick, action = true}) {
     return (
         <RootStyle action={action.toString()}>
             <Typography variant='span'>{first_name} {last_name}</Typography>
-            <Typography variant='span'>{address}, {city}, {zip}</Typography>
-            <Typography variant='span'>{state}, {country}</Typography>
+            <Typography variant='span'>{address_line_1}, {city_locality}, {postal_code}</Typography>
+            <Typography variant='span'>{state_province}, {country_code}</Typography>
             <Typography variant='span'>{phone}</Typography>
 
             {action && <ActionContainer main={main.toString()}>

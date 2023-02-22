@@ -6,6 +6,7 @@ const functions = require('firebase-functions');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 // const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
 const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
+const shipping = require('./helper/ShipEngine');
 
 const admin = require('firebase-admin');
 admin.initializeApp({credential: admin.credential.cert(credential)});
@@ -197,6 +198,18 @@ app.post('/detach-payment-method', async (req, res) => {
     }
 })
 
+//shipEngine
+app.post('/validate-address', appCheckVerification, async (req, res) => {
+    shipping.validateAddresses(req.body).then(data => {
+        res.status(200).send(data);
+    })
+})
+
+app.post('/get-rates', appCheckVerification, async (req, res) => {
+    shipping.getRatesWithShipmentDetails(req.body).then(data => {
+        res.status(200).send(data);
+    })
+})
 
 //Done pm_
 // app.post('/set-up-future-payment', async (req, res) => {

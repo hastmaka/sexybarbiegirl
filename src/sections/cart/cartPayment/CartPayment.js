@@ -8,17 +8,29 @@ import EzCustomIconButton from "../../../components/ezComponents/EzCustomIconBut
 import EzHelpText from "../../../components/ezComponents/EzHelpText/EzHelpText";
 import CreditCardSelection from "./creditCardSelection/CreditCardSelection";
 import EzSkeleton from "../../../components/EzSkeleton/EzSkeleton";
-import {generalSliceActions} from "../../../store/gs-manager-slice";
+import {openModal} from "../../../helper/Helper";
+import Login from "../../login/Login";
+import {Elements} from "@stripe/react-stripe-js";
+import CardInput from "../../../components/form/cardInput/CardInput";
+import {loadStripe} from "@stripe/stripe-js";
 
 //----------------------------------------------------------------
-
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 export default function CartPayment({
                                         user,
                                         customer,
+                                        clientSecret,
                                         customerStatus,
                                         mainPaymentMethod,
                                         getCustomerDataStatus
 }) {
+    const options = {
+        // passing the client secret obtained in step 3
+        clientSecret: clientSecret,
+        // Fully customizable with appearance API.
+        // appearance: {/*...*/},
+    };
+
     return (
         <Wrapper sx={{gap: '20px',padding: '20px'}}>
             <Stack flexDirection='row' justifyContent='space-between'>
@@ -32,11 +44,13 @@ export default function CartPayment({
                             window.confirm({t: 'info', c: `Sign in to manage your 'Payment Method'`})
                                 .then(res => {
                                     if (res) {
-                                        window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                                        openModal(<Login modal/>)
                                     }
                                 })
                         } else {
-                            window.dispatch(generalSliceActions.setModal({open: true, who: 'card'}))
+                            openModal(<Elements stripe={stripePromise} options={options}>
+                                <CardInput/>
+                            </Elements>)
                         }
                     }}
                 />

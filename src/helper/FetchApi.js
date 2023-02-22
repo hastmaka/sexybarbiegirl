@@ -1,7 +1,6 @@
-export async function fetchAPI(tempUrl, endpoint, method, data, token) {
+export async function fetchAPI(baseUrl, endpoint, method, data, token = null) {
     let body = method === 'POST' ? JSON.stringify(data) : {},
-        url;
-        url = new URL(tempUrl + endpoint)
+        url = new URL(baseUrl + endpoint);
         // url.search = new URLSearchParams(JSON.stringify(data)).toString()
     // debugger
     try {
@@ -22,6 +21,7 @@ export async function fetchAPI(tempUrl, endpoint, method, data, token) {
         })
         return await res.json();
     } catch (e) {
+        //navigate to the error page
         debugger
     }
 }

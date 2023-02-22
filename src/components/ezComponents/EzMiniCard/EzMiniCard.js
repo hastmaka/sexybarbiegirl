@@ -24,11 +24,10 @@ const RootStyle = styled(Stack)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function EzMiniCard({item, image, name, price, setTempProduct, handleOpen}) {
+export default function EzMiniCard({item, image, name, price, handleOpen}) {
     return (
         <RootStyle
             onClick={_ => {
-                setTempProduct(item)
                 handleOpen()
             }}
         >

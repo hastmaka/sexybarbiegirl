@@ -1,19 +1,19 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {updateLocalStore} from "../helper/Helper";
 import {getById, update} from "../helper/FirestoreApi";
-import {getAllShippingOption, getCustomerData} from "../helper/stripe/StripeApi";
+import {getRatesWithShipmentDetails, getCustomerData} from "../helper/stripe/StripeApi";
 
 const stripeSlice = createSlice({
     name: 'stripe',
     initialState: {
         customer: {},
         defaultPaymentMethod: {},
-        shippingRate: {},
+        shippingRate: [],
         clientSecret: '',
         shippingOptionSelected: {},
         customerStatus: {loaded: false, loading: false},
         getCustomerDataStatus: {loaded: false, loading: false},
-        getAllShippingOptionStatus: {loaded: false, loading: false},
+        getRatesStatus: {loaded: false, loading: false},
         updatePaymentMethodStatus: {loaded: false, loading: false},
     },
     reducers: {
@@ -65,7 +65,7 @@ const stripeSlice = createSlice({
                     }
                     break;
                 case 'retrieve-payment-method':
-                    debugger
+                    // debugger
                     state.customer.paymentMethod = {...payload.paymentMethods}
                     state.getCustomerDataStatus.loading = false;
                     state.getCustomerDataStatus.loaded = true;
@@ -80,18 +80,19 @@ const stripeSlice = createSlice({
             state.getCustomerDataStatus.loaded = false;
         });
 
-        builder.addCase(getAllShippingOption.pending, (state) => {
-            state.getAllShippingOptionStatus.loading = true;
-            state.getAllShippingOptionStatus.loaded = false;
+        builder.addCase(getRatesWithShipmentDetails.pending, (state) => {
+            state.getRatesStatus.loading = true;
+            state.getRatesStatus.loaded = false;
         });
-        builder.addCase(getAllShippingOption.fulfilled, (state, {payload}) => {
-            state.shippingRate = {...payload.shippingRates};
-            state.getAllShippingOptionStatus.loading = false;
-            state.getAllShippingOptionStatus.loaded = true;
+        builder.addCase(getRatesWithShipmentDetails.fulfilled, (state, {payload}) => {
+            // debugger
+            state.shippingRate = [...payload];
+            state.getRatesStatus.loading = false;
+            state.getRatesStatus.loaded = true;
         });
-        builder.addCase(getAllShippingOption.rejected, (state, {payload}) => {
+        builder.addCase(getRatesWithShipmentDetails.rejected, (state, {payload}) => {
             debugger
-            state.getAllShippingOptionStatus.loaded = false;
+            state.getRatesStatus.loaded = false;
         });
 
         builder.addCase(update.pending, (state) => {

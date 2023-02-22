@@ -10,6 +10,7 @@ import AddressCard from "../../../cart/cartShippingAddress/addressCard/AddressCa
 import EzText from "../../../../components/ezComponents/EzText/EzText";
 import {openModal} from "../../../../helper/Helper";
 import AddressForm from "../../../../components/form/addressForm/AddressForm";
+import {initialAddressFormData} from "../../../../helper/ShipEngine";
 
 //----------------------------------------------------------------
 
@@ -19,18 +20,6 @@ const Child = styled(Stack)(() => ({
 }));
 
 //----------------------------------------------------------------
-const initialAddressFormData = {
-    first_name: '',
-    last_name: '',
-    phone: '',
-    country: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    id: ''
-}
-
 export default function MyAddress() {
     const {user} = useSelector(slice => slice.user);
     const addressSorted = [...user.address].sort((x, y) => {return (y.main - x.main) * 2 - 1});

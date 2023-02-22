@@ -8,6 +8,7 @@ import {createId} from "../../../helper/Helper";
 import {userSliceActions} from "../../../store/userSlice";
 import EzLoadingBtn from "../../ezComponents/EzLoadingBtn/EzLoadingBtn";
 import {generalSliceActions} from "../../../store/gs-manager-slice";
+import {shipEngineToDb, validateAddress} from "../../../helper/ShipEngine";
 
 //----------------------------------------------------------------
 
@@ -51,29 +52,46 @@ export default function AddressForm({type, tempData, afterSubmit}) {
         e.preventDefault();
         setLoading(true);
         const formData = new FormData(e.currentTarget);
-        let data = {
-            first_name: formData.get('first_name'),
-            last_name: formData.get('last_name'),
-            phone: formData.get('phone'),
-            country: formData.get('country'),
-            address: formData.get('address'),
-            city: formData.get('city'),
-            state: formData.get('state'),
-            zip: formData.get('zip')
-        }
-
-        if(type === 'edit') {
-            let {id, main} = tempData;
-            window.dispatch(userSliceActions.editAddress({...data, id, main}));
+        //verifying address
+        const addressVerified = await validateAddress({
+            name: `${formData.get('first_name')} ${formData.get('last_name')}`,
+            countryCode: 'US',
+            addressLine1: formData.get('address_line_1'),
+            cityLocality: formData.get('city_locality'),
+            stateProvince: formData.get('state_province'),
+            postalCode: formData.get('postal_code')
+        }, user.token)
+        if(addressVerified.status === 'error') {
+            window.displayNotification({c: addressVerified.message})
+            setLoading(false)
         } else {
-            window.dispatch(userSliceActions.addAddress({
-                ...data,
-                main: !user.address.length,
-                id: createId()
-            }));
+            if(type === 'edit') {
+                let {id, main} = tempData;
+                window.dispatch(userSliceActions.editAddress({
+                    ...shipEngineToDb(addressVerified.normalizedAddress),
+                    first_name: formData.get('first_name'),
+                    last_name: formData.get('last_name'),
+                    phone: formData.get('phone'),
+                    id,
+                    main
+                }));
+            } else {
+                window.dispatch(userSliceActions.addAddress({
+                    ...shipEngineToDb(addressVerified.normalizedAddress),//delete all empty keys
+                    first_name: formData.get('first_name'),
+                    last_name: formData.get('last_name'),
+                    phone: formData.get('phone'),
+                    main: !user.address.length,
+                    id: createId()
+                }));
+                window.displayNotification({
+                    t: 'success',
+                    c: 'Address Added Successfully'
+                })
+            }
+            window.dispatch(generalSliceActions.closeModal())
+            setLoading(false)
         }
-        window.dispatch(generalSliceActions.closeModal())
-        setLoading(false)
     }
 
     return (
@@ -113,54 +131,57 @@ export default function AddressForm({type, tempData, afterSubmit}) {
                     size='small'
                     name='phone'
                     placeholder='Phone'
+                    inputProps={{
+                        maxLength: 10,
+                    }}
                     InputProps={{
                         startAdornment: <InputAdornment position="start">+1</InputAdornment>,
                     }}
                 />
                 <TextField
-                    value={addData.country}
-                    onChange={onChangeHandler}
-                    required
+                    value={addData.country_code}
+                    // onChange={onChangeHandler}
+                    disabled
                     variant='standard'
                     size='small'
-                    name='country'
-                    placeholder='Country'
+                    name='country_code'
+                    placeholder='US'
                 />
                 <TextField
-                    value={addData.address}
+                    value={addData.address_line_1}
                     onChange={onChangeHandler}
                     required
                     variant='standard'
                     size='small'
-                    name='address'
-                    placeholder='Address'
+                    name='address_line_1'
+                    placeholder='11011 sw 88th st apt f312'
                 />
                 <TextField
-                    value={addData.city}
+                    value={addData.city_locality}
                     onChange={onChangeHandler}
                     required
                     variant='standard'
                     size='small'
-                    name='city'
+                    name='city_locality'
                     placeholder='City'
                 />
                 <TextField
-                    value={addData.state}
+                    value={addData.state_province}
                     onChange={onChangeHandler}
                     required
                     variant='standard'
                     size='small'
-                    name='state'
+                    name='state_province'
                     placeholder='State'
                 />
                 <TextField
-                    value={addData.zip}
+                    value={addData.postal_code}
                     onChange={onChangeHandler}
                     required
                     type='number'
                     variant='standard'
                     size='small'
-                    name='zip'
+                    name='postal_code'
                     placeholder='Zip'
                 />
 

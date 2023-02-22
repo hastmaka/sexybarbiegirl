@@ -3,7 +3,7 @@ import {fetchAPI} from "../FetchApi";
 const urlFirebase = 'https://us-central1-sexybarbiegirl-f6068.cloudfunctions.net/app/';
 const urlLocal = 'http://127.0.0.1:5001/sexybarbiegirl-f6068/us-central1/app/';
 
-export const url = urlFirebase;
+export const url = urlLocal;
 
 
 
@@ -20,11 +20,11 @@ export const getCustomerData = createAsyncThunk(
     }
 );
 
-export const getAllShippingOption = createAsyncThunk(
+export const getRatesWithShipmentDetails = createAsyncThunk(
     'stripe/getAllShippingOption',
-    async ({endpoint, token}, {rejectWithValue})  => {
+    async ({endpoint, data, token}, {rejectWithValue})  => {
         try {
-            return await fetchAPI(url, endpoint, 'GET', null, token);
+            return await fetchAPI(url, endpoint, 'POST', {...data}, token);
         } catch (error) {
             debugger
             return rejectWithValue(error.response.data);

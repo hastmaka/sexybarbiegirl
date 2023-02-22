@@ -11,7 +11,7 @@ import CartSummary from "./cartSummary/CartSummary";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
 import {getById} from "../../helper/FirestoreApi";
-import {getAllShippingOption, getCustomerData, url} from "../../helper/stripe/StripeApi";
+import {getRatesWithShipmentDetails, getCustomerData, url} from "../../helper/stripe/StripeApi";
 import {fetchAPI} from "../../helper/FetchApi";
 import {stripeSliceActions} from "../../store/stripeSlice";
 import {generalSliceActions} from "../../store/gs-manager-slice";
@@ -20,12 +20,14 @@ import CartShippingAddress from "./cartShippingAddress/CartShippingAddress";
 import CartPayment from "./cartPayment/CartPayment";
 import CartShippingRate from "./cartShippingRate/CartShippingRate";
 import {useIsScroll} from "../../helper/Hooks";
-import {calculateTotalFromCheckItems, getMainPaymentMethod} from "../../helper/Helper";
+import {calculateTotalFromCheckItems, getMainPaymentMethod, openModal} from "../../helper/Helper";
 import {userSliceActions} from "../../store/userSlice";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
 import * as FirestoreApi from "../../helper/FirestoreApi";
 import Wrapper from "../../components/Wrapper/Wrapper";
+import Login from "../login/Login";
+import {DbToShipEngine} from "../../helper/ShipEngine";
 
 
 //----------------------------------------------------------------
@@ -79,14 +81,15 @@ export default function CartCustomCheckout() {
         shippingOptionSelected,
         customerStatus,
         getCustomerDataStatus,
-        getAllShippingOptionStatus
+        getRatesStatus
     } = useSelector(slice => slice.stripe);
     const mainPaymentMethod = customer?.paymentMethod?.data?.length && getMainPaymentMethod(customer)
     const totalFromCheckedItems = useMemo(() => {
-        return !!user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
+        return user.cart.item.length ? calculateTotalFromCheckItems(user.cart.item) : 0
     }, [user.cart.item]);
-    const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) + (shippingOptionSelected?.amount / 100 || 0);
-    
+    const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) +
+        (totalFromCheckedItems > 100 ? 0 : user.dummy ? 0 : shippingOptionSelected?.amount || 0);
+    console.log(totalFromCheckedItems)
     //get scroll from top for topbar shadow effect
     useIsScroll();
 
@@ -111,11 +114,54 @@ export default function CartCustomCheckout() {
         if (customerStatus.loaded) {
             Promise.all([
                 window.dispatch(getCustomerData({endpoint: 'retrieve-customer', customer, token: user.token})),
-                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer, token: user.token})),
-                window.dispatch(getAllShippingOption({endpoint: 'list-all-shipping-option', token: user.token})),
+                window.dispatch(getCustomerData({endpoint: 'retrieve-payment-method', customer, token: user.token}))
             ]).then()
         }
     }, [customerStatus.loaded]);
+    // debugger
+    useEffect(_ => {
+        //get rates from shipengine
+        if(totalFromCheckedItems > 0 && !user.dummy)
+        window.dispatch(getRatesWithShipmentDetails({
+            endpoint: 'get-rates',
+            data:{
+                rateOptions: {
+                    carrierIds: ['se-4087584']//usps
+                },
+                shipment: {
+                    validateAddress: "no_validation",
+                    shipTo: { ...DbToShipEngine(user.address.filter(item => item.main))},
+                    shipFrom: {
+                        companyName: "PartyLifestyle",
+                        name: "Yanet",
+                        phone: "305-748-1194",
+                        addressLine1: "1476 reef redge ct",
+                        // addressLine2: "Suite 300",
+                        cityLocality: "Las Vegas",
+                        stateProvince: "NV",
+                        postalCode: "89128",
+                        countryCode: "US",
+                        addressResidentialIndicator: "no",
+                    },
+                    //make the package calculation
+                    packages: [{
+                        weight: {
+                            value: 1,
+                            unit: "pound",
+                        },
+                        dimensions: {
+                            length: 10,
+                            width: 5,
+                            height: 2,
+                            unit: "inch"
+                        }
+                    }],
+                }
+            },
+            token: user.token}))
+        //dep cart updated
+    }, [user.cart.item])
+
 
     //get client secret from stripe
     useEffect(_ => {
@@ -157,7 +203,7 @@ export default function CartCustomCheckout() {
             return window.confirm({t: 'info', c: `You need to 'Sign in to make a Purchase'`})
                 .then(res => {
                     if (res) {
-                        window.dispatch(generalSliceActions.setModal({open: true, who: 'login'}))
+                        openModal(<Login modal/>)
                     }
                 })
         }
@@ -266,15 +312,18 @@ export default function CartCustomCheckout() {
                         <CartPayment
                             user={user}
                             customer={customer}
+                            clientSecret={clientSecret}
                             customerStatus={customerStatus}
                             getCustomerDataStatus={getCustomerDataStatus}
                             mainPaymentMethod={mainPaymentMethod}
                         />
                         <CartShippingRate
-                            getAllShippingOptionStatus={getAllShippingOptionStatus}
+                            user={user}
+                            getRatesStatus={getRatesStatus}
                             shippingRate={shippingRate}
                             handleShippingRate={handleShippingRate}
                             shippingOptionSelected={shippingOptionSelected}
+                            totalFromCheckedItems={totalFromCheckedItems}
                         />
                         <Wrapper sx={{gap: '20px', padding: '20px'}}>
                             <EzLoadingBtn
