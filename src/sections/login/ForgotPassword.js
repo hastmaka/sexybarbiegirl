@@ -22,7 +22,7 @@ export default function ForgotPassword(){
         let email = data.get('email');
         setLoading(true)
         try {
-            import('../../helper/FirebaseAuthService').then(module => {
+            import('../../helper/firebase/FirebaseAuthService').then(module => {
                 module.passwordResetEmail(email)
             })
             window.displayNotification({

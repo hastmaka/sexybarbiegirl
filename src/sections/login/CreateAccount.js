@@ -11,7 +11,7 @@ import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzText from "../../components/ezComponents/EzText/EzText";
 import Login from "./Login";
-import {openModal} from "../../helper/Helper";
+import {openModal} from "../../helper/common";
 
 //----------------------------------------------------------------
 
@@ -40,11 +40,11 @@ export default function CreateAccount({ modal}) {
             })
         } else {
             setLoading(true)
-            const user = await import('../../helper/FirebaseAuthService').then(module => {
+            const user = await import('../../helper/firebase/FirebaseAuthService').then(module => {
                 return module.registerUser(email, password)
             })
             if(user) {
-                const dbUser = await import('../../helper/Helper').then(module => {
+                const dbUser = await import('../../helper/common').then(module => {
                     return module.createAccountProcess(user)
                 });
                 if(dbUser === 'created') {
@@ -52,10 +52,10 @@ export default function CreateAccount({ modal}) {
                     window.confirm({t: 'info', c: `Account Created Successfully want to 'Sign In Directly?'`})
                         .then(async (res) => {
                             if(res) {
-                                const dbCurrentUser = await import('../../helper/FirestoreApi').then(module => {
+                                const dbCurrentUser = await import('../../helper/firebase/FirestoreApi').then(module => {
                                     return module.getUser(user.uid)
                                 });
-                                import('../../helper/Helper').then(module => {
+                                import('../../helper/common').then(module => {
                                     module.loginProcess({
                                         token: user.accessToken,
                                         dbUser: dbCurrentUser,

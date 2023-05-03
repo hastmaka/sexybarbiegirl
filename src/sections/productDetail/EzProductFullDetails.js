@@ -7,7 +7,7 @@ import {styled} from '@mui/material/styles';
 //
 import Review from "./review/Review";
 //
-import {getAll, getById} from "../../helper/FirestoreApi";
+import {getAll, getById} from "../../helper/firebase/FirestoreApi";
 import EzProductDetails from "./EzProductDetails";
 import HomeSectionComponent from "../home/homeSectionComponent/HomeSectionComponent";
 

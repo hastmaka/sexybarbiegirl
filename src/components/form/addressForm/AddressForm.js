@@ -4,11 +4,11 @@ import {useSelector} from "react-redux";
 import {Box, InputAdornment, Stack, TextField, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 //
-import {createId} from "../../../helper/Helper";
 import {userSliceActions} from "../../../store/userSlice";
 import EzLoadingBtn from "../../ezComponents/EzLoadingBtn/EzLoadingBtn";
 import {generalSliceActions} from "../../../store/gs-manager-slice";
-import {shipEngineToDb, validateAddress} from "../../../helper/ShipEngine";
+import {shipEngineToDb, validateAddress} from "../../../helper/shipEngine/ShipEngine";
+import {createId} from "../../../helper/common";
 
 //----------------------------------------------------------------
 
@@ -82,7 +82,7 @@ export default function AddressForm({type, tempData, afterSubmit}) {
                     last_name: formData.get('last_name'),
                     phone: formData.get('phone'),
                     main: !user.address.length,
-                    id: createId()
+                    id: createId(20)
                 }));
                 window.displayNotification({
                     t: 'success',

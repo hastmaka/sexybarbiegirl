@@ -6,7 +6,6 @@ import {Outlet, useNavigate} from 'react-router-dom';
 import TopBar from '../components/topBar/TopBar';
 import {useSelector} from "react-redux";
 import Footer from "../sections/footer/Footer";
-import {useIsScroll, useScrollTop} from "../helper/Hooks";
 import {useEffect} from "react";
 import {MobileNavigation} from "./MobileNavigation";
 import EzCustomIconButton from "../components/ezComponents/EzCustomIconButton/EzCustomIconButton";

@@ -8,7 +8,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import AddressForm from "../../../../components/form/addressForm/AddressForm";
 import {userSliceActions} from "../../../../store/userSlice";
 import EzCard from "../../../../components/ezComponents/EzCard/EzCard";
-import {openModal} from "../../../../helper/Helper";
+import {openModal} from "../../../../helper/common";
 
 //----------------------------------------------------------------
 
@@ -55,8 +55,8 @@ export default function AddressCard({data, onClick, action = true}) {
     return (
         <RootStyle action={action.toString()}>
             <Typography variant='span'>{first_name} {last_name}</Typography>
-            <Typography variant='span'>{address_line_1}, {city_locality}, {postal_code}</Typography>
-            <Typography variant='span'>{state_province}, {country_code}</Typography>
+            <Typography variant='span'>{address_line_1}, {city_locality}, {state_province}</Typography>
+            <Typography variant='span'>{country_code}, {postal_code}</Typography>
             <Typography variant='span'>{phone}</Typography>
 
             {action && <ActionContainer main={main.toString()}>

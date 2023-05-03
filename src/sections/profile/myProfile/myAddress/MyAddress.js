@@ -8,9 +8,9 @@ import {userSliceActions} from "../../../../store/userSlice";
 import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddressCard from "../../../cart/cartShippingAddress/addressCard/AddressCard";
 import EzText from "../../../../components/ezComponents/EzText/EzText";
-import {openModal} from "../../../../helper/Helper";
+import {openModal} from "../../../../helper/common";
 import AddressForm from "../../../../components/form/addressForm/AddressForm";
-import {initialAddressFormData} from "../../../../helper/ShipEngine";
+import {initialAddressFormData} from "../../../../helper/shipEngine/ShipEngine";
 
 //----------------------------------------------------------------
 

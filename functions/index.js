@@ -4,8 +4,8 @@ const app = express();
 const functions = require('firebase-functions');
 //stripe
 const stripe = require('stripe')(process.env.STRIPE_KEY);
-// const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
-const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
+const webhookSecretFirebase = process.env.STRIPE_WEBHOOK_SECRET_FIREBASE;
+// const webhookSecretLocal = process.env.STRIPE_WEBHOOK_SECRET_LOCAL;
 const shipping = require('./helper/ShipEngine');
 
 const admin = require('firebase-admin');
@@ -40,7 +40,7 @@ app.post('/webhook', (req, res) => {
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretLocal);
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecretFirebase); /*pay attention to which environment you are */
     }
     catch (err) {
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -48,7 +48,6 @@ app.post('/webhook', (req, res) => {
     // Handle the event
     switch (event.type) {
         case 'payment_intent.succeeded':
-            // debugger
             const {amount, created, customer, receipt_email, charges, metadata } = event.data.object;
             const order = {
                 userId: orderData.userId,
@@ -59,19 +58,7 @@ app.post('/webhook', (req, res) => {
                 create_at: created,
                 customer_id: customer,
                 order_status: 'processing',
-                shipping: {
-                    address: {
-                        city: charges.data[0].shipping.address.city,
-                        country: charges.data[0].shipping.address.country,
-                        line1: charges.data[0].shipping.address.line1,
-                        line2: charges.data[0].shipping.address.line2,
-                        postal_code: charges.data[0].shipping.address.postal_code,
-                        state: charges.data[0].shipping.address.state
-                    },
-                    first_name: charges.data[0].shipping.name.split(' ')[0],
-                    last_name: charges.data[0].shipping.name.split(' ')[1],
-                    phone: charges.data[0].shipping.phone
-                },
+                shipping_address: {...JSON.parse(metadata.addressFormattedToDb)},
                 item: orderData.item
             }
             try {
@@ -102,7 +89,6 @@ app.get('/list-all-shipping-option', appCheckVerification, listAllShippingOption
 //charge a customer with 'payment method (pm_ client side)' and customer_id
 app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
     const {customer_id, item, shipping, email, tempAddress, userId} = req.body;
-    const {address, city, zip, first_name, last_name, phone, country, state} = tempAddress[0];
     //get product from db and return calculated total amount
     const amount = await GetProductAndReturnTotalAmount(item);
     let fixAmount = +(amount.toFixed(2)),
@@ -115,24 +101,22 @@ app.post('/create-payment-intent', appCheckVerification, async (req, res) => {
             // Verify your integration in this guide by including this parameter
             metadata: {
                 integration_check: 'accept_a_payment',
-                idToCreateTheOrder: createId()
+                idToCreateTheOrder: createId(),
+                addressFormattedToDb: JSON.stringify({...tempAddress[0]})
             },
             customer: customer_id,
             //send and email after the payment go successfully, only Live Mode
             receipt_email: email,
             shipping: {
                 address: {
-                    city,
-                    country,
-                    line1: address,
-                    line2: '',
-                    postal_code: zip,
-                    state
+                    country: tempAddress[0].country_code,
+                    city: tempAddress[0].city_locality,
+                    line1: tempAddress[0].address_line_1,
+                    state: tempAddress[0].state_province,
+                    postal_code: tempAddress[0].postal_code,
                 },
-                name: `${first_name} ${last_name}`,
-                carrier: 'Ground-FedEx',
-                phone,
-                tracking_number: 0
+                name: `${tempAddress[0].first_name} ${tempAddress[0].last_name}`,
+                carrier: 'Stamps(USPS)'
             }
         });
         orderData = {userId, item: [...item]}
@@ -282,7 +266,7 @@ exports.createStripeCustomer = functions.firestore
 exports.updateProductReview = functions.firestore
     .document('reviews/{reviewId}')
     .onCreate(async (snapshot, context) => {
-        debugger
+        // debugger
         const product_id = snapshot.data().product_id;
         const productDocRef = await db.collection("products").doc(product_id).get();
         try {

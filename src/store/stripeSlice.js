@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {updateLocalStore} from "../helper/Helper";
-import {getById, update} from "../helper/FirestoreApi";
+import {updateLocalStore} from "../helper/common";
+import {getById, update} from "../helper/firebase/FirestoreApi";
 import {getRatesWithShipmentDetails, getCustomerData} from "../helper/stripe/StripeApi";
 
 const stripeSlice = createSlice({

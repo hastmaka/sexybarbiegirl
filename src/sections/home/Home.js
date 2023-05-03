@@ -6,7 +6,7 @@ import TopSwiper from "./topSwiper/TopSwiper";
 import HotPromotion from "./hotPromotion/HotPromotion";
 import DailyBestSell from "./dailyBestSell/DailyBestSell";
 import PopularProduct from "./popularProduct/PopularProduct";
-import {useIsScroll} from "../../helper/Hooks";
+import {useIsScroll} from "../../helper/hooks";
 
 //----------------------------------------------------------------
 

@@ -19,7 +19,7 @@ const ImageContainer = styled(Stack)(({theme}) => ({
 
 //----------------------------------------------------------------
 
-export default function OrderProduct({img, price, size, name, color}) {
+export default function OrderProduct({img, price, size, name, color, qty}) {
     return (
         <RootStyle>
             <ImageContainer>
@@ -29,7 +29,7 @@ export default function OrderProduct({img, price, size, name, color}) {
                     style={{borderRadius: '4px'}}
                 />
             </ImageContainer>
-            <Stack p={1} justifyContent='center' gap='5px'>
+            <Stack p={1} justifyContent='center' gap='2px'>
                 <Stack flexDirection='row'>
                     <EzText text='Name: '/>
                     <EzText text={name}/>
@@ -41,6 +41,10 @@ export default function OrderProduct({img, price, size, name, color}) {
                 <Stack flexDirection='row'>
                     <EzText text='Size: '/>
                     <EzText text={size}/>
+                </Stack>
+                <Stack flexDirection='row'>
+                    <EzText text='Quantity: '/>
+                    <EzText text={qty}/>
                 </Stack>
                 <Stack flexDirection='row' alignItems='center'>
                     <EzText text='Price: '/>

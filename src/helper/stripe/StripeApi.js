@@ -3,7 +3,7 @@ import {fetchAPI} from "../FetchApi";
 const urlFirebase = 'https://us-central1-sexybarbiegirl-f6068.cloudfunctions.net/app/';
 const urlLocal = 'http://127.0.0.1:5001/sexybarbiegirl-f6068/us-central1/app/';
 
-export const url = urlLocal;
+export const url = urlFirebase;
 
 
 
@@ -31,3 +31,4 @@ export const getRatesWithShipmentDetails = createAsyncThunk(
         }
     }
 );
+

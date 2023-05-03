@@ -9,7 +9,7 @@ import EzText from "../../../../components/ezComponents/EzText/EzText";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EzCustomIconButton from "../../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import EzCard from "../../../../components/ezComponents/EzCard/EzCard";
-import {deletePaymentMethod} from "../../../../helper/Helper";
+import deletePaymentMethod from "../../../../helper/stripe/deletePaymentMethod";
 //----------------------------------------------------------------
 
 const Brand = styled(Stack)(({theme}) => ({

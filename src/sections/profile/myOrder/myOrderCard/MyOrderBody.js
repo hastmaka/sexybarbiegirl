@@ -1,7 +1,7 @@
 // material
 import {Button, Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import {btnContained, btnOutlined} from "../../../../helper/Style";
+import {btnContained, btnOutlined} from "../../../../helper/style/Style";
 import {useSelector} from "react-redux";
 import OrderProductContainer from "./OrderProductContainer";
 

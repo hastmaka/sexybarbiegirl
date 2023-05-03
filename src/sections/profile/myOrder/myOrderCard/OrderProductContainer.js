@@ -8,12 +8,12 @@ import OrderProduct from "./OrderProduct";
 const RootStyle = styled(Stack)(({theme}) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gridGap: '5px'
 }));
 
 //----------------------------------------------------------------
 
 export default function OrderProductContainer({data}) {
-    // debugger
     return (
         <RootStyle>
             {data.map(item =>
@@ -24,6 +24,7 @@ export default function OrderProductContainer({data}) {
                     color={item.color}
                     size={item.size}
                     price={item.price}
+                    qty={item.quantity}
                 />
             )}
         </RootStyle>

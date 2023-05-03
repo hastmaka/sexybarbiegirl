@@ -13,7 +13,7 @@ import EzSwiper from "../../components/ezComponents/EzSwiper/EzSwiper";
 import EzRating from "../../components/ezComponents/EzRating/EzRating";
 import EzPriceFormat from "../../components/ezComponents/EzPriceFormat/EzPriceFormat";
 import Share from "./share/Share";
-import {AddToCart, getActiveSize, getColor, getCurrentPriceAndDiscount, getVariation} from "../../helper/Helper";
+import {addToCart, getActiveSize, getColor, getCurrentPriceAndDiscount, getVariation} from "../../helper/common";
 import EzWishlistBtn from "../../components/ezComponents/EzWishlistBtn/EzWishlistBtn";
 import {getDummy} from "./dummyData";
 import ShippingInformation from "./shippingInformation/ShippingInformation";
@@ -379,7 +379,7 @@ export default function EzProductDetails({product, handleCloseCard, totalReview,
 
                     <Stack flexDirection='row' sx={{margin: '20px 0 20px 0', gap: '10px'}}>
                         <AddToCArtButton
-                            onClick={_ => AddToCart(selected.selectedColor, selected.selectedSize, product, id, image, name, user)}
+                            onClick={_ => addToCart(selected.selectedColor, selected.selectedSize, product, id, image, name, user)}
                             variant='outlined'
                             sx={{flex: 2}}
                         >Add to cart</AddToCArtButton>

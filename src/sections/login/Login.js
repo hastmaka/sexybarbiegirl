@@ -11,9 +11,9 @@ import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBt
 import EzButton from "../../components/ezComponents/EzButton/EzButton";
 import EzTextField from "../../components/ezComponents/EzTextField/EzTextField";
 import EzText from "../../components/ezComponents/EzText/EzText";
-import {btnOutlined} from "../../helper/Style";
+import {btnOutlined} from "../../helper/style/Style";
 import CreateAccount from "./CreateAccount";
-import {openModal} from "../../helper/Helper";
+import {openModal} from "../../helper/common";
 
 //dynamic import
 
@@ -28,21 +28,21 @@ export default function Login({modal}) {
     const onLoginWithGoogle = async () => {
         setGoogleBtnLoading(true);
         try {
-            const googleUser = await import('../../helper/FirebaseAuthService').then(module => {
+            const googleUser = await import('../../helper/firebase/FirebaseAuthService').then(module => {
                 return module.loginWithGoogle()
             });
-            const dbUser = await import('../../helper/FirestoreApi').then(module => {
+            const dbUser = await import('../../helper/firebase/FirestoreApi').then(module => {
                 return module.getUser(googleUser.user.uid)
             });
             if(!dbUser) {
-                const res = await import('../../helper/Helper').then(module => {
+                const res = await import('../../helper/common').then(module => {
                     return module.createAccountProcess(googleUser.user)
                 });
                 if(res === 'created') {
-                    const dbCurrentUser = await import('../../helper/FirestoreApi').then(module => {
+                    const dbCurrentUser = await import('../../helper/firebase/FirestoreApi').then(module => {
                         return module.getUser(googleUser.user.uid)
                     });
-                    import('../../helper/Helper').then(module => {
+                    import('../../helper/common').then(module => {
                         module.loginProcess({
                             token: googleUser.user.accessToken,
                             dbUser: dbCurrentUser,
@@ -55,7 +55,7 @@ export default function Login({modal}) {
 
                 }
             }
-            import('../../helper/Helper').then(module => {
+            import('../../helper/common').then(module => {
                 module.loginProcess({
                     token: googleUser.user.accessToken,
                     dbUser,
@@ -83,14 +83,14 @@ export default function Login({modal}) {
         let email = data.get('email'),
             password = data.get('password');
         setLoading(true);
-        const firebaseUser = await import('../../helper/FirebaseAuthService').then(module => {
+        const firebaseUser = await import('../../helper/firebase/FirebaseAuthService').then(module => {
             return module.loginUser(email, password)
         });
         if(firebaseUser) {
-            const dbUser = await import('../../helper/FirestoreApi').then(module => {
+            const dbUser = await import('../../helper/firebase/FirestoreApi').then(module => {
                 return module.getUser(firebaseUser.uid)
             });
-            import('../../helper/Helper').then(module => {
+            import('../../helper/common').then(module => {
                 module.loginProcess({
                     token: firebaseUser.accessToken,
                     dbUser,

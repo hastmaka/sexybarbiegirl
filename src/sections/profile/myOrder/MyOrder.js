@@ -3,7 +3,7 @@ import {useEffect} from "react";
 // material
 import {Stack} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import {getDataAndKeepSync} from "../../../helper/FirestoreApi";
+import {getDataAndKeepSync} from "../../../helper/firebase/FirestoreApi";
 //
 import MyOrderCard from "./myOrderCard/MyOrderCard";
 

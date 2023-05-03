@@ -7,10 +7,10 @@ import Wrapper from "../../../components/Wrapper/Wrapper";
 import EzCustomIconButton from "../../../components/ezComponents/EzCustomIconButton/EzCustomIconButton";
 import AddressCard from "./addressCard/AddressCard";
 import EzHelpText from "../../../components/ezComponents/EzHelpText/EzHelpText";
-import {openModal} from "../../../helper/Helper";
+import {openModal} from "../../../helper/common";
 import Login from "../../login/Login";
 import AddressForm from "../../../components/form/addressForm/AddressForm";
-import {initialAddressFormData} from "../../../helper/ShipEngine";
+import {initialAddressFormData} from "../../../helper/shipEngine/ShipEngine";
 
 //----------------------------------------------------------------
 

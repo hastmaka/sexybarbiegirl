@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {useIsScroll, useLocalStorage} from "../../helper/Hooks";
+import {useIsScroll, useLocalStorage} from "../../helper/hooks";
 import {useLocation} from "react-router-dom";
 import {lazy, Suspense, useEffect} from "react";
 //material

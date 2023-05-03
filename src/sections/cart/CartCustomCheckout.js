@@ -10,7 +10,7 @@ import CartItemTable from "./cartItemTable/CartItemTable";
 import CartSummary from "./cartSummary/CartSummary";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
-import {getById} from "../../helper/FirestoreApi";
+import {getById} from "../../helper/firebase/FirestoreApi";
 import {getRatesWithShipmentDetails, getCustomerData, url} from "../../helper/stripe/StripeApi";
 import {fetchAPI} from "../../helper/FetchApi";
 import {stripeSliceActions} from "../../store/stripeSlice";
@@ -19,15 +19,15 @@ import {HandeError} from "../../helper/stripe/HandeError";
 import CartShippingAddress from "./cartShippingAddress/CartShippingAddress";
 import CartPayment from "./cartPayment/CartPayment";
 import CartShippingRate from "./cartShippingRate/CartShippingRate";
-import {useIsScroll} from "../../helper/Hooks";
-import {calculateTotalFromCheckItems, getMainPaymentMethod, openModal} from "../../helper/Helper";
+import {useIsScroll} from "../../helper/hooks";
+import {calculateTotalFromCheckItems, getMainPaymentMethod, openModal} from "../../helper/common";
 import {userSliceActions} from "../../store/userSlice";
 //stripe
 import {useStripe} from "@stripe/react-stripe-js";
-import * as FirestoreApi from "../../helper/FirestoreApi";
+import * as FirestoreApi from "../../helper/firebase/FirestoreApi";
 import Wrapper from "../../components/Wrapper/Wrapper";
 import Login from "../login/Login";
-import {DbToShipEngine} from "../../helper/ShipEngine";
+import {DbToShipEngine} from "../../helper/shipEngine/ShipEngine";
 
 
 //----------------------------------------------------------------
@@ -89,7 +89,7 @@ export default function CartCustomCheckout() {
     }, [user.cart.item]);
     const total = (totalFromCheckedItems + totalFromCheckedItems * 0.07) +
         (totalFromCheckedItems > 100 ? 0 : user.dummy ? 0 : shippingOptionSelected?.amount || 0);
-    console.log(totalFromCheckedItems)
+
     //get scroll from top for topbar shadow effect
     useIsScroll();
 
@@ -230,7 +230,7 @@ export default function CartCustomCheckout() {
             const res = await fetchAPI(url, 'create-payment-intent', 'POST', {
                 customer_id: customer_id,
                 item: itemChecked,
-                shipping: shippingOptionSelected.amount / 100 || 0,
+                shipping: shippingOptionSelected?.amount || 0,
                 // send and email after the payment go successfully, only Live Mode
                 email: user.email,
                 tempAddress: user.address.filter(item => item.main),
@@ -249,7 +249,7 @@ export default function CartCustomCheckout() {
                 if (result.paymentIntent.status === 'succeeded') {
                     //update the cart items deleting the ones which was purchased
                     //create a temp order to give an instant feedback to the user then sync with db
-                    const {receipt_email, amount, created, shipping} = result.paymentIntent;
+                    const {receipt_email, amount, created} = result.paymentIntent;
                     const {item, ...rest} = cart;
                     FirestoreApi.createOrder({
                         data: {
@@ -261,12 +261,8 @@ export default function CartCustomCheckout() {
                             create_at: created,
                             customer_id: customer.customer_id,
                             order_status: 'processing',
-                            shipping: {
-                                address: {...shipping.address},
-                                first_name: shipping.name.split(' ')[0],
-                                last_name: shipping.name.split(' ')[1],
-                                phone: shipping.phone
-                            },
+                            //we take the formatted address to store in db
+                            shipping_address: {...user.address.filter(item => item.main)[0]},
                             item: [...itemChecked]
                         },
                         id: res.idToCreateTheOrder

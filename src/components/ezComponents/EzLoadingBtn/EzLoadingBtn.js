@@ -1,6 +1,6 @@
 // material
 import {LoadingButton} from "@mui/lab";
-import {btnContained} from "../../../helper/Style";
+import {btnContained} from "../../../helper/style/Style";
 
 //----------------------------------------------------------------
 

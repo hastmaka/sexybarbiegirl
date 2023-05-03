@@ -38,7 +38,7 @@ module.exports = {
         try {
             const rates = await shipengine.getRatesWithShipmentDetails(params);
             const tempData = [];
-            rates.rateResponse.rates.map(item => {
+            rates.rateResponse.rates.forEach(item => {
                 if (item.packageType === 'small_flat_rate_box' && item.serviceCode === 'usps_priority_mail')tempData.push(item)
                 if (item.packageType === 'package' && item.serviceCode === 'usps_parcel_select')tempData.push(item)
             })

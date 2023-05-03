@@ -5,7 +5,7 @@ import {styled} from '@mui/material/styles';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 //
-import {useSlider} from '../../helper/Hooks';
+// import {useSlider} from '../../helper/hooks';
 //----------------------------------------------------
 
 const SliderContainer = styled(Stack)(({theme}) => ({

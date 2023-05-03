@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {useIsScroll} from "../../helper/Hooks";
+import {useIsScroll} from "../../helper/hooks";
 // material
 import {Stack, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';

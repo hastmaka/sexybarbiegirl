@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {create, getAll, getById} from "../helper/FirestoreApi";
+import {create, getAll, getById} from "../helper/firebase/FirestoreApi";
 
 const shopSlice = createSlice({
     name: 'shop',
@@ -114,7 +114,7 @@ const shopSlice = createSlice({
         builder.addCase(getAll.fulfilled, (state, { payload, meta }) => {
             // debugger
             switch (meta.arg.collection) {
-                case 'products':
+                case 'tests'://products
                     // debugger
                     state.product = payload;
                     state.newProduct =
@@ -122,16 +122,16 @@ const shopSlice = createSlice({
                     state.productState.loaded = true;
                     break;
                 case 'filters':
-                    let min = Math.floor(Math.min(payload[0].priceRange[0])),
-                        max = Math.round(Math.max(payload[0].priceRange[1]))
-                    state.filter.priceRange = [min, max];
-                    state.priceRange = [min, max];
-                    state.filter.color = payload[0].color;
-                    state.filter.size = payload[0].size;
-                    state.filter.category = payload[0].category;
-                    state.color = payload[0].color;
-                    state.size = payload[0].size;
-                    state.category = payload[0].category;
+                    // let min = Math.floor(Math.min(payload[0].priceRange[0])),
+                    //     max = Math.round(Math.max(payload[0].priceRange[1]))
+                    // state.filter.priceRange = [min, max];
+                    // state.priceRange = [min, max];
+                    // state.filter.color = payload[0].color;
+                    // state.filter.size = payload[0].size;
+                    // state.filter.category = payload[0].category;
+                    // state.color = payload[0].color;
+                    // state.size = payload[0].size;
+                    // state.category = payload[0].category;
                     state.filterState.loading = false;
                     state.filterState.loaded = true;
                     break;

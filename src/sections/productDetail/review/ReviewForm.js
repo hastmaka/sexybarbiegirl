@@ -5,7 +5,7 @@ import EzRating from "../../../components/ezComponents/EzRating/EzRating";
 import EzButton from "../../../components/ezComponents/EzButton/EzButton";
 import {useSelector} from "react-redux";
 import {useState} from "react";
-import {create} from "../../../helper/FirestoreApi";
+import {create} from "../../../helper/firebase/FirestoreApi";
 import EzCheckBox from "../../../components/ezComponents/EzCheckBox/EzCheckBox";
 
 //----------------------------------------------------------------

@@ -39,6 +39,7 @@ const linkStyle = {
 export default function MyOrderHeader({date, total, shipTo, status, orderId, setOpen}) {
     const {screen} = useSelector(slice => slice.generalState);
     const color = status === "processing" ? '#1fa60b' : '';
+
     return (
         <RootStyle>
             <Child>
@@ -57,11 +58,11 @@ export default function MyOrderHeader({date, total, shipTo, status, orderId, set
                             text={`
                                 ${shipTo.first_name} 
                                 ${shipTo.last_name}, 
-                                ${shipTo.address.line1}, 
-                                ${shipTo.address.country}, 
-                                ${shipTo.address.city},
-                                ${shipTo.address.state}, 
-                                ${shipTo.address.postal_code}
+                                ${shipTo.address_line_1}, 
+                                ${shipTo.country_code}, 
+                                ${shipTo.city_locality},
+                                ${shipTo.state_province}, 
+                                ${shipTo.postal_code}
                             `}
                             sx={{...linkStyle, width: '200px'}}
                         />

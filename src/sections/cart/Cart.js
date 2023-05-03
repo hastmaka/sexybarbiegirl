@@ -6,14 +6,14 @@ import {Stack, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import LockIcon from "@mui/icons-material/Lock";
 //
-import {useIsScroll} from "../../helper/Hooks";
 import EzHelpText from "../../components/ezComponents/EzHelpText/EzHelpText";
 import EzLoadingBtn from "../../components/ezComponents/EzLoadingBtn/EzLoadingBtn";
 import CartItemTable from "./cartItemTable/CartItemTable";
 import CartSummary from "./cartSummary/CartSummary";
 import EzProductWidget from '../../components/ezComponents/EzProductWidget/EzProductWidget';
-import {calculateTotalFromCheckItems} from "../../helper/Helper";
 import Wrapper from "../../components/Wrapper/Wrapper";
+import {calculateTotalFromCheckItems} from "../../helper/common";
+import {useIsScroll} from "../../helper/hooks";
 
 //----------------------------------------------------------------
 

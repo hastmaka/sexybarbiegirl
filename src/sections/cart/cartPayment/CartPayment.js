@@ -8,7 +8,7 @@ import EzCustomIconButton from "../../../components/ezComponents/EzCustomIconBut
 import EzHelpText from "../../../components/ezComponents/EzHelpText/EzHelpText";
 import CreditCardSelection from "./creditCardSelection/CreditCardSelection";
 import EzSkeleton from "../../../components/EzSkeleton/EzSkeleton";
-import {openModal} from "../../../helper/Helper";
+import {openModal} from "../../../helper/common";
 import Login from "../../login/Login";
 import {Elements} from "@stripe/react-stripe-js";
 import CardInput from "../../../components/form/cardInput/CardInput";
@@ -17,12 +17,12 @@ import {loadStripe} from "@stripe/stripe-js";
 //----------------------------------------------------------------
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
 export default function CartPayment({
-                                        user,
-                                        customer,
-                                        clientSecret,
-                                        customerStatus,
-                                        mainPaymentMethod,
-                                        getCustomerDataStatus
+    user,
+    customer,
+    clientSecret,
+    customerStatus,
+    mainPaymentMethod,
+    getCustomerDataStatus
 }) {
     const options = {
         // passing the client secret obtained in step 3

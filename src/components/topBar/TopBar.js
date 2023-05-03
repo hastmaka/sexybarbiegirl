@@ -1,6 +1,5 @@
 import {useNavigate} from "react-router-dom";
 import {useRef, useState} from 'react';
-import {useOnClickOutside} from '../../helper/Hooks';
 import {useSelector} from "react-redux";
 // material
 import {Divider, Stack} from '@mui/material';
@@ -16,9 +15,9 @@ import Burger from './burger/Burger';
 import Logo from '../../resources/Asset 56@2x.png';
 import EzSetOfIcons from '../ezComponents/EzSetOfIcons/EzSetOfIcons';
 import EzMenu from "../ezComponents/EzMenu/EzMenu";
-import {generalSliceActions} from "../../store/gs-manager-slice";
-import Login from '../../sections/login/Login'
-import {openModal} from "../../helper/Helper";
+import Login from '../../sections/login/Login';
+import {openModal} from "../../helper/common";
+import {useOnClickOutside} from "../../helper/hooks";
 
 //----------------------------------------------------------------
 
@@ -151,7 +150,7 @@ export default function TopBar() {
         listItemIcon: true,
         functionality: {
             onClick: () => {
-                import('../../helper/FirebaseAuthService').then(module => {
+                import('../../helper/firebase/FirebaseAuthService').then(module => {
                     module.logoutUser().then(_ => {
                         for (const [key] of Object.entries(window.localStorage)) {
                             if(key) {

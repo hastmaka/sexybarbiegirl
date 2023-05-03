@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import {Stack, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import EzText from "../../../components/ezComponents/EzText/EzText";
-import {timer} from '../../../helper/Helper'
+import {timerCountDown} from '../../../helper/common'
 
 //-------------------------------------------------------
 
@@ -36,7 +36,7 @@ const CounterText = styled(EzText)(({theme}) => ({
 //-------------------------------------------------------
 
 export default function HotPromotionCounter({text}) {
-    let a = timer();
+    let a = timerCountDown();
     // debugger
     return (
         <RootStyle>

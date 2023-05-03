@@ -11,7 +11,7 @@ import {
     onSnapshot
 } from "firebase/firestore";
 import {db} from "./FirebaseConfig";
-import {userSliceActions} from "../store/userSlice";
+import {userSliceActions} from "../../store/userSlice";
 
 export const create = createAsyncThunk(
     'firestore/create',

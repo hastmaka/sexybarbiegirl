@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {getAll, getById, updateAddressApi, updateCartApi, updateWishListApi} from "../helper/FirestoreApi";
-import {updateCart, updateLocalStore} from "../helper/Helper";
+import {getAll, getById, updateAddressApi, updateCartApi, updateWishListApi} from "../helper/firebase/FirestoreApi";
+import {updateCart, updateLocalStore} from "../helper/common";
 
 const userSlice = createSlice({
     name: 'user',

@@ -7,7 +7,7 @@ import {styled} from '@mui/material/styles';
 import MyAddress from "./myAddress/MyAddress";
 import MyPaymentMethod from "./myPaymentMethod/MyPaymentMethod";
 import {getCustomerData, url} from "../../../helper/stripe/StripeApi";
-import {getAll, getById} from "../../../helper/FirestoreApi";
+import {getAll, getById} from "../../../helper/firebase/FirestoreApi";
 import {fetchAPI} from "../../../helper/FetchApi";
 import {stripeSliceActions} from "../../../store/stripeSlice";
 

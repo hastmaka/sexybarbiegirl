@@ -21,7 +21,7 @@ const RootStyle = styled(Stack)(({theme}) => ({
     borderRadius: '4px',
     maxWidth: '1080px',
     width: '90vw',
-    height: '680px',
+    // height: '680px',
     padding: '30px',
     gap: '20px',
     [theme.breakpoints.down(900)]: {
@@ -44,7 +44,7 @@ const Parent = styled(Stack)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function OrderSummaryModal({orderData}) {
-    const {amount, create_at, id, item, order_status, shipping, network, last_four} = orderData;
+    const {amount, create_at, id, item, order_status, shipping_address, network, last_four} = orderData;
     const {screen} = useSelector(slice => slice.generalState)
     // debugger
     let total = amount / 100,
@@ -79,9 +79,9 @@ export default function OrderSummaryModal({orderData}) {
                     <Stack flex={1} p={1} gap='10px'>
                         <EzText text='Shipping Address' sx={{fontSize: '14px'}}/>
                         <Stack>
-                            <EzText text={`${shipping.first_name} ${shipping.last_name}`} sx={{...text}}/>
-                            <EzText text={`${shipping.address.line1}, ${shipping.address.country}, ${shipping.address.city} `} sx={{...text}}/>
-                            <EzText text={`${shipping.address.state}, ${shipping.address.postal_code}`} sx={{...text}}/>
+                            <EzText text={`${shipping_address.first_name} ${shipping_address.last_name}`} sx={{...text}}/>
+                            <EzText text={`${shipping_address.address_line_1}, ${shipping_address.city_locality}, ${shipping_address.state_province}`} sx={{...text}}/>
+                            <EzText text={`${shipping_address.country_code}, ${shipping_address.postal_code}`} sx={{...text}}/>
                         </Stack>
                     </Stack>
 

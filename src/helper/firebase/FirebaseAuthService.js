@@ -10,7 +10,7 @@ import {
     getIdToken
 } from 'firebase/auth';
 import {getById, getUser} from "./FirestoreApi";
-import {userSliceActions} from "../store/userSlice";
+import {userSliceActions} from "../../store/userSlice";
 
 export const registerUser = async (email, password) => {
     return await createUserWithEmailAndPassword(auth, email, password)

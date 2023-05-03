@@ -16,13 +16,16 @@ Edit Run/Debug configurations -> Attach to Node/Chrome (select the correct port(
 http://4386-2600-8801-192-4500-4dcd-e70f-e09f-63cb.ngrok.io/sexybarbiegirl-f6068/us-central1/app
 
 //export and import data
+//to run the emulator with and import the data have to be in functions directory
 firebase emulators:export /path
+firebase emulators:export . (same directory)
 firebase emulators:start --inspect-functions --import dummy (import with debugger attach)
 firebase emulators:start --import ./dir --export-on-exit (save data on exit)
 
 
 //Deploy functions to firebase
 firebase deploy --only functions
+firebase deploy --only hosting
 
 //Listeners
 onCreate
@@ -30,7 +33,11 @@ onUpdate
 onDelete
 onWrite used all
 
-
+//Api Keys
+Google Cloud -> Credentials -> Give Access to you key
+https://sexybarbiegirl-f6068.firebaseapp.com/ - default app name
+localhost:3000/* - allow all connection from localhost(only development environment, have to change it when in production to only allow from u domain)
+sexybarbiegirl.com/* - from the domain
 
 
 

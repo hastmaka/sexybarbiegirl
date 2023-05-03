@@ -6,7 +6,7 @@ import Table from "./table/table";
 import Wrapper from "../../../components/Wrapper/Wrapper";
 import noItemImg from '../../../resources/no_item_in_cart.png';
 import {userSliceActions} from "../../../store/userSlice";
-import {linkStyle} from "../../../helper/Style";
+import {linkStyle} from "../../../helper/style/Style";
 
 //----------------------------------------------------------------
 

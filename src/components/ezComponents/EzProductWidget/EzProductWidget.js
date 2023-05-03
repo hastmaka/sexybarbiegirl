@@ -4,7 +4,7 @@ import EzProductDetails from "../../../sections/productDetail/EzProductDetails";
 import Wrapper from "../../Wrapper/Wrapper";
 import WidgetHeader from "./WidgetHeader";
 import EzMiniCard from "../EzMiniCard/EzMiniCard";
-import {openModal} from "../../../helper/Helper";
+import {openModal} from "../../../helper/common";
 
 //----------------------------------------------------------------
 

@@ -7,7 +7,7 @@ import {getCustomerData, urlLocal} from "../../../helper/stripe/StripeApi";
 import {useSelector} from "react-redux";
 import {generalSliceActions} from "../../../store/gs-manager-slice";
 import {fetchAPI} from "../../../helper/FetchApi";
-import {update} from "../../../helper/FirestoreApi";
+import {update} from "../../../helper/firebase/FirestoreApi";
 
 const CARD_ELEMENT_OPTIONS = {
     style: {

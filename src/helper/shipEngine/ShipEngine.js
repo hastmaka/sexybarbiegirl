@@ -1,5 +1,5 @@
-import {fetchAPI} from "./FetchApi";
-import {url} from "./stripe/StripeApi";
+import {fetchAPI} from "../FetchApi";
+import {url} from "../stripe/StripeApi";
 
 export const validateAddress = (address, token) => {
     // debugger

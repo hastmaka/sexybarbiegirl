@@ -10,9 +10,7 @@ import EzRating from "../EzRating/EzRating";
 import EzPriceFormat from "../EzPriceFormat/EzPriceFormat";
 import EzProductDetails from "../../../sections/productDetail/EzProductDetails";
 import EzWishlistBtn from "../EzWishlistBtn/EzWishlistBtn";
-import EzModal from "../EzModal/EzModal";
-import {generalSliceActions} from "../../../store/gs-manager-slice";
-import {openModal} from "../../../helper/Helper";
+import {openModal} from "../../../helper/common";
 
 //------------------------------------------------------------------------
 
@@ -132,22 +130,23 @@ const InfoContainer = styled(Stack)(({theme}) => ({
 //----------------------------------------------------------------
 
 export default function EzProductCard({product}) {
-    const {name, price, discount, stock, statics, image} = product;
-    const ref = useRef(null);
+    const {name, discount, stock, statics, color} = product;
+    const {screen} = useSelector(slice => slice.generalState);
     const {user} = useSelector(slice => slice.user);
-    const [active, setActive] = useState(image[0].url);
+    const ref = useRef(null);
+    const [active, setActive] = useState(color[0].image[0].url);
     const [isHovered, setIsHovered] = useState(false);
     const isProductInWishlist = user.dummy ? false : user.wish_list.some(item => item.id === product.id);
-    const {screen} = useSelector(slice => slice.generalState);
-
+    // const {minPrice, maxPrice} =
+    debugger
     return (
         <RootStyle
             onMouseEnter={_ => setIsHovered(true)}
             onMouseLeave={_ => setIsHovered(false)}
         >
             <ImageContainer
-                onMouseEnter={_ => setActive(image[1].url)}
-                onMouseLeave={_ => setActive(image[0].url)}
+                // onMouseEnter={_ => setActive(image[1].url)}
+                // onMouseLeave={_ => setActive(image[0].url)}
                 onClick={e => {
                     if(!ref.current.contains(e.target)) openModal(<EzProductDetails product={product} modal/>)
                 }}
@@ -189,15 +188,15 @@ export default function EzProductCard({product}) {
                     </Stack>
                     <Stack flexDirection='row' gap='10px'>
                         <EzPriceFormat
-                            price={price}
+                            // price={price}
                             justifyContent='flex-star'
                         />
-                        {discount > 0 && <EzPriceFormat
-                            price={discount > 0 ? price - ((discount / 100) * price) : price}
-                            priceFS={14}
-                            justifyContent={'left'}
-                            oldPrice
-                        />}
+                        {/*{discount > 0 && <EzPriceFormat*/}
+                        {/*    price={discount > 0 ? price - ((discount / 100) * price) : price}*/}
+                        {/*    priceFS={14}*/}
+                        {/*    justifyContent={'left'}*/}
+                        {/*    oldPrice*/}
+                        {/*/>}*/}
                     </Stack>
                 </Stack>
                 <EzButton

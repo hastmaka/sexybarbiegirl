@@ -3,8 +3,8 @@ import {userSliceActions} from "../../../store/userSlice";
 import EzCustomIconButton from "../EzCustomIconButton/EzCustomIconButton";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import {addToWishlist} from "../../../helper/common";
 //
-import {AddToWishlist} from "../../../helper/Helper";
 
 //----------------------------------------------------------------
 
@@ -38,7 +38,7 @@ export default function EzWishlistBtn({isProductInWishlist, product, user}) {
                         }}
                     />}
                     toolTipTitle='Add to Wishlist'
-                    onClick={_ => AddToWishlist(product, user)}
+                    onClick={_ => addToWishlist(product, user)}
                 />}
         </>
     );
